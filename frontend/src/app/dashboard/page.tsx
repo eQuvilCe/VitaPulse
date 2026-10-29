@@ -13,7 +13,7 @@ function formatSleep(minutes: number | null): string {
 }
 
 export default function DashboardPage() {
-  const [lang] = useState<Lang>("en");
+  const [lang, setLang] = useState<Lang>("en");
   const [data, setData] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
 
@@ -23,6 +23,8 @@ export default function DashboardPage() {
       setError("Please sign in first.");
       return;
     }
+    const saved = localStorage.getItem("lang");
+    if (saved === "ru" || saved === "uz" || saved === "en") setLang(saved);
     fetchDashboard(token)
       .then(setData)
       .catch((e: Error) => setError(e.message));
