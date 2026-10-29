@@ -17,8 +17,9 @@ def test_delete_only_own_entry(client, auth_headers):
     t = client.post("/api/v1/auth/login", data={"username": "x@y.co", "password": "password123"})
     other = {"Authorization": f"Bearer {t.json()['access_token']}"}
 
-    assert client.delete(f"/api/v1/water/entries/{entry_id}", headers=other).status_code == 404
-    assert client.delete(f"/api/v1/water/entries/{entry_id}", headers=auth_headers).status_code == 204
+    url = f"/api/v1/water/entries/{entry_id}"
+    assert client.delete(url, headers=other).status_code == 404
+    assert client.delete(url, headers=auth_headers).status_code == 204
 
 
 def test_rejects_zero_ml(client, auth_headers):
