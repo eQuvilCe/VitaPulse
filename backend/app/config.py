@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "sqlite:///./vitapulse.db"
-    secret_key: str = "dev-secret-change-me"
+    secret_key: str = "dev-secret-change-me-please-use-32-bytes-min"
     access_token_expire_minutes: int = 60
     cors_origins: str = "http://localhost:3000"
 
