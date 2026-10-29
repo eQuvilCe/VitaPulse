@@ -36,9 +36,17 @@ def list_habits(user: CurrentUser, db: DbSession, today: date | None = None) -> 
     habits = db.scalars(
         select(Habit).where(Habit.user_id == user.id, Habit.archived.is_(False)).order_by(Habit.id)
     )
+    habits = list(habits)
+    days_by_habit: dict[int, list[date]] = {h.id: [] for h in habits}
+    for habit_id, day in db.execute(
+        select(HabitCheckin.habit_id, HabitCheckin.day).where(
+            HabitCheckin.habit_id.in_(days_by_habit)
+        )
+    ):
+        days_by_habit[habit_id].append(day)
     result = []
     for habit in habits:
-        days = _checkin_days(db, habit.id)
+        days = days_by_habit[habit.id]
         result.append(
             HabitStatus(
                 **HabitRead.model_validate(habit).model_dump(),
