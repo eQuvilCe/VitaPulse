@@ -24,7 +24,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
       else await register(email, password, name);
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof ApiError ? String(err.message) : "Something went wrong");
+      setError(err instanceof ApiError ? err.message : "Something went wrong");
     } finally {
       setBusy(false);
     }
