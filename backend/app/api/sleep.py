@@ -30,13 +30,14 @@ def list_sleep(
     user: CurrentUser,
     start: Annotated[date | None, Query(alias="from")] = None,
     end: Annotated[date | None, Query(alias="to")] = None,
+    limit: Annotated[int, Query(ge=1, le=1000)] = 100,
 ) -> list[SleepLog]:
     stmt = select(SleepLog).where(SleepLog.user_id == user.id).order_by(SleepLog.day.desc())
     if start:
         stmt = stmt.where(SleepLog.day >= start)
     if end:
         stmt = stmt.where(SleepLog.day <= end)
-    return list(db.scalars(stmt))
+    return list(db.scalars(stmt.limit(limit)))
 
 
 @router.delete("/{day}", status_code=status.HTTP_204_NO_CONTENT)

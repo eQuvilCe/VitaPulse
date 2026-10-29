@@ -29,10 +29,11 @@ def list_steps(
     user: CurrentUser,
     start: Annotated[date | None, Query(alias="from")] = None,
     end: Annotated[date | None, Query(alias="to")] = None,
+    limit: Annotated[int, Query(ge=1, le=1000)] = 100,
 ) -> list[StepsLog]:
     stmt = select(StepsLog).where(StepsLog.user_id == user.id).order_by(StepsLog.day.desc())
     if start:
         stmt = stmt.where(StepsLog.day >= start)
     if end:
         stmt = stmt.where(StepsLog.day <= end)
-    return list(db.scalars(stmt))
+    return list(db.scalars(stmt.limit(limit)))
