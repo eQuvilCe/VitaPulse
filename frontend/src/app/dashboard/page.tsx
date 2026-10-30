@@ -40,7 +40,7 @@ export default function DashboardPage() {
       .catch(() => setFailed(true));
     fetchWeek()
       .then(setWeek)
-      .catch(() => setWeek(null));
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
@@ -120,7 +120,7 @@ export default function DashboardPage() {
               color="#ffb48f"
               data={week.days.map((d) => ({
                 day: d.day,
-                value: Number(((d.sleep_minutes ?? 0) / 60).toFixed(1)),
+                value: d.sleep_minutes === null ? null : Number((d.sleep_minutes / 60).toFixed(1)),
               }))}
             />
             <WeekChart

@@ -4,7 +4,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 
 type Props = {
   title: string;
-  data: { day: string; value: number }[];
+  data: { day: string; value: number | null }[];
   unit: string;
   color?: string;
 };
