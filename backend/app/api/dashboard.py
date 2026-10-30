@@ -4,8 +4,10 @@ from fastapi import APIRouter
 from sqlalchemy import func, select
 
 from app.api.deps import CurrentUser, DbSession
+from app.api.goals import get_or_create_goal
 from app.models import DailyMetric, Habit, HabitCheckin, Meal, SleepLog
 from app.schemas.dashboard import DashboardRead
+from app.schemas.goal import GoalRead
 from app.services.coach import DaySnapshot, build_tips
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -40,12 +42,16 @@ def dashboard(user: CurrentUser, db: DbSession, day: date | None = None) -> Dash
                 HabitCheckin.habit_id.in_(habit_ids), HabitCheckin.day == day
             )
         )
+    goal = get_or_create_goal(db, user.id)
     snapshot = DaySnapshot(
         sleep_minutes=sleep,
         water_ml=metrics.get("water_ml", 0),
         steps=metrics.get("steps", 0),
         habits_done=done,
         habits_total=len(habit_ids),
+        sleep_goal=goal.sleep_minutes,
+        water_goal=goal.water_ml,
+        steps_goal=goal.steps,
     )
     return DashboardRead(
         day=day,
@@ -57,5 +63,6 @@ def dashboard(user: CurrentUser, db: DbSession, day: date | None = None) -> Dash
         calories=calories,
         habits_done=done,
         habits_total=len(habit_ids),
+        goals=GoalRead.model_validate(goal),
         tips=build_tips(snapshot),
     )

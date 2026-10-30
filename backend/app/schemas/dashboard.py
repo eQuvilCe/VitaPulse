@@ -2,6 +2,8 @@ from datetime import date
 
 from pydantic import BaseModel
 
+from app.schemas.goal import GoalRead
+
 
 class DashboardRead(BaseModel):
     day: date
@@ -13,4 +15,5 @@ class DashboardRead(BaseModel):
     calories: int
     habits_done: int
     habits_total: int
+    goals: GoalRead
     tips: list[str]
