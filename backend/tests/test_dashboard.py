@@ -25,3 +25,13 @@ def test_dashboard_aggregates_everything(client, auth_headers):
     assert r["calories"] == 400
     assert (r["habits_done"], r["habits_total"]) == (1, 1)
     assert r["tips"] == ["keep_going"]
+
+
+def test_dashboard_uses_saved_goals(client, auth_headers):
+    client.patch("/api/v1/goals", json={"water_ml": 4000}, headers=auth_headers)
+    client.put(
+        "/api/v1/metrics/water_ml", json={"day": "2026-10-02", "value": 1500}, headers=auth_headers
+    )
+    r = client.get("/api/v1/dashboard?day=2026-10-02", headers=auth_headers).json()
+    assert r["goals"]["water_ml"] == 4000
+    assert "drink_water" in r["tips"]
