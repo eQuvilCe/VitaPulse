@@ -36,7 +36,7 @@ def test_export_csv(client, auth_headers):
     r = client.get("/api/v1/export/daily?fmt=csv", headers=auth_headers)
     assert r.headers["content-type"].startswith("text/csv")
     parsed = list(csv.DictReader(io.StringIO(r.text)))
-    assert parsed[0]["steps"] == "8000.0"
+    assert parsed[0]["steps"] == "8000"
     assert parsed[1]["sleep_minutes"] == ""
 
 

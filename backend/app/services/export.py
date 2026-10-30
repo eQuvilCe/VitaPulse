@@ -20,7 +20,10 @@ DAILY_COLUMNS = [
 
 
 def daily_rows(db: Session, user_id: int, start: date | None, end: date | None) -> list[dict]:
-    """One merged row per day that has any data, oldest first."""
+    """One merged row per day that has any data, oldest first.
+
+    Without a range this reads every row for the user, which is fine at personal scale.
+    """
     rows: dict[date, dict] = {}
 
     def row(day: date) -> dict:
@@ -42,7 +45,9 @@ def daily_rows(db: Session, user_id: int, start: date | None, end: date | None) 
     for metric in db.scalars(
         select(DailyMetric).where(DailyMetric.user_id == user_id, *in_range(DailyMetric.day))
     ):
-        row(metric.day)[metric.kind] = metric.value
+        row(metric.day)[metric.kind] = (
+            int(metric.value) if metric.value.is_integer() else metric.value
+        )
     for meal in db.scalars(select(Meal).where(Meal.user_id == user_id, *in_range(Meal.day))):
         row(meal.day)["calories"] += meal.calories
     return [rows[d] for d in sorted(rows)]
