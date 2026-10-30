@@ -8,6 +8,7 @@ import Logo from "@/components/landing/Logo";
 import StatCard from "@/components/StatCard";
 import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
+import { tipText } from "@/lib/tips";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -68,6 +69,18 @@ export default function DashboardPage() {
               goal={`${data.goals.calories} kcal`}
               progress={data.calories / data.goals.calories}
             />
+          </section>
+        )}
+        {data && (
+          <section className="mt-6 rounded-2xl border border-white/10 bg-plum-2 p-5">
+            <h2 className="text-sm text-mist">Coach</h2>
+            <ul className="mt-3 space-y-2">
+              {data.tips.map((code) => (
+                <li key={code} className="text-glow">
+                  {tipText(code)}
+                </li>
+              ))}
+            </ul>
           </section>
         )}
       </div>
