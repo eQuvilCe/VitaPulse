@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import Logo from "@/components/landing/Logo";
+import QuickAdd from "@/components/QuickAdd";
 import StatCard from "@/components/StatCard";
 import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
+import { addMetric } from "@/lib/metrics";
 import { tipText } from "@/lib/tips";
 
 export default function DashboardPage() {
@@ -79,6 +81,22 @@ export default function DashboardPage() {
               value={`${data.calories} kcal`}
               goal={`${data.goals.calories} kcal`}
               progress={data.calories / data.goals.calories}
+            />
+          </section>
+        )}
+        {data && (
+          <section className="mt-6 grid gap-4 md:grid-cols-2">
+            <QuickAdd
+              title="Log water"
+              unit="ml"
+              presets={[200, 300, 500]}
+              onAdd={(n) => addMetric("water_ml", n).then(reload)}
+            />
+            <QuickAdd
+              title="Log steps"
+              unit="steps"
+              presets={[1000, 2500, 5000]}
+              onAdd={(n) => addMetric("steps", n).then(reload)}
             />
           </section>
         )}
