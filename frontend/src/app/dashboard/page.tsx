@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import Logo from "@/components/landing/Logo";
+import MealForm from "@/components/MealForm";
 import QuickAdd from "@/components/QuickAdd";
 import SleepForm from "@/components/SleepForm";
 import StatCard from "@/components/StatCard";
 import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
+import { addMeal } from "@/lib/meals";
 import { logSleep } from "@/lib/sleep";
 import { addMetric } from "@/lib/metrics";
 import { tipText } from "@/lib/tips";
@@ -94,6 +96,7 @@ export default function DashboardPage() {
               presets={[200, 300, 500]}
               onAdd={(n) => addMetric("water_ml", n).then(reload)}
             />
+            <MealForm onSave={(m) => addMeal(m).then(reload)} />
             <SleepForm onSave={(m, q) => logSleep(m, q).then(reload)} />
             <QuickAdd
               title="Log steps"
