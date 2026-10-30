@@ -18,36 +18,43 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-16 px-5 py-24 sm:px-8 sm:py-32">
-      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.4fr]">
-        <Reveal as="h2" className="font-display text-[clamp(36px,5.4vw,72px)] font-semibold leading-[0.95] tracking-[-0.03em] text-bone">
-          Questions.
-        </Reveal>
-        <div className="border-t border-white/10">
+    <section id="faq" className="relative z-10 bg-cream px-5 pb-36 pt-24 text-ink sm:px-8 sm:pt-32">
+      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.5fr]">
+        <div>
+          <Reveal as="p" className="eyebrow text-coral">FAQ</Reveal>
+          <Reveal as="h2" delay={80} className="display mt-4 text-[clamp(40px,5.6vw,64px)] leading-[1.02]">
+            Questions, <em>kindly answered</em>
+          </Reveal>
+        </div>
+        <div className="space-y-3">
           {FAQS.map(({ q, a }, i) => {
             const isOpen = open === i;
             return (
-              <Reveal key={q} delay={i * 60} className="border-b border-white/10">
+              <Reveal key={q} delay={i * 70}>
+                <div className={`rounded-[24px] border transition-[background-color,border-color,box-shadow] duration-500 ${isOpen ? "border-ink/[0.06] bg-white shadow-soft" : "border-transparent bg-cream-2/70 hover:bg-white/70"}`}>
                 <button
                   type="button"
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
                   aria-controls={`faq-${i}`}
-                  className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                  className="flex w-full items-center justify-between gap-6 rounded-[24px] px-6 py-5 text-left"
                 >
-                  <span className="text-lg font-medium text-bone sm:text-xl">{q}</span>
+                  <span className="text-lg font-semibold">{q}</span>
                   <span
-                    className={`relative h-4 w-4 shrink-0 text-mint transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${isOpen ? "rotate-45 bg-coral text-white" : "bg-white text-coral"}`}
                     aria-hidden="true"
                   >
-                    <span className="absolute left-0 top-1/2 h-px w-4 bg-current" />
-                    <span className="absolute left-1/2 top-0 h-4 w-px bg-current" />
+                    <span className="relative h-3 w-3">
+                      <span className="absolute left-0 top-1/2 h-0.5 w-3 -translate-y-1/2 rounded-full bg-current" />
+                      <span className="absolute left-1/2 top-0 h-3 w-0.5 -translate-x-1/2 rounded-full bg-current" />
+                    </span>
                   </span>
                 </button>
                 <div id={`faq-${i}`} className={`accordion ${isOpen ? "is-open" : ""}`}>
                   <div className="overflow-hidden">
-                    <p className="max-w-xl pb-7 leading-relaxed text-sage">{a}</p>
+                    <p className="max-w-xl px-6 pb-6 leading-relaxed text-ink-soft">{a}</p>
                   </div>
+                </div>
                 </div>
               </Reveal>
             );

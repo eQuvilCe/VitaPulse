@@ -52,7 +52,7 @@ export function StepsArt() {
         className="art-ring"
         transform="rotate(-90 48 48)"
       />
-      <text x="48" y="53" textAnchor="middle" className="fill-bone font-mono text-[13px]">
+      <text x="48" y="53" textAnchor="middle" className="fill-ink text-[14px] font-semibold">
         8 214
       </text>
     </svg>
@@ -80,7 +80,7 @@ export function NutritionArt() {
             className="art-bar"
             style={{ animationDelay: `${i * 0.33}s` }}
           />
-          <text x={23 + i * 26} y="94" textAnchor="middle" className="fill-sage font-mono text-[9px]">
+          <text x={23 + i * 26} y="94" textAnchor="middle" className="fill-ink-soft text-[9px] font-semibold">
             {label}
           </text>
         </g>
@@ -103,7 +103,7 @@ export function HabitsArt() {
             style={{ animationDelay: `${i * 0.25}s` }}
           />
           <circle cx={12 + i * 24} cy="44" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
-          <text x={12 + i * 24} y="72" textAnchor="middle" className="fill-sage font-mono text-[9px]">
+          <text x={12 + i * 24} y="72" textAnchor="middle" className="fill-ink-soft text-[9px] font-semibold">
             {d}
           </text>
         </g>
@@ -115,11 +115,11 @@ export function HabitsArt() {
 export function CoachArt() {
   return (
     <div className="flex h-full w-full items-center" aria-hidden="true">
-      <div className="w-full rounded-2xl rounded-bl-sm border border-mint/25 bg-mint/[0.07] px-3.5 py-3 font-mono text-[11px] leading-relaxed text-bone">
+      <div className="w-full rounded-[20px] rounded-bl-md bg-gradient-to-br from-peach/30 to-coral/20 px-4 py-3 text-[13px] font-medium leading-relaxed text-ink">
         <span className="art-type inline-block max-w-full overflow-hidden whitespace-nowrap align-bottom">
           Walk 10 min after lunch
         </span>
-        <span className="art-caret ml-0.5 inline-block h-3 w-1.5 translate-y-0.5 bg-mint" />
+        <span className="art-caret ml-0.5 inline-block h-3.5 w-0.5 translate-y-0.5 rounded-full bg-coral" />
       </div>
     </div>
   );

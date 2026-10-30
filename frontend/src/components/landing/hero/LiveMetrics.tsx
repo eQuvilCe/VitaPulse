@@ -1,11 +1,12 @@
 "use client";
 
+import { Moon, Wind } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BEAT_MS } from "../rhythm";
 
 const BPM_DRIFT = [61, 62, 62, 61, 60, 59, 60, 61, 63, 62];
 
-// Readouts that tick with the page's 60 BPM heartbeat.
+// A soft glass card with readouts that tick with the page's 60 BPM heartbeat.
 export default function LiveMetrics() {
   const [i, setI] = useState(0);
 
@@ -16,29 +17,34 @@ export default function LiveMetrics() {
   }, []);
 
   return (
-    <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.07] font-mono text-bone backdrop-blur-md">
-      <div className="bg-night/80 px-4 py-3.5 sm:px-5">
-        <dt className="flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-sage">
-          <span className="beat-dot h-1.5 w-1.5 rounded-full bg-coral" aria-hidden="true" />
-          Heart
-        </dt>
-        <dd className="mt-1.5 text-xl tabular-nums sm:text-2xl">
-          {BPM_DRIFT[i]}
-          <span className="ml-1 text-xs text-sage">bpm</span>
-        </dd>
+    <div className="glass-card rounded-[28px] p-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[13px] text-mist">Resting heart rate</p>
+          <p className="mt-1 font-serif text-5xl leading-none text-glow tabular-nums">
+            {BPM_DRIFT[i]}
+            <span className="ml-1.5 font-sans text-sm text-mist">bpm</span>
+          </p>
+        </div>
+        <span className="relative flex h-14 w-14 items-center justify-center" aria-hidden="true">
+          <span className="beat-halo absolute inset-0 rounded-full bg-coral/25" />
+          <span className="beat-dot h-4 w-4 rounded-full bg-gradient-to-br from-peach to-coral" />
+        </span>
       </div>
-      <div className="bg-night/80 px-4 py-3.5 sm:px-5">
-        <dt className="text-[10px] uppercase tracking-[0.14em] text-sage">Sleep</dt>
-        <dd className="mt-1.5 text-xl tabular-nums sm:text-2xl">
-          7<span className="text-xs text-sage">h</span> 42<span className="text-xs text-sage">m</span>
-        </dd>
-      </div>
-      <div className="bg-night/80 px-4 py-3.5 sm:px-5">
-        <dt className="text-[10px] uppercase tracking-[0.14em] text-sage">HRV</dt>
-        <dd className="mt-1.5 text-xl tabular-nums sm:text-2xl">
-          68<span className="ml-1 text-xs text-sage">ms</span>
-        </dd>
-      </div>
-    </dl>
+      <dl className="mt-5 grid grid-cols-2 gap-2.5">
+        <div className="rounded-2xl bg-white/[0.06] px-4 py-3">
+          <dt className="flex items-center gap-1.5 text-[12px] text-mist">
+            <Moon className="h-3.5 w-3.5 text-peach" aria-hidden="true" /> Sleep
+          </dt>
+          <dd className="mt-1 text-lg font-semibold text-glow tabular-nums">7h 42m</dd>
+        </div>
+        <div className="rounded-2xl bg-white/[0.06] px-4 py-3">
+          <dt className="flex items-center gap-1.5 text-[12px] text-mist">
+            <Wind className="h-3.5 w-3.5 text-mint" aria-hidden="true" /> Calm
+          </dt>
+          <dd className="mt-1 text-lg font-semibold text-glow tabular-nums">HRV 68</dd>
+        </div>
+      </dl>
+    </div>
   );
 }

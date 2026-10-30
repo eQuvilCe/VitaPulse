@@ -1,27 +1,24 @@
 import Link from "next/link";
 import Reveal from "./Reveal";
 
-// Rings expand from the centre once per heartbeat, echoing the intro ripple.
+// Warm rings breathe out from the centre once per heartbeat, echoing the intro.
 export default function FinalCta() {
   return (
-    <section className="relative isolate overflow-hidden px-5 py-32 text-center sm:px-8 sm:py-44">
+    <section className="sheet relative isolate z-10 -mt-12 overflow-hidden bg-plum px-5 py-32 text-center text-glow sm:px-8 sm:py-44">
       <div className="absolute inset-0 -z-10 flex items-center justify-center" aria-hidden="true">
         {[0, 1, 2].map((i) => (
-          <span key={i} className="cta-ring absolute h-[44rem] w-[44rem] rounded-full border border-mint/40 shadow-[0_0_30px_rgba(111,242,194,0.15)]" style={{ animationDelay: `${i}s` }} />
+          <span key={i} className="cta-ring absolute h-[42rem] w-[42rem] rounded-full border border-peach/40" style={{ animationDelay: `${i}s` }} />
         ))}
-        <span className="h-64 w-64 rounded-full bg-mint/10 blur-3xl" />
+        <span className="h-80 w-80 rounded-full bg-coral/25 blur-[90px]" />
       </div>
-      <Reveal as="h2" className="mx-auto max-w-4xl font-display text-[clamp(40px,7vw,96px)] font-semibold leading-[0.92] tracking-[-0.035em] text-bone [text-wrap:balance]">
-        Start listening to your body.
+      <Reveal as="h2" className="display mx-auto max-w-4xl text-[clamp(44px,7vw,96px)] leading-[1] [text-wrap:balance]">
+        Start listening to <em className="text-gradient-warm">your body</em>
       </Reveal>
-      <Reveal as="p" delay={120} className="mx-auto mt-6 max-w-md text-lg text-sage">
-        One minute to sign up. Free while in early access.
+      <Reveal as="p" delay={120} className="mx-auto mt-6 max-w-md text-lg text-mist">
+        One minute to sign up. Free while we are in early access.
       </Reveal>
       <Reveal delay={220} className="mt-10">
-        <Link
-          href="/register"
-          className="inline-block rounded-full bg-mint px-8 py-4 font-semibold text-night shadow-[0_0_50px_-6px_rgba(111,242,194,0.65)] transition-[filter,transform] hover:-translate-y-0.5 hover:brightness-110"
-        >
+        <Link href="/register" className="btn-warm inline-block rounded-full px-9 py-4 text-base font-semibold">
           Start free
         </Link>
       </Reveal>

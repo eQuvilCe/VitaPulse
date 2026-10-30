@@ -4,49 +4,49 @@ import LiveMetrics from "./LiveMetrics";
 
 export default function Hero() {
   return (
-    <section className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden pb-14 pt-28 sm:pb-20">
+    <section id="top" className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden bg-plum pb-16 pt-32 sm:pb-24">
       <div className="hero-glow absolute inset-0 -z-20" aria-hidden="true" />
       <div className="absolute inset-0 -z-10" aria-hidden="true">
         <HeroField />
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-48 bg-gradient-to-t from-night to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-full bg-gradient-to-r from-night/75 via-night/25 to-transparent lg:w-2/3" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-full bg-gradient-to-r from-plum/80 via-plum/30 to-transparent lg:w-2/3" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-plum to-transparent" />
 
-      <div className="mx-auto grid w-full max-w-7xl items-end gap-10 px-5 sm:px-8 lg:grid-cols-[1fr_auto]">
+      <div className="mx-auto grid w-full max-w-6xl items-end gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_auto]">
         <div>
-          <p className="hero-in flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-mint" style={{ "--d": "0ms" } as React.CSSProperties}>
-            <span className="beat-dot h-1.5 w-1.5 rounded-full bg-coral" aria-hidden="true" />
-            AI health OS
+          <p
+            className="hero-in inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-[13px] text-mist backdrop-blur"
+            style={{ "--d": "0ms" } as React.CSSProperties}
+          >
+            <span className="beat-dot h-2 w-2 rounded-full bg-coral" aria-hidden="true" />
+            Your gentle AI health companion
           </p>
           <h1
-            className="hero-in mt-5 max-w-4xl font-display text-[clamp(44px,8.2vw,112px)] font-semibold leading-[0.92] tracking-[-0.035em] text-bone [text-wrap:balance]"
-            style={{ "--d": "80ms" } as React.CSSProperties}
+            className="hero-in display mt-6 max-w-4xl text-[clamp(48px,8vw,108px)] leading-[0.98] text-glow [text-wrap:balance]"
+            style={{ "--d": "90ms" } as React.CSSProperties}
           >
-            Your body has a rhythm. Learn&nbsp;it.
+            Your body has a rhythm. <em className="text-gradient-warm">Learn&nbsp;it.</em>
           </h1>
           <p
-            className="hero-in mt-6 max-w-xl text-lg leading-relaxed text-sage [text-wrap:pretty]"
-            style={{ "--d": "160ms" } as React.CSSProperties}
+            className="hero-in mt-7 max-w-xl text-lg leading-relaxed text-mist [text-wrap:pretty] sm:text-xl"
+            style={{ "--d": "180ms" } as React.CSSProperties}
           >
-            Sleep, water, steps, food and habits in one daily pulse — and an AI coach that reads the
-            pattern and tells you what to change today.
+            Sleep, water, steps, food and habits in one calm daily view — with a coach that notices
+            the patterns and suggests one kind, small change for today.
           </p>
-          <div className="hero-in mt-9 flex flex-wrap items-center gap-3" style={{ "--d": "240ms" } as React.CSSProperties}>
-            <Link
-              href="/register"
-              className="rounded-full bg-mint px-7 py-3.5 font-semibold text-night shadow-[0_0_40px_-6px_rgba(111,242,194,0.6)] transition-[filter,transform] hover:-translate-y-0.5 hover:brightness-110"
-            >
+          <div className="hero-in mt-10 flex flex-wrap items-center gap-3" style={{ "--d": "270ms" } as React.CSSProperties}>
+            <Link href="/register" className="btn-warm rounded-full px-8 py-4 text-base font-semibold">
               Start free
             </Link>
-            <a
-              href="#how"
-              className="rounded-full border border-white/15 px-7 py-3.5 font-medium text-bone transition-colors hover:border-white/30 hover:bg-white/5"
-            >
+            <a href="#how" className="btn-ghost group flex items-center gap-2 rounded-full px-7 py-4 text-base font-medium text-glow">
               See how it works
+              <span className="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">
+                ↓
+              </span>
             </a>
           </div>
         </div>
-        <div className="hero-in w-full lg:w-[400px]" style={{ "--d": "320ms" } as React.CSSProperties}>
+        <div className="hero-in w-full lg:w-[380px]" style={{ "--d": "360ms" } as React.CSSProperties}>
           <LiveMetrics />
         </div>
       </div>
