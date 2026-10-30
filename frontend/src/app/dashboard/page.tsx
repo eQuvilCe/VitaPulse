@@ -5,17 +5,24 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import Logo from "@/components/landing/Logo";
+import StatCard from "@/components/StatCard";
 import { fetchMe, logout, type User } from "@/lib/auth";
+import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [data, setData] = useState<Dashboard | null>(null);
 
   useEffect(() => {
     fetchMe()
       .then(setUser)
       .catch(() => router.replace("/login"));
   }, [router]);
+
+  useEffect(() => {
+    if (user) fetchDashboard().then(setData).catch(() => setData(null));
+  }, [user]);
 
   if (!user) return <main className="min-h-screen bg-plum p-8 text-mist">Loading...</main>;
 
@@ -35,6 +42,34 @@ export default function DashboardPage() {
           </button>
         </header>
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Hi, {user.name || user.email}</h1>
+        {data && (
+          <section className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+            <StatCard
+              label="Sleep"
+              value={data.sleep_minutes === null ? "-" : `${(data.sleep_minutes / 60).toFixed(1)} h`}
+              goal={`${data.goals.sleep_minutes / 60} h`}
+              progress={(data.sleep_minutes ?? 0) / data.goals.sleep_minutes}
+            />
+            <StatCard
+              label="Water"
+              value={`${data.water_ml} ml`}
+              goal={`${data.goals.water_ml} ml`}
+              progress={data.water_ml / data.goals.water_ml}
+            />
+            <StatCard
+              label="Steps"
+              value={data.steps.toLocaleString("en")}
+              goal={data.goals.steps.toLocaleString("en")}
+              progress={data.steps / data.goals.steps}
+            />
+            <StatCard
+              label="Calories"
+              value={`${data.calories} kcal`}
+              goal={`${data.goals.calories} kcal`}
+              progress={data.calories / data.goals.calories}
+            />
+          </section>
+        )}
       </div>
     </main>
   );
