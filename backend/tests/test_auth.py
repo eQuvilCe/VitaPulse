@@ -35,3 +35,24 @@ def test_bad_password(client):
 
 def test_me_requires_token(client):
     assert client.get("/api/v1/auth/me").status_code == 401
+
+
+def test_update_profile(client, auth_headers):
+    body = {"name": "Aziza", "language": "uz"}
+    r = client.patch("/api/v1/auth/me", json=body, headers=auth_headers)
+    assert r.status_code == 200
+    assert r.json()["name"] == "Aziza"
+    assert r.json()["language"] == "uz"
+
+    r = client.patch("/api/v1/auth/me", json={"name": "Dil"}, headers=auth_headers)
+    assert r.json()["language"] == "uz"
+    assert client.get("/api/v1/auth/me", headers=auth_headers).json()["name"] == "Dil"
+
+
+def test_update_profile_rejects_unknown_language(client, auth_headers):
+    r = client.patch("/api/v1/auth/me", json={"language": "de"}, headers=auth_headers)
+    assert r.status_code == 422
+
+
+def test_update_profile_requires_auth(client):
+    assert client.patch("/api/v1/auth/me", json={"name": "x"}).status_code == 401
