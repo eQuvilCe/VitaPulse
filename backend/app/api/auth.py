@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import User
-from app.schemas.user import Token, UserCreate, UserRead
+from app.schemas.user import Token, UserCreate, UserRead, UserUpdate
 from app.security import create_access_token, hash_password, verify_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -38,4 +38,12 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()], db: DbSession) 
 
 @router.get("/me", response_model=UserRead)
 def me(user: CurrentUser) -> User:
+    return user
+
+
+@router.patch("/me", response_model=UserRead)
+def update_me(data: UserUpdate, user: CurrentUser, db: DbSession) -> User:
+    for key, value in data.model_dump(exclude_unset=True, exclude_none=True).items():
+        setattr(user, key, value)
+    db.commit()
     return user
