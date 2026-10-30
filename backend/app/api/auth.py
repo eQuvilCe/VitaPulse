@@ -53,5 +53,7 @@ def update_me(data: UserUpdate, user: CurrentUser, db: DbSession) -> User:
 def change_password(data: PasswordChange, user: CurrentUser, db: DbSession) -> None:
     if not verify_password(data.current_password, user.password_hash):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Current password is incorrect")
+    if data.new_password == data.current_password:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "New password must be different")
     user.password_hash = hash_password(data.new_password)
     db.commit()
