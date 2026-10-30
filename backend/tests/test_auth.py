@@ -56,3 +56,26 @@ def test_update_profile_rejects_unknown_language(client, auth_headers):
 
 def test_update_profile_requires_auth(client):
     assert client.patch("/api/v1/auth/me", json={"name": "x"}).status_code == 401
+
+
+def test_change_password(client, auth_headers):
+    r = client.post(
+        "/api/v1/auth/password",
+        json={"current_password": "password123", "new_password": "another-pass1"},
+        headers=auth_headers,
+    )
+    assert r.status_code == 204
+    login = "/api/v1/auth/login"
+    old = client.post(login, data={"username": "a@b.co", "password": "password123"})
+    new = client.post(login, data={"username": "a@b.co", "password": "another-pass1"})
+    assert old.status_code == 401
+    assert new.status_code == 200
+
+
+def test_change_password_needs_current(client, auth_headers):
+    r = client.post(
+        "/api/v1/auth/password",
+        json={"current_password": "wrong-pass", "new_password": "another-pass1"},
+        headers=auth_headers,
+    )
+    assert r.status_code == 400
