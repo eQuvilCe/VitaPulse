@@ -22,7 +22,7 @@ export default function FAQ() {
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.5fr]">
         <div>
           <Reveal as="p" className="eyebrow text-coral">FAQ</Reveal>
-          <Reveal as="h2" delay={80} className="display mt-4 text-[clamp(40px,5.6vw,64px)] leading-[1.02]">
+          <Reveal as="h2" delay={140} className="display mt-4 text-[clamp(40px,5.6vw,64px)] leading-[1.02]">
             Questions, <em>kindly answered</em>
           </Reveal>
         </div>
@@ -30,7 +30,7 @@ export default function FAQ() {
           {FAQS.map(({ q, a }, i) => {
             const isOpen = open === i;
             return (
-              <Reveal key={q} delay={i * 70}>
+              <Reveal key={q} delay={i * 130}>
                 <div className={`rounded-[24px] border transition-[background-color,border-color,box-shadow] duration-500 ${isOpen ? "border-ink/[0.06] bg-white shadow-soft" : "border-transparent bg-cream-2/70 hover:bg-white/70"}`}>
                 <button
                   type="button"
@@ -41,7 +41,7 @@ export default function FAQ() {
                 >
                   <span className="text-lg font-semibold">{q}</span>
                   <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${isOpen ? "rotate-45 bg-coral text-white" : "bg-white text-coral"}`}
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "rotate-45 bg-coral text-white" : "bg-white text-coral"}`}
                     aria-hidden="true"
                   >
                     <span className="relative h-3 w-3">

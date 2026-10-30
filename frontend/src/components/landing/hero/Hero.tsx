@@ -23,30 +23,30 @@ export default function Hero() {
           </p>
           <h1
             className="hero-in display mt-6 max-w-4xl text-[clamp(48px,8vw,108px)] leading-[0.98] text-glow [text-wrap:balance]"
-            style={{ "--d": "90ms" } as React.CSSProperties}
+            style={{ "--d": "150ms" } as React.CSSProperties}
           >
             Your body has a rhythm. <em className="text-gradient-warm">Learn&nbsp;it.</em>
           </h1>
           <p
             className="hero-in mt-7 max-w-xl text-lg leading-relaxed text-mist [text-wrap:pretty] sm:text-xl"
-            style={{ "--d": "180ms" } as React.CSSProperties}
+            style={{ "--d": "300ms" } as React.CSSProperties}
           >
             Sleep, water, steps, food and habits in one calm daily view — with a coach that notices
             the patterns and suggests one kind, small change for today.
           </p>
-          <div className="hero-in mt-10 flex flex-wrap items-center gap-3" style={{ "--d": "270ms" } as React.CSSProperties}>
+          <div className="hero-in mt-10 flex flex-wrap items-center gap-3" style={{ "--d": "450ms" } as React.CSSProperties}>
             <Link href="/register" className="btn-warm rounded-full px-8 py-4 text-base font-semibold">
               Start free
             </Link>
             <a href="#how" className="btn-ghost group flex items-center gap-2 rounded-full px-7 py-4 text-base font-medium text-glow">
               See how it works
-              <span className="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">
+              <span className="transition-transform duration-500 group-hover:translate-y-0.5" aria-hidden="true">
                 ↓
               </span>
             </a>
           </div>
         </div>
-        <div className="hero-in w-full lg:w-[380px]" style={{ "--d": "360ms" } as React.CSSProperties}>
+        <div className="hero-in w-full lg:w-[380px]" style={{ "--d": "600ms" } as React.CSSProperties}>
           <LiveMetrics />
         </div>
       </div>

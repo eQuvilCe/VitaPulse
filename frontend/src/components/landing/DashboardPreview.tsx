@@ -44,15 +44,15 @@ export default function DashboardPreview() {
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <Reveal as="p" className="eyebrow text-coral">Your dashboard</Reveal>
-          <Reveal as="h2" delay={80} className="display mt-4 text-[clamp(40px,5.6vw,72px)] leading-[1.02] [text-wrap:balance]">
+          <Reveal as="h2" delay={140} className="display mt-4 text-[clamp(40px,5.6vw,72px)] leading-[1.02] [text-wrap:balance]">
             Your day, <em>at a glance</em>
           </Reveal>
-          <Reveal as="p" delay={160} className="mt-5 text-lg leading-relaxed text-ink-soft">
+          <Reveal as="p" delay={280} className="mt-5 text-lg leading-relaxed text-ink-soft">
             One calm screen every morning. Nothing to configure.
           </Reveal>
         </div>
 
-        <Reveal delay={200} className="mt-16">
+        <Reveal delay={320} className="mt-16">
           <div className="dash-window relative overflow-hidden rounded-[36px] bg-plum p-3 text-glow sm:p-4">
             <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-coral/25 blur-3xl" aria-hidden="true" />
             <div className="pointer-events-none absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-mint/15 blur-3xl" aria-hidden="true" />

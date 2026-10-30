@@ -78,7 +78,7 @@ export function NutritionArt() {
             fill="currentColor"
             opacity={1 - i * 0.25}
             className="art-bar"
-            style={{ animationDelay: `${i * 0.33}s` }}
+            style={{ animationDelay: `${i * 0.6}s` }}
           />
           <text x={23 + i * 26} y="94" textAnchor="middle" className="fill-ink-soft text-[9px] font-semibold">
             {label}
@@ -100,7 +100,7 @@ export function HabitsArt() {
             r="8"
             fill="currentColor"
             className="art-day"
-            style={{ animationDelay: `${i * 0.25}s` }}
+            style={{ animationDelay: `${i * 0.45}s` }}
           />
           <circle cx={12 + i * 24} cy="44" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
           <text x={12 + i * 24} y="72" textAnchor="middle" className="fill-ink-soft text-[9px] font-semibold">

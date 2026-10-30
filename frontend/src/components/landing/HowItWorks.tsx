@@ -74,7 +74,7 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <Reveal as="p" className="eyebrow text-peach">How it works</Reveal>
-          <Reveal as="h2" delay={80} className="display mt-4 text-[clamp(40px,5.6vw,72px)] leading-[1.02] [text-wrap:balance]">
+          <Reveal as="h2" delay={140} className="display mt-4 text-[clamp(40px,5.6vw,72px)] leading-[1.02] [text-wrap:balance]">
             Three beats to <em className="text-gradient-warm">a better day</em>
           </Reveal>
         </div>
@@ -109,7 +109,7 @@ export default function HowItWorks() {
           </svg>
           <ol className="mt-8 grid grid-cols-3 gap-10">
             {STEPS.map(({ title, text }, i) => (
-              <li key={title} className={`text-center transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${reached(i) ? "opacity-100" : "translate-y-2 opacity-40"}`}>
+              <li key={title} className={`text-center transition-[opacity,transform] duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${reached(i) ? "opacity-100" : "translate-y-2 opacity-40"}`}>
                 <span className="font-serif text-lg italic text-peach">Step {i + 1}</span>
                 <h3 className="mt-2 font-serif text-[28px] leading-tight">{title}</h3>
                 <p className="mx-auto mt-3 max-w-xs leading-relaxed text-mist">{text}</p>
@@ -129,7 +129,7 @@ export default function HowItWorks() {
           {STEPS.map(({ title, text }, i) => (
             <li key={title} className="relative">
               <span
-                className={`absolute -left-10 top-1 h-[15px] w-[15px] rounded-full border-2 transition-colors duration-500 ${reached(i) ? "border-peach bg-peach shadow-[0_0_12px_rgba(255,180,143,0.8)]" : "border-white/20 bg-plum"}`}
+                className={`absolute -left-10 top-1 h-[15px] w-[15px] rounded-full border-2 transition-colors duration-1000 ${reached(i) ? "border-peach bg-peach shadow-[0_0_12px_rgba(255,180,143,0.8)]" : "border-white/20 bg-plum"}`}
                 aria-hidden="true"
               />
               <span className="font-serif text-lg italic text-peach">Step {i + 1}</span>

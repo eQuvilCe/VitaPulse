@@ -58,7 +58,7 @@ export default function Header() {
   return (
     <header className="hero-in fixed inset-x-0 top-0 z-40 flex justify-center px-3 pt-3 sm:px-5">
       <div
-        className={`nav-shell relative w-full rounded-[22px] border border-white/10 text-glow shadow-[0_10px_40px_-12px_rgba(10,6,14,0.55)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width,padding,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`nav-shell relative w-full rounded-[22px] border border-white/10 text-glow shadow-[0_10px_40px_-12px_rgba(10,6,14,0.55)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width,padding,background-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           open ? "max-w-4xl bg-plum/[0.97] py-1.5" : scrolled ? "max-w-4xl bg-plum/85 py-1.5" : "max-w-6xl bg-plum/50 py-2.5"
         }`}
       >
@@ -69,7 +69,7 @@ export default function Header() {
 
           <nav className="relative hidden items-center md:flex" onMouseLeave={() => setHovered(null)}>
             <span
-              className="absolute inset-y-0 rounded-full bg-white/10 transition-[left,width,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              className="absolute inset-y-0 rounded-full bg-white/10 transition-[left,width,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{ left: pill?.left ?? 0, width: pill?.width ?? 0, opacity: pill ? 1 : 0 }}
               aria-hidden="true"
             />
@@ -82,7 +82,7 @@ export default function Header() {
                 href={`#${id}`}
                 onMouseEnter={() => setHovered(id)}
                 aria-current={active === id ? "true" : undefined}
-                className={`relative rounded-full px-4 py-2 text-sm transition-colors duration-300 ${
+                className={`relative rounded-full px-4 py-2 text-sm transition-colors duration-500 ${
                   active === id || hovered === id ? "text-glow" : "text-mist"
                 }`}
               >
@@ -92,7 +92,7 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <Link href="/login" className="hidden rounded-full px-4 py-2 text-sm text-mist transition-colors hover:text-glow sm:block">
+            <Link href="/login" className="hidden rounded-full px-4 py-2 text-sm text-mist transition-colors duration-500 hover:text-glow sm:block">
               Log in
             </Link>
             <Link href="/register" className="btn-warm rounded-full px-5 py-2.5 text-sm font-semibold">
@@ -124,7 +124,7 @@ export default function Header() {
                     href={href}
                     onClick={() => setOpen(false)}
                     className="menu-item rounded-2xl px-4 py-3 font-serif text-2xl text-glow transition-colors hover:bg-white/5"
-                    style={{ transitionDelay: open ? `${80 + i * 45}ms` : "0ms" }}
+                    style={{ transitionDelay: open ? `${120 + i * 70}ms` : "0ms" }}
                   >
                     {label}
                   </a>

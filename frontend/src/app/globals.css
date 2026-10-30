@@ -4,14 +4,15 @@
 
 :root {
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Everything on the landing breathes at 60 BPM. */
-  --beat: 1s;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* The landing breathes at a calm resting 40 BPM. */
+  --beat: 1.5s;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 88px;
+  /* Navbar height: anchors (native or Lenis) land flush beneath it. */
+  scroll-padding-top: 72px;
 }
 
 /* Lenis drives the scroll; native smooth scrolling would fight it. */
@@ -106,8 +107,8 @@ html.menu-open {
   background: linear-gradient(120deg, #ffc9a8, #ffb48f 40%, #f47b63);
   box-shadow: 0 8px 28px -10px rgba(244, 123, 99, 0.65);
   transition:
-    transform 0.45s var(--ease-out),
-    box-shadow 0.45s var(--ease-out);
+    transform 0.55s var(--ease-out),
+    box-shadow 0.55s var(--ease-out);
 }
 
 .btn-warm::after {
@@ -116,7 +117,7 @@ html.menu-open {
   inset: 0;
   transform: translateX(-120%) skewX(-18deg);
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
-  transition: transform 0.8s var(--ease-out);
+  transition: transform 1.1s var(--ease-out);
 }
 
 .btn-warm:hover {
@@ -131,8 +132,8 @@ html.menu-open {
 .btn-ghost {
   border: 1px solid rgba(255, 255, 255, 0.16);
   transition:
-    background-color 0.4s var(--ease-out),
-    border-color 0.4s var(--ease-out);
+    background-color 0.5s var(--ease-out),
+    border-color 0.5s var(--ease-out);
 }
 
 .btn-ghost:hover {
@@ -142,13 +143,13 @@ html.menu-open {
 
 .lift-card {
   transition:
-    transform 0.7s var(--ease-out),
-    box-shadow 0.7s var(--ease-out),
-    background-color 0.7s var(--ease-out);
+    transform 0.6s var(--ease-out),
+    box-shadow 0.6s var(--ease-out),
+    background-color 0.6s var(--ease-out);
 }
 
 .lift-card:hover {
-  transform: translateY(-6px) rotate(-0.4deg);
+  transform: translateY(-4px) rotate(-0.3deg);
   background: #fff;
   box-shadow:
     0 2px 4px rgba(42, 33, 48, 0.05),
@@ -185,8 +186,8 @@ html.menu-open {
   border-radius: 2px;
   background: currentColor;
   transition:
-    transform 0.5s var(--ease-out),
-    top 0.5s var(--ease-out);
+    transform 0.6s var(--ease-out),
+    top 0.6s var(--ease-out);
 }
 
 .burger span:first-child {
@@ -210,7 +211,7 @@ html.menu-open {
 .menu-sheet {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.55s var(--ease-out);
+  transition: grid-template-rows 0.75s var(--ease-out);
 }
 
 .menu-sheet.is-open {
@@ -221,9 +222,9 @@ html.menu-open {
   opacity: 0;
   transform: translateY(-8px);
   transition:
-    opacity 0.45s var(--ease-out),
-    transform 0.45s var(--ease-out),
-    background-color 0.3s;
+    opacity 0.6s var(--ease-out),
+    transform 0.6s var(--ease-out),
+    background-color 0.4s;
 }
 
 .menu-sheet.is-open .menu-item {
@@ -245,7 +246,7 @@ html.menu-open {
   z-index: 100;
   background: #17121e;
   /* Failsafe: fade out on its own even if JavaScript never hydrates. */
-  animation: intro-failsafe 0.8s ease 7s forwards;
+  animation: intro-failsafe 1s ease 10s forwards;
 }
 
 /* The canvas fades in only after the scene has warmed up. */
@@ -253,7 +254,7 @@ html.menu-open {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.7s var(--ease-out);
+  transition: opacity 1.1s var(--ease-io);
 }
 
 .intro-canvas.is-on {
@@ -266,7 +267,7 @@ html.menu-open {
   -webkit-mask-image: radial-gradient(circle at var(--rx) var(--ry), transparent var(--r), #000 calc(var(--r) + 80px));
   mask-image: radial-gradient(circle at var(--rx) var(--ry), transparent var(--r), #000 calc(var(--r) + 80px));
   --r: 160vmax;
-  transition: --r 1.25s cubic-bezier(0.45, 0, 0.25, 1);
+  transition: --r 1.45s cubic-bezier(0.37, 0, 0.2, 1);
 }
 
 .intro-ring,
@@ -296,11 +297,11 @@ html.menu-open {
 }
 
 .intro-ripple .intro-ring {
-  animation: ripple-ring 1.25s cubic-bezier(0.45, 0, 0.25, 1) forwards;
+  animation: ripple-ring 1.45s cubic-bezier(0.37, 0, 0.2, 1) forwards;
 }
 
 .intro-ripple .intro-flash {
-  animation: ripple-flash 0.9s var(--ease-out) forwards;
+  animation: ripple-flash 1.3s var(--ease-out) forwards;
 }
 
 @keyframes ripple-ring {
@@ -352,14 +353,14 @@ html.intro-pending:not(.intro-done) .hero-in {
 }
 
 html.intro-done:not(.intro-skip) .hero-in {
-  animation: rise 1.4s var(--ease-out) both;
-  animation-delay: calc(0.3s + var(--d, 0ms));
+  animation: rise 1.8s var(--ease-out) both;
+  animation-delay: calc(0.4s + var(--d, 0ms));
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(22px);
+    transform: translateY(16px);
   }
 }
 
@@ -376,14 +377,14 @@ html.intro-done:not(.intro-skip) .hero-in {
   100% {
     transform: scale(1);
   }
-  12% {
-    transform: scale(1.35);
+  14% {
+    transform: scale(1.22);
   }
-  26% {
+  30% {
     transform: scale(1.02);
   }
-  36% {
-    transform: scale(1.18);
+  42% {
+    transform: scale(1.1);
   }
 }
 
@@ -401,7 +402,7 @@ html.intro-done:not(.intro-skip) .hero-in {
 /* ---------- Feature art ---------- */
 
 .art-slide {
-  animation: art-slide 4s linear infinite;
+  animation: art-slide 7.5s linear infinite;
 }
 
 @keyframes art-slide {
@@ -411,20 +412,20 @@ html.intro-done:not(.intro-skip) .hero-in {
 }
 
 .art-fill {
-  animation: art-fill 4s var(--ease-io) infinite alternate;
+  animation: art-fill 7s var(--ease-io) infinite alternate;
 }
 
 @keyframes art-fill {
   from {
-    transform: translateY(26px);
+    transform: translateY(20px);
   }
   to {
-    transform: translateY(-14px);
+    transform: translateY(-8px);
   }
 }
 
 .art-surface {
-  animation: art-surface 2s linear infinite;
+  animation: art-surface 3.6s linear infinite;
 }
 
 @keyframes art-surface {
@@ -435,7 +436,7 @@ html.intro-done:not(.intro-skip) .hero-in {
 
 .art-ring {
   stroke-dasharray: 1;
-  animation: art-ring 4s var(--ease-io) infinite;
+  animation: art-ring 7s var(--ease-io) infinite;
 }
 
 @keyframes art-ring {
@@ -451,18 +452,18 @@ html.intro-done:not(.intro-skip) .hero-in {
 .art-bar {
   transform-box: fill-box;
   transform-origin: bottom;
-  animation: art-bar 2s var(--ease-io) infinite alternate;
+  animation: art-bar 3.6s var(--ease-io) infinite alternate;
 }
 
 @keyframes art-bar {
   from {
-    transform: scaleY(0.55);
+    transform: scaleY(0.7);
   }
 }
 
 .art-day {
   opacity: 0.1;
-  animation: art-day 4s ease-out infinite;
+  animation: art-day 7s ease-in-out infinite;
 }
 
 @keyframes art-day {
@@ -477,7 +478,7 @@ html.intro-done:not(.intro-skip) .hero-in {
 
 .art-type {
   max-width: 0;
-  animation: art-type 4.5s steps(23, end) infinite;
+  animation: art-type 7.5s steps(23, end) infinite;
 }
 
 @keyframes art-type {
@@ -509,7 +510,7 @@ html.intro-done:not(.intro-skip) .hero-in {
 .dash-trace {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: dash-draw 2.4s var(--ease-io) 0.4s forwards;
+  animation: dash-draw 3.4s var(--ease-io) 0.5s forwards;
 }
 
 @keyframes dash-draw {
@@ -520,7 +521,7 @@ html.intro-done:not(.intro-skip) .hero-in {
 
 .cta-ring {
   opacity: 0;
-  animation: cta-ring 3s var(--ease-out) infinite;
+  animation: cta-ring 5s var(--ease-out) infinite;
 }
 
 @keyframes cta-ring {
@@ -538,10 +539,10 @@ html.intro-done:not(.intro-skip) .hero-in {
 
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(14px);
   transition:
     opacity 1.2s var(--ease-out),
-    transform 1.4s var(--ease-out);
+    transform 1.3s var(--ease-out);
 }
 
 .reveal.is-visible {
@@ -552,7 +553,7 @@ html.intro-done:not(.intro-skip) .hero-in {
 .accordion {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.55s var(--ease-out);
+  transition: grid-template-rows 0.7s var(--ease-out);
 }
 
 .accordion.is-open {

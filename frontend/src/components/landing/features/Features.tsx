@@ -27,17 +27,17 @@ export default function Features() {
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <Reveal as="p" className="eyebrow text-coral">Everything in one place</Reveal>
-          <Reveal as="h2" delay={80} className="display mt-4 text-[clamp(40px,5.6vw,72px)] leading-[1.02] [text-wrap:balance]">
+          <Reveal as="h2" delay={140} className="display mt-4 text-[clamp(40px,5.6vw,72px)] leading-[1.02] [text-wrap:balance]">
             Six signals, <em>one gentle pulse</em>
           </Reveal>
-          <Reveal as="p" delay={160} className="mt-5 text-lg leading-relaxed text-ink-soft">
+          <Reveal as="p" delay={280} className="mt-5 text-lg leading-relaxed text-ink-soft">
             Everything your body tells you each day, read together instead of in six separate apps.
           </Reveal>
         </div>
 
         <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map(({ title, stat, text, Icon, Art, tone, wide }, i) => (
-            <Reveal key={title} delay={(i % 3) * 110}>
+            <Reveal key={title} delay={(i % 3) * 140}>
               <article className="lift-card group flex h-full flex-col rounded-[28px] border border-ink/[0.06] bg-white/75 p-7 shadow-soft">
                 <div className="flex items-center justify-between">
                   <span className={`flex h-10 w-10 items-center justify-center rounded-full ${tone}`}>
@@ -45,7 +45,7 @@ export default function Features() {
                   </span>
                   <span className="rounded-full bg-cream-2 px-3 py-1 text-xs font-semibold text-ink-soft tabular-nums">{stat}</span>
                 </div>
-                <div className={`mt-8 flex h-24 items-center ${tone.split(" ")[0]} transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]`}>
+                <div className={`mt-8 flex h-24 items-center ${tone.split(" ")[0]} transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]`}>
                   <div className={`h-24 ${wide ? "w-full max-w-[240px]" : "w-24"}`}>
                     <Art />
                   </div>
