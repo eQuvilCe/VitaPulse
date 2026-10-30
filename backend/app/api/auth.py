@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import User
-from app.schemas.user import Token, UserCreate, UserRead, UserUpdate
+from app.schemas.user import PasswordChange, Token, UserCreate, UserRead, UserUpdate
 from app.security import create_access_token, hash_password, verify_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -47,3 +47,11 @@ def update_me(data: UserUpdate, user: CurrentUser, db: DbSession) -> User:
         setattr(user, key, value)
     db.commit()
     return user
+
+
+@router.post("/password", status_code=status.HTTP_204_NO_CONTENT)
+def change_password(data: PasswordChange, user: CurrentUser, db: DbSession) -> None:
+    if not verify_password(data.current_password, user.password_hash):
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "Current password is incorrect")
+    user.password_hash = hash_password(data.new_password)
+    db.commit()
