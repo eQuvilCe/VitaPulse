@@ -106,9 +106,7 @@ def body_stats(user: CurrentUser, db: DbSession) -> BodyStats:
         .order_by(DailyMetric.day.desc())
         .limit(1)
     )
-    result = BodyStats(
-        weight_kg=weight, bmi=None, bmi_category=None, bmr=None, daily_calories=None
-    )
+    result = BodyStats(weight_kg=weight, bmi=None, bmi_category=None, bmr=None, daily_calories=None)
     if weight is None or user.height_cm is None:
         return result
     result.bmi = body.bmi(weight, user.height_cm)
