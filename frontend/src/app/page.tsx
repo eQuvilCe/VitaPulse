@@ -1,11 +1,23 @@
-import { Activity } from "lucide-react";
+import FAQ from "@/components/landing/FAQ";
+import Features from "@/components/landing/Features";
+import Footer from "@/components/landing/Footer";
+import Header from "@/components/landing/Header";
+import Hero from "@/components/landing/Hero";
+import HowItWorks from "@/components/landing/HowItWorks";
+import IntroLoader from "@/components/landing/IntroLoader";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <Activity className="h-10 w-10 text-accent" />
-      <h1 className="text-3xl font-semibold">VitaPulse</h1>
-      <p className="text-slate-400">Your AI Health OS</p>
-    </main>
+    <>
+      <IntroLoader />
+      <Header />
+      <main className="overflow-x-clip">
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <FAQ />
+      </main>
+      <Footer />
+    </>
   );
 }
