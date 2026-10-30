@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 Language = Literal["ru", "uz", "en"]
 Sex = Literal["male", "female"]
@@ -22,6 +22,13 @@ class UserUpdate(BaseModel):
     birth_year: int | None = Field(default=None, ge=1900, le=2100)
     sex: Sex | None = None
     activity: Activity | None = None
+
+    @field_validator("birth_year")
+    @classmethod
+    def birth_year_not_in_future(cls, value: int | None) -> int | None:
+        if value is not None and value > date.today().year:
+            raise ValueError("birth_year cannot be in the future")
+        return value
 
 
 class PasswordChange(BaseModel):
