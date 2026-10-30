@@ -1,69 +1,58 @@
 "use client";
 
 import { useState } from "react";
-import Hex from "./Hex";
 import Reveal from "./Reveal";
-import SplitHeading from "./SplitHeading";
 
 const FAQS = [
-  {
-    q: "Is VitaPulse free?",
-    a: "Yes. Tracking, the dashboard and coach tips are free while we are in early access.",
-  },
-  {
-    q: "Do I need a fitness tracker?",
-    a: "No. You can log everything by hand in a few taps. Device sync is on our roadmap.",
-  },
+  { q: "Is VitaPulse free?", a: "Yes. Tracking, the dashboard and coach tips are free while we are in early access." },
+  { q: "Do I need a fitness tracker?", a: "No. You can log everything by hand in a few taps. Device sync is on our roadmap." },
   {
     q: "How does the AI coach work?",
     a: "It looks at your own sleep, water, steps, meals and habits over time and suggests one small, specific change for today.",
   },
-  {
-    q: "Is my health data private?",
-    a: "Your data is tied to your account, sent over HTTPS and never sold or shared with advertisers.",
-  },
-  {
-    q: "Is this medical advice?",
-    a: "No. VitaPulse helps you build healthy routines. For medical questions, please talk to a doctor.",
-  },
+  { q: "Is my health data private?", a: "Your data is tied to your account, sent over HTTPS and never sold or shared with advertisers." },
+  { q: "Is this medical advice?", a: "No. VitaPulse helps you build healthy routines. For medical questions, please talk to a doctor." },
 ];
 
 export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="bg-ink px-5 py-24 text-paper sm:py-32">
-      <SplitHeading
-        text="Questions"
-        className="text-center font-serif text-[clamp(48px,9vw,94px)] font-normal leading-[0.84] tracking-[-0.009em]"
-      />
-
-      <div className="mx-auto mt-16 max-w-3xl border-t border-paper/15">
-        {FAQS.map(({ q, a }, i) => {
-          const isOpen = open === i;
-          return (
-            <Reveal key={q} delay={i * 60} className="border-b border-paper/15">
-              <button
-                type="button"
-                onClick={() => setOpen(isOpen ? null : i)}
-                aria-expanded={isOpen}
-                aria-controls={`faq-${i}`}
-                className="flex w-full items-center justify-between gap-6 py-6 text-left"
-              >
-                <span className="font-serif text-[22px] leading-snug sm:text-[26px]">{q}</span>
-                <Hex
-                  filled={isOpen}
-                  className={`transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)] ${isOpen ? "rotate-90" : ""}`}
-                />
-              </button>
-              <div id={`faq-${i}`} className={`accordion ${isOpen ? "is-open" : ""}`}>
-                <div className="overflow-hidden">
-                  <p className="max-w-xl pb-7 text-[15px] leading-relaxed text-paper/60">{a}</p>
+    <section id="faq" className="scroll-mt-16 px-5 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1.4fr]">
+        <Reveal as="h2" className="font-display text-[clamp(36px,5.4vw,72px)] font-semibold leading-[0.95] tracking-[-0.03em] text-bone">
+          Questions.
+        </Reveal>
+        <div className="border-t border-white/10">
+          {FAQS.map(({ q, a }, i) => {
+            const isOpen = open === i;
+            return (
+              <Reveal key={q} delay={i * 60} className="border-b border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-${i}`}
+                  className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                >
+                  <span className="text-lg font-medium text-bone sm:text-xl">{q}</span>
+                  <span
+                    className={`relative h-4 w-4 shrink-0 text-mint transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                    aria-hidden="true"
+                  >
+                    <span className="absolute left-0 top-1/2 h-px w-4 bg-current" />
+                    <span className="absolute left-1/2 top-0 h-4 w-px bg-current" />
+                  </span>
+                </button>
+                <div id={`faq-${i}`} className={`accordion ${isOpen ? "is-open" : ""}`}>
+                  <div className="overflow-hidden">
+                    <p className="max-w-xl pb-7 leading-relaxed text-sage">{a}</p>
+                  </div>
                 </div>
-              </div>
-            </Reveal>
-          );
-        })}
+              </Reveal>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

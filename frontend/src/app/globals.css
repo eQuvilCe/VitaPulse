@@ -5,6 +5,8 @@
 :root {
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Everything on the landing breathes at 60 BPM. */
+  --beat: 1s;
 }
 
 html {
@@ -15,108 +17,98 @@ body {
   @apply bg-bg text-slate-100 antialiased;
 }
 
-/* The landing uses its own light palette; the app pages keep the dark theme. */
+/* The landing has its own palette; app pages keep the default dark theme. */
 body:has(.landing) {
-  background: #c4c3b6;
-  color: #000;
+  background: #050b0a;
+  color: #eef1ec;
 }
 
 html.intro-lock {
   overflow: hidden;
 }
 
-/* ---------- Intro: 3D ECG ribbon ---------- */
+/* ---------- Intro ---------- */
+
+@property --r {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
 
 .intro {
   position: fixed;
   inset: 0;
   z-index: 100;
-  overflow: hidden;
-  background: #c4c3b6;
+  background: #050b0a;
   /* Failsafe: fade out on its own even if JavaScript never hydrates. */
-  animation: intro-failsafe 0.6s ease 4.5s forwards;
+  animation: intro-failsafe 0.6s ease 6.5s forwards;
 }
 
-/* Same colour as the hero underneath, so fading the overlay is invisible —
-   only the ribbon falling away reads as motion. */
-.intro-leave {
+/* The final beat's ripple opens a hole in the overlay from the peak outwards;
+   the hero field underneath continues the same wave. */
+.intro-ripple {
+  -webkit-mask-image: radial-gradient(circle at var(--rx) var(--ry), transparent var(--r), #000 calc(var(--r) + 1px));
+  mask-image: radial-gradient(circle at var(--rx) var(--ry), transparent var(--r), #000 calc(var(--r) + 1px));
+  --r: 160vmax;
+  transition: --r 1.1s cubic-bezier(0.55, 0, 0.3, 1);
+}
+
+.intro-ring,
+.intro-flash {
+  position: fixed;
+  left: var(--rx);
+  top: var(--ry);
+  border-radius: 9999px;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.7s var(--ease-io);
+  transform: translate(-50%, -50%) scale(0);
 }
 
-.intro-scene {
-  position: absolute;
-  inset: 0;
-  perspective: 1100px;
-  perspective-origin: 50% 40%;
+.intro-ring {
+  width: 320vmax;
+  height: 320vmax;
+  border: 2px solid rgba(111, 242, 194, 0.9);
+  box-shadow:
+    0 0 40px rgba(111, 242, 194, 0.55),
+    inset 0 0 40px rgba(111, 242, 194, 0.35);
 }
 
-.intro-stage {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-  /* Camera swings round to face the line, then the ribbon sinks away as the
-     wordmark rises out of the spike. */
-  animation:
-    camera 1.75s var(--ease-io) both,
-    stage-leave 0.9s var(--ease-io) 1.75s forwards;
+.intro-flash {
+  width: 22rem;
+  height: 22rem;
+  background: radial-gradient(circle, rgba(255, 122, 102, 0.85), rgba(255, 122, 102, 0) 65%);
 }
 
-.intro-ecg {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 128vw;
-  height: auto;
-  overflow: visible;
-  transform: translate(-50%, -62%);
+.intro-ripple .intro-ring {
+  animation: ripple-ring 1.1s cubic-bezier(0.55, 0, 0.3, 1) forwards;
 }
 
-.intro-ecg path {
-  stroke: #000;
-  stroke-width: 9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw 1.45s cubic-bezier(0.45, 0, 0.25, 1) 0.05s forwards;
+.intro-ripple .intro-flash {
+  animation: ripple-flash 0.7s var(--ease-out) forwards;
 }
 
-/* Echoes trail behind the main line in depth, giving it body like a ribbon. */
-.intro-echo {
-  transform: translate(-50%, -62%) translate3d(0, calc(var(--z) * 30px), calc(var(--z) * -120px));
-  opacity: calc(0.62 - var(--z) * 0.15);
-}
-
-.intro-echo path {
-  stroke: #595855;
-  stroke-width: 7;
-  animation-delay: calc(0.05s + var(--z) * 0.07s);
-}
-
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes camera {
-  from {
-    transform: translate3d(0, 0, -340px) rotateX(62deg) rotateY(-14deg) rotateZ(-7deg);
-  }
-  to {
-    transform: translate3d(0, 0, 0) rotateX(20deg) rotateY(0) rotateZ(0);
-  }
-}
-
-@keyframes stage-leave {
-  from {
-    transform: translate3d(0, 0, 0) rotateX(20deg);
+@keyframes ripple-ring {
+  0% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
   }
-  to {
-    transform: translate3d(0, 34vh, -320px) rotateX(72deg);
+  70% {
+    opacity: 0.8;
+  }
+  100% {
     opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes ripple-flash {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.6);
   }
 }
 
@@ -128,95 +120,189 @@ html.intro-lock {
   }
 }
 
-@media (max-width: 640px) {
-  .intro-ecg {
-    width: 250vw;
-  }
-}
-
 /* ---------- Hero ---------- */
 
-.hero-wordmark {
-  position: relative;
-  /* Sits above the intro overlay so it can grow out of the ECG spike. */
-  z-index: 110;
-  margin-bottom: 0.02em;
-  font-size: clamp(100px, min(31vw, 58svh), 520px);
-  line-height: 0.84;
-  letter-spacing: -0.009em;
-  /* Distance from the wordmark's resting spot to the centre of the viewport. */
-  --fly: calc(0.4em - 50svh);
+.hero-glow {
+  background:
+    radial-gradient(60% 50% at 50% 75%, rgba(111, 242, 194, 0.13), transparent 70%),
+    radial-gradient(40% 40% at 85% 20%, rgba(111, 242, 194, 0.05), transparent 70%),
+    #050b0a;
 }
 
-html:not(.no-intro) .hero-wordmark {
-  animation:
-    wordmark-reveal 1s var(--ease-io) 1.45s both,
-    wordmark-land 1.1s var(--ease-io) 2s both;
+/* Hidden under the intro, then rising as its ripple opens. */
+html.intro-pending:not(.intro-done) .hero-in {
+  opacity: 0;
 }
 
-html:not(.no-intro) .hero-cluster > *,
-html:not(.no-intro) .site-header {
-  animation: rise 1s var(--ease-out) both;
-}
-
-html:not(.no-intro) .hero-cluster > :nth-child(1) {
-  animation-delay: 2.5s;
-}
-
-html:not(.no-intro) .hero-cluster > :nth-child(2) {
-  animation-delay: 2.62s;
-}
-
-html:not(.no-intro) .hero-cluster > :nth-child(3) {
-  animation-delay: 2.74s;
-}
-
-html:not(.no-intro) .site-header {
-  animation-name: fade;
-  animation-delay: 2.8s;
-}
-
-@media (max-width: 640px) {
-  .hero-wordmark {
-    font-size: 30vw;
-  }
-}
-
-@keyframes wordmark-reveal {
-  from {
-    clip-path: circle(0% at 50% 12%);
-    filter: blur(14px);
-    opacity: 0;
-  }
-  35% {
-    opacity: 1;
-  }
-  to {
-    clip-path: circle(140% at 50% 12%);
-    filter: blur(0);
-    opacity: 1;
-  }
-}
-
-@keyframes wordmark-land {
-  from {
-    transform: translateY(var(--fly)) scale(0.9);
-  }
-  to {
-    transform: none;
-  }
+html.intro-done:not(.intro-skip) .hero-in {
+  animation: rise 1.1s var(--ease-out) both;
+  animation-delay: calc(0.25s + var(--d, 0ms));
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
 }
 
-@keyframes fade {
+.beat-dot {
+  animation: beat var(--beat) ease-out infinite;
+  box-shadow: 0 0 10px rgba(255, 122, 102, 0.9);
+}
+
+@keyframes beat {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  12% {
+    transform: scale(1.7);
+    opacity: 1;
+  }
+  26% {
+    transform: scale(1.05);
+  }
+  36% {
+    transform: scale(1.35);
+  }
+}
+
+/* ---------- Feature art ---------- */
+
+.art-slide {
+  animation: art-slide 4s linear infinite;
+}
+
+@keyframes art-slide {
+  to {
+    transform: translateX(-80px);
+  }
+}
+
+.art-fill {
+  animation: art-fill 4s var(--ease-io) infinite alternate;
+}
+
+@keyframes art-fill {
   from {
+    transform: translateY(26px);
+  }
+  to {
+    transform: translateY(-14px);
+  }
+}
+
+.art-surface {
+  animation: art-surface 2s linear infinite;
+}
+
+@keyframes art-surface {
+  to {
+    transform: translateX(48px);
+  }
+}
+
+.art-ring {
+  stroke-dasharray: 1;
+  animation: art-ring 4s var(--ease-io) infinite;
+}
+
+@keyframes art-ring {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  60%,
+  100% {
+    stroke-dashoffset: 0.18;
+  }
+}
+
+.art-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: art-bar 2s var(--ease-io) infinite alternate;
+}
+
+@keyframes art-bar {
+  from {
+    transform: scaleY(0.55);
+  }
+}
+
+.art-day {
+  opacity: 0.1;
+  animation: art-day 4s ease-out infinite;
+}
+
+@keyframes art-day {
+  10%,
+  70% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.1;
+  }
+}
+
+.art-type {
+  width: 0;
+  animation: art-type 4s steps(23, end) infinite;
+}
+
+@keyframes art-type {
+  60%,
+  100% {
+    width: 23ch;
+  }
+}
+
+.art-caret {
+  animation: caret var(--beat) steps(1) infinite;
+}
+
+@keyframes caret {
+  50% {
     opacity: 0;
+  }
+}
+
+/* ---------- Dashboard / CTA ---------- */
+
+.dash-glow {
+  box-shadow:
+    0 0 0 1px rgba(111, 242, 194, 0.04),
+    0 40px 120px -40px rgba(111, 242, 194, 0.25);
+}
+
+.dash-trace {
+  stroke-dasharray: 1;
+  animation: dash-trace 6s linear infinite;
+}
+
+@keyframes dash-trace {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+.cta-ring {
+  opacity: 0;
+  animation: cta-ring 3s var(--ease-out) infinite;
+}
+
+@keyframes cta-ring {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.15);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
   }
 }
 
@@ -235,30 +321,10 @@ html:not(.no-intro) .site-header {
   transform: none;
 }
 
-.split-word {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.split-char {
-  display: inline-block;
-  opacity: 0;
-  transform: translate3d(0, 0.35em, 0);
-  transition:
-    opacity 0.7s var(--ease-out),
-    transform 0.9s var(--ease-out);
-  transition-delay: calc(var(--i) * 28ms);
-}
-
-.split.is-in .split-char {
-  opacity: 1;
-  transform: none;
-}
-
 .accordion {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s var(--ease-io);
+  transition: grid-template-rows 0.45s var(--ease-io);
 }
 
 .accordion.is-open {
@@ -284,9 +350,24 @@ html:not(.no-intro) .site-header {
     transition-delay: 0ms !important;
   }
 
-  .reveal,
-  .split-char {
+  .reveal {
     opacity: 1;
     transform: none;
+  }
+
+  .art-day {
+    opacity: 1;
+  }
+
+  .art-type {
+    width: auto;
+  }
+
+  .dash-trace {
+    stroke-dashoffset: 0;
+  }
+
+  .art-ring {
+    stroke-dashoffset: 0.18;
   }
 }

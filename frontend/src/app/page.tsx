@@ -1,10 +1,12 @@
+import DashboardPreview from "@/components/landing/DashboardPreview";
 import FAQ from "@/components/landing/FAQ";
-import Features from "@/components/landing/Features";
+import Features from "@/components/landing/features/Features";
+import FinalCta from "@/components/landing/FinalCta";
 import Footer from "@/components/landing/Footer";
 import Header from "@/components/landing/Header";
-import Hero from "@/components/landing/Hero";
+import Hero from "@/components/landing/hero/Hero";
 import HowItWorks from "@/components/landing/HowItWorks";
-import IntroLoader from "@/components/landing/IntroLoader";
+import IntroLoader from "@/components/landing/intro/IntroLoader";
 
 export default function Home() {
   return (
@@ -15,7 +17,9 @@ export default function Home() {
         <Hero />
         <Features />
         <HowItWorks />
+        <DashboardPreview />
         <FAQ />
+        <FinalCta />
       </main>
       <Footer />
     </div>
