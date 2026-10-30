@@ -35,3 +35,11 @@ export function ecgPath(width: number, height: number, beats = 3, samples = 360)
 }
 
 export const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+
+// Gentlest S-curve: peak speed only ~1.57x the average, so no lurches.
+export const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
+
+export const smoothstep = (a: number, b: number, x: number) => {
+  const t = Math.min(Math.max((x - a) / (b - a), 0), 1);
+  return t * t * (3 - 2 * t);
+};

@@ -14,6 +14,7 @@ const vertex = /* glsl */ `
   uniform vec3 uRipple; // xy = origin in field space, z = start time
   varying float vGlow;
   varying float vDepth;
+  varying float vSide;
 
   float beat(float t) {
     float f = fract(t);
@@ -23,7 +24,7 @@ const vertex = /* glsl */ `
   void main() {
     vec3 p = position;
     float d = length(p.xz);
-    float breathe = sin(p.x * 0.32 + uTime * 0.6) * 0.32 + cos(p.z * 0.4 - uTime * 0.45) * 0.24;
+    float breathe = sin(p.x * 0.28 + uTime * 0.5) * 0.34 + cos(p.z * 0.36 - uTime * 0.38) * 0.26;
     float pulse = beat(uTime - d * 0.09) * 0.9 * exp(-d * 0.07);
     float m = exp(-pow(length(p.xz - uMouse), 2.0) * 0.1) * 1.3;
     float rt = uTime - uRipple.z;
@@ -33,6 +34,7 @@ const vertex = /* glsl */ `
     vGlow = clamp(0.45 + pulse * 1.2 + m * 0.7 + ripple, 0.0, 1.8);
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vDepth = -mv.z;
+    vSide = p.x;
     gl_PointSize = (3.6 + vGlow * 3.2) * (16.0 / vDepth);
     gl_Position = projectionMatrix * mv;
   }
@@ -41,12 +43,18 @@ const vertex = /* glsl */ `
 const fragment = /* glsl */ `
   varying float vGlow;
   varying float vDepth;
+  varying float vSide;
   void main() {
     vec2 c = gl_PointCoord - 0.5;
     float a = smoothstep(0.5, 0.0, length(c));
     float fog = smoothstep(36.0, 6.0, vDepth);
-    vec3 mint = vec3(0.435, 0.949, 0.761);
-    gl_FragColor = vec4(mint * (0.6 + vGlow * 0.6), a * fog * (0.35 + vGlow * 0.5));
+    // Warm peach on the left fading to calm sea-mint on the right; the beat
+    // itself warms everything towards coral-pink.
+    vec3 peach = vec3(1.0, 0.706, 0.561);
+    vec3 mint = vec3(0.525, 0.851, 0.761);
+    vec3 col = mix(peach, mint, smoothstep(-14.0, 18.0, vSide));
+    col = mix(col, vec3(1.0, 0.62, 0.55), clamp(vGlow - 0.6, 0.0, 1.0) * 0.6);
+    gl_FragColor = vec4(col * (0.55 + vGlow * 0.5), a * fog * (0.28 + vGlow * 0.42));
   }
 `;
 
@@ -109,7 +117,7 @@ function Field({ cols, rows, still }: { cols: number; rows: number; still: boole
       pendingRipple.current = null;
     }
     const f = toField(pointer.x, pointer.y);
-    if (f) mouse.current.lerp(f, 0.06);
+    if (f) mouse.current.lerp(f, 0.045);
     uniforms.uMouse.value.copy(mouse.current);
   });
 
@@ -142,7 +150,9 @@ export default function HeroField() {
   return (
     <Canvas
       dpr={[1, 1.5]}
-      frameloop={still ? "demand" : awake ? "always" : "never"}
+      // While asleep, "demand" draws one frame on mount so the shader compiles
+      // under the intro instead of hitching at the ripple.
+      frameloop={still || !awake ? "demand" : "always"}
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
       camera={{ fov: 50, near: 0.1, far: 60, position: [0, 5, 13] }}
       onCreated={({ camera }) => camera.lookAt(0, 1.2, -6)}

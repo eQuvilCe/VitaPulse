@@ -7,9 +7,9 @@ import { RIPPLE_EVENT } from "../rhythm";
 // three.js only loads when the intro actually plays.
 const IntroScene = dynamic(() => import("./IntroScene"), { ssr: false });
 
-const READY_TIMEOUT_MS = 2200;
-const HARD_TIMEOUT_MS = 6000;
-const RIPPLE_MS = 1100;
+const READY_TIMEOUT_MS = 2500;
+const HARD_TIMEOUT_MS = 6500;
+const RIPPLE_MS = 1250;
 
 // The intro plays on full page loads; client-side navigation back home skips it.
 let played = false;
@@ -34,9 +34,10 @@ function canPlay() {
 // globals.css hides it if JavaScript never runs, and reduced-motion, weak or
 // WebGL-less devices go straight to the site.
 export default function IntroLoader() {
-  const [phase, setPhase] = useState<"show" | "ripple" | "gone">(() => (played ? "gone" : "show"));
+  const [phase, setPhase] = useState<"show" | "ripple" | "done" | "gone">(() => (played ? "gone" : "show"));
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [play, setPlay] = useState(false);
+  const [started, setStarted] = useState(false);
   const ready = useRef(false);
   const rippled = useRef(false);
   const timers = useRef<number[]>([]);
@@ -53,7 +54,11 @@ export default function IntroLoader() {
     const root = document.documentElement;
     root.classList.remove("intro-lock", "intro-pending");
     root.classList.add("intro-done");
-    setPhase("gone");
+    // Hide now, but tear the WebGL scene down only when the browser is idle so
+    // disposing it never hitches the hero's entrance.
+    setPhase("done");
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
+    idle(() => setPhase("gone"), { timeout: 2500 });
   }, []);
 
   useIsoLayoutEffect(() => {
@@ -95,11 +100,21 @@ export default function IntroLoader() {
 
   return (
     <div
-      className={`intro ${phase === "ripple" ? "intro-ripple" : ""}`}
+      className={`intro ${phase === "ripple" ? "intro-ripple" : ""} ${phase === "done" ? "hidden" : ""}`}
       style={{ "--rx": `${origin.x}px`, "--ry": `${origin.y}px` } as React.CSSProperties}
       aria-hidden="true"
     >
-      {play && <IntroScene onReady={() => (ready.current = true)} onPeak={onPeak} />}
+      <div className={`intro-canvas ${started ? "is-on" : ""}`}>
+        {play && (
+          <IntroScene
+            onStart={() => {
+              ready.current = true;
+              setStarted(true);
+            }}
+            onPeak={onPeak}
+          />
+        )}
+      </div>
       <div className="intro-ring" />
       <div className="intro-flash" />
     </div>

@@ -3,14 +3,15 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { R_PHASE, easeInOut, ecg } from "../rhythm";
+import { R_PHASE, easeInOutSine, ecg, smoothstep } from "../rhythm";
 
 const BEATS = 5;
 const BEAT_LEN = 9;
-const DRAW_S = 2.3;
-const NIGHT = "#050b0a";
-const MINT = "#6ff2c2";
-const CORAL = "#ff7a66";
+const DRAW_S = 2.6;
+const WARMUP_FRAMES = 3;
+const NIGHT = "#17121e";
+const PEACH = "#ffb48f";
+const CORAL = "#f47b63";
 
 // The last beat is the big one: the ripple launches from its R peak.
 const PEAK_T = (BEATS - 1 + R_PHASE) / BEATS;
@@ -70,20 +71,35 @@ function glowTexture() {
 
 type Props = {
   segments: number;
+  onStart: () => void;
   onPeak: (x: number, y: number) => void;
 };
 
-function Trace({ segments, onPeak }: Props) {
+function Trace({ segments, onStart, onPeak }: Props) {
   const { camera, size } = useThree();
   const curve = useMemo(() => new EcgCurve(), []);
   // Core + two additive halos stand in for bloom without a postprocessing pass.
   const tubes = useMemo(
     () =>
       [
-        { radius: 0.035, color: "#e6fff5", opacity: 1 },
-        { radius: 0.14, color: MINT, opacity: 0.55 },
-        { radius: 0.45, color: MINT, opacity: 0.16 },
-      ].map((t) => ({ ...t, geometry: new THREE.TubeGeometry(curve, segments, t.radius, 8, false) })),
+        { radius: 0.035, color: "#fff4ec", opacity: 1 },
+        { radius: 0.14, color: PEACH, opacity: 0.6 },
+        { radius: 0.48, color: CORAL, opacity: 0.18 },
+      ].map((t, i) => ({
+        ...t,
+        geometry: new THREE.TubeGeometry(curve, segments, t.radius, 8, false),
+        material:
+          i === 0
+            ? new THREE.MeshBasicMaterial({ color: t.color })
+            : new THREE.ShaderMaterial({
+                vertexShader: haloVertex,
+                fragmentShader: haloFragment,
+                uniforms: { uColor: { value: new THREE.Color(t.color) }, uOpacity: { value: 0 } },
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+              }),
+      })),
     [curve, segments],
   );
   const texture = useMemo(glowTexture, []);
@@ -101,45 +117,58 @@ function Trace({ segments, onPeak }: Props) {
   }, []);
 
   const spark = useRef<THREE.Sprite>(null);
+  const frames = useRef(0);
   const start = useRef<number | null>(null);
   const fired = useRef(false);
-  const camPos = useRef(new THREE.Vector3(3.4, 1.9, 4.2));
-  const look = useRef(new THREE.Vector3(0, 0, -4));
-  const tmp = useMemo(() => new THREE.Vector3(), []);
+  const head = useMemo(() => new THREE.Vector3(), []);
+  const offset = useMemo(() => new THREE.Vector3(), []);
+  const from = useMemo(() => new THREE.Vector3(2.7, 1.7, 3.6), []);
+  const to = useMemo(() => new THREE.Vector3(3.8, 1.35, 0.9), []);
 
-  useEffect(() => () => tubes.forEach((t) => t.geometry.dispose()), [tubes]);
+  useEffect(
+    () => () =>
+      tubes.forEach((t) => {
+        t.geometry.dispose();
+        t.material.dispose();
+      }),
+    [tubes],
+  );
 
   useFrame(({ clock }) => {
-    if (start.current === null) start.current = clock.elapsedTime;
-    const t = Math.min((clock.elapsedTime - start.current) / DRAW_S, 1);
-    const p = easeInOut(t);
+    // Warm-up: render a few empty frames so shaders and buffers are ready
+    // before anything moves, then start the clock and reveal the canvas.
+    if (start.current === null) {
+      tubes.forEach((t) => t.geometry.setDrawRange(0, 0));
+      if (++frames.current < WARMUP_FRAMES) return;
+      start.current = clock.elapsedTime;
+      onStart();
+    }
+    const elapsed = clock.elapsedTime - start.current;
+    const t = Math.min(elapsed / DRAW_S, 1);
+    const p = easeInOutSine(t);
 
-    for (const tube of tubes) {
+    tubes.forEach((tube, i) => {
       const perRing = tube.geometry.parameters.radialSegments * 6;
       tube.geometry.setDrawRange(0, Math.floor(p * segments) * perRing);
-    }
+      // Glow breathes in over the first half second and swells into the peak.
+      const halo = i > 0 ? (tube.material as THREE.ShaderMaterial) : null;
+      if (halo) halo.uniforms.uOpacity.value = tube.opacity * (smoothstep(0, 0.6, elapsed) * 0.8 + smoothstep(0.7, PEAK_T, p) * 0.5);
+    });
 
-    const head = curve.getPoint(Math.max(p, 0.0001), tmp);
+    curve.getPoint(Math.max(p, 0.0001), head);
     if (spark.current) {
       spark.current.position.copy(head);
-      // Flares coral on every R peak, then settles back.
       const phase = (p * BEATS) % 1;
-      const flare = Math.exp(-((phase - R_PHASE) ** 2) / 0.002);
-      spark.current.scale.setScalar(0.9 + flare * 1.6);
-      (spark.current.material as THREE.SpriteMaterial).opacity = 0.55 + flare * 0.45;
+      const flare = Math.exp(-((phase - R_PHASE) ** 2) / 0.003);
+      spark.current.scale.setScalar((0.8 + flare * 1.4) * smoothstep(0, 0.4, elapsed));
+      (spark.current.material as THREE.SpriteMaterial).opacity = 0.5 + flare * 0.5;
     }
 
-    // Camera glides alongside the head, ignoring its spikes so it never jitters,
-    // and swings round to face the final beat.
-    const offset = new THREE.Vector3().lerpVectors(
-      new THREE.Vector3(3.4, 1.9, 4.2),
-      new THREE.Vector3(4.3, 1.5, 0.6),
-      p,
-    );
-    camPos.current.lerp(new THREE.Vector3(head.x, 0, head.z).add(offset), 0.1);
-    look.current.lerp(new THREE.Vector3(head.x, 0.9 + p * 0.9, head.z - 2.5 * (1 - p)), 0.1);
-    camera.position.copy(camPos.current);
-    camera.lookAt(look.current);
+    // Camera rides a fixed smooth path derived from p (no laggy follow), at
+    // the line's baseline so spikes never shake it.
+    offset.lerpVectors(from, to, smoothstep(0, 1, p));
+    camera.position.set(head.x + offset.x, offset.y, head.z + offset.z);
+    camera.lookAt(head.x, 0.45 + p * 0.8, head.z - 2.5 * (1 - p));
 
     if (!fired.current && p >= PEAK_T) {
       fired.current = true;
@@ -155,37 +184,24 @@ function Trace({ segments, onPeak }: Props) {
 
   return (
     <>
-      {tubes.map((t, i) => (
-        <mesh key={t.radius} geometry={t.geometry}>
-          {i === 0 ? (
-            <meshBasicMaterial color={t.color} />
-          ) : (
-            <shaderMaterial
-              vertexShader={haloVertex}
-              fragmentShader={haloFragment}
-              uniforms={{ uColor: { value: new THREE.Color(t.color) }, uOpacity: { value: t.opacity } }}
-              transparent
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          )}
-        </mesh>
+      {tubes.map((t) => (
+        <mesh key={t.radius} geometry={t.geometry} material={t.material} />
       ))}
       <sprite ref={spark}>
         <spriteMaterial map={texture} color={CORAL} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
       <points geometry={dust}>
-        <pointsMaterial color={MINT} size={0.05} transparent opacity={0.45} depthWrite={false} />
+        <pointsMaterial color={PEACH} size={0.05} transparent opacity={0.35} depthWrite={false} />
       </points>
     </>
   );
 }
 
 export default function IntroScene({
-  onReady,
+  onStart,
   onPeak,
 }: {
-  onReady: () => void;
+  onStart: () => void;
   onPeak: (x: number, y: number) => void;
 }) {
   const mobile = typeof window !== "undefined" && window.innerWidth < 640;
@@ -193,14 +209,14 @@ export default function IntroScene({
     <Canvas
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      camera={{ fov: mobile ? 72 : 50, near: 0.1, far: 80, position: [3.4, 1.9, 4.2] }}
-      onCreated={({ gl, scene }) => {
+      camera={{ fov: mobile ? 72 : 50, near: 0.1, far: 80, position: [2.7, 1.7, 3.6] }}
+      onCreated={({ gl, scene, camera }) => {
         gl.setClearColor(NIGHT);
         scene.fog = new THREE.Fog(NIGHT, 6, 26);
-        onReady();
+        gl.compile(scene, camera);
       }}
     >
-      <Trace segments={mobile ? 1600 : 2600} onPeak={onPeak} />
+      <Trace segments={mobile ? 1600 : 2600} onStart={onStart} onPeak={onPeak} />
     </Canvas>
   );
 }
