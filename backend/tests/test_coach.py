@@ -18,3 +18,8 @@ def test_unfinished_habits_are_flagged():
 def test_all_good():
     s = DaySnapshot(sleep_minutes=480, water_ml=2500, steps=10000, habits_done=2, habits_total=2)
     assert build_tips(s) == ["keep_going"]
+
+
+def test_custom_goals_move_the_thresholds():
+    s = DaySnapshot(sleep_minutes=480, water_ml=1500, steps=5000, water_goal=4000, steps_goal=15000)
+    assert build_tips(s) == ["drink_water", "walk_more"]
