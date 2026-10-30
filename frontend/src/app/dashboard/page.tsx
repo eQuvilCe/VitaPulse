@@ -2,7 +2,7 @@
 
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Logo from "@/components/landing/Logo";
 import StatCard from "@/components/StatCard";
@@ -22,11 +22,18 @@ export default function DashboardPage() {
       .catch(() => router.replace("/login"));
   }, [router]);
 
+  const reload = useCallback(() => {
+    fetchDashboard()
+      .then((d) => {
+        setData(d);
+        setFailed(false);
+      })
+      .catch(() => setFailed(true));
+  }, []);
+
   useEffect(() => {
-    if (user) fetchDashboard()
-        .then(setData)
-        .catch(() => setFailed(true));
-  }, [user]);
+    if (user) reload();
+  }, [user, reload]);
 
   if (!user) return <main className="min-h-screen bg-plum p-8 text-mist">Loading...</main>;
 
