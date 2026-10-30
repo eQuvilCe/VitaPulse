@@ -29,6 +29,6 @@ npm install
 npm run dev                    # http://localhost:3000
 ```
 
-Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` if the API is not on `http://localhost:8000`.
+Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` if the API is not on `http://localhost:8000/api/v1`.
 
 Checks: `npx tsc --noEmit` and `npm run lint`.
