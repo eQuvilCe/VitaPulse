@@ -1,18 +1,13 @@
-// Wordmark with a single drawn beat as its mark.
+// Wordmark with a soft drawn beat as its mark.
 export default function Logo({ className = "" }: { className?: string }) {
   return (
-    <span className={`flex items-center gap-2.5 font-display text-[17px] font-semibold tracking-tight text-bone ${className}`}>
-      <svg viewBox="0 0 28 16" className="h-4 w-7 text-mint" aria-hidden="true">
-        <path
-          d="M1 9.5h7l2-3 2.5 8L16 1.5l2.5 8H27"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      VitaPulse
+    <span className={`flex items-center gap-2 font-serif text-[19px] tracking-tight ${className}`}>
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-peach to-coral">
+        <svg viewBox="0 0 28 16" className="h-3 w-5 text-plum" aria-hidden="true">
+          <path d="M1 9h6.5l2-3 2.5 7.5 3.5-12 2.5 7.5H27" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+      Vita<span className="-ml-2 italic">Pulse</span>
     </span>
   );
 }
