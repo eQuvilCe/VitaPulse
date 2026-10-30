@@ -16,11 +16,11 @@ def bmi_category(value: float) -> str:
     return "obese"
 
 
-def bmr(weight_kg: float, height_cm: float, age: int, sex: str) -> float:
+def bmr(weight_kg: float, height_cm: float, age: int, sex: str) -> int:
     """Mifflin-St Jeor basal metabolic rate in kcal/day."""
     base = 10 * weight_kg + 6.25 * height_cm - 5 * age
     return round(base + (5 if sex == "male" else -161))
 
 
-def daily_calories(bmr_value: float, activity: str) -> int:
+def daily_calories(bmr_value: int, activity: str) -> int:
     return round(bmr_value * ACTIVITY_FACTORS[activity])

@@ -107,3 +107,8 @@ def test_body_profile_rejects_bad_values(client, auth_headers):
     assert r.status_code == 422
     r = client.patch("/api/v1/auth/me", json={"activity": "extreme"}, headers=auth_headers)
     assert r.status_code == 422
+
+
+def test_birth_year_in_future_rejected(client, auth_headers):
+    r = client.patch("/api/v1/auth/me", json={"birth_year": 2999}, headers=auth_headers)
+    assert r.status_code == 422

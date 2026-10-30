@@ -112,7 +112,8 @@ def body_stats(user: CurrentUser, db: DbSession) -> BodyStats:
     result.bmi = body.bmi(weight, user.height_cm)
     result.bmi_category = body.bmi_category(result.bmi)
     if user.birth_year and user.sex:
+        # year-only age, good enough for a calorie estimate
         age = date.today().year - user.birth_year
-        result.bmr = int(body.bmr(weight, user.height_cm, age, user.sex))
+        result.bmr = body.bmr(weight, user.height_cm, age, user.sex)
         result.daily_calories = body.daily_calories(result.bmr, user.activity)
     return result
