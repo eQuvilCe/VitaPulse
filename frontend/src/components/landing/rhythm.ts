@@ -1,5 +1,5 @@
-// Shared heartbeat model. Everything on the landing "breathes" at 60 BPM.
-export const BEAT_MS = 1000;
+// Shared heartbeat model. The landing breathes at a calm resting 40 BPM.
+export const BEAT_MS = 1500;
 
 // Fired when the intro hands over to the hero (detail: ripple origin in px).
 export const RIPPLE_EVENT = "vp:intro-ripple";

@@ -24,12 +24,12 @@ const vertex = /* glsl */ `
   void main() {
     vec3 p = position;
     float d = length(p.xz);
-    float breathe = sin(p.x * 0.28 + uTime * 0.5) * 0.34 + cos(p.z * 0.36 - uTime * 0.38) * 0.26;
-    float pulse = beat(uTime - d * 0.09) * 0.9 * exp(-d * 0.07);
-    float m = exp(-pow(length(p.xz - uMouse), 2.0) * 0.1) * 1.3;
+    float breathe = sin(p.x * 0.24 + uTime * 0.28) * 0.26 + cos(p.z * 0.32 - uTime * 0.2) * 0.2;
+    float pulse = beat(uTime / 1.5 - d * 0.06) * 0.65 * exp(-d * 0.07);
+    float m = exp(-pow(length(p.xz - uMouse), 2.0) * 0.08) * 1.0;
     float rt = uTime - uRipple.z;
     float rd = length(p.xz - uRipple.xy);
-    float ripple = rt > 0.0 ? exp(-pow(rd - rt * 9.0, 2.0) * 0.5) * exp(-rt * 0.9) * 1.6 : 0.0;
+    float ripple = rt > 0.0 ? exp(-pow(rd - rt * 6.5, 2.0) * 0.4) * exp(-rt * 0.6) * 1.3 : 0.0;
     p.y += breathe + pulse + m + ripple;
     vGlow = clamp(0.45 + pulse * 1.2 + m * 0.7 + ripple, 0.0, 1.8);
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
@@ -117,7 +117,7 @@ function Field({ cols, rows, still }: { cols: number; rows: number; still: boole
       pendingRipple.current = null;
     }
     const f = toField(pointer.x, pointer.y);
-    if (f) mouse.current.lerp(f, 0.045);
+    if (f) mouse.current.lerp(f, 0.028);
     uniforms.uMouse.value.copy(mouse.current);
   });
 

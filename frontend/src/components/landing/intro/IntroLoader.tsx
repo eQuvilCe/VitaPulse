@@ -8,8 +8,8 @@ import { RIPPLE_EVENT } from "../rhythm";
 const IntroScene = dynamic(() => import("./IntroScene"), { ssr: false });
 
 const READY_TIMEOUT_MS = 2500;
-const HARD_TIMEOUT_MS = 6500;
-const RIPPLE_MS = 1250;
+const HARD_TIMEOUT_MS = 9500;
+const RIPPLE_MS = 1450;
 
 // The intro plays on full page loads; client-side navigation back home skips it.
 let played = false;

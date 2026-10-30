@@ -7,7 +7,7 @@ import { R_PHASE, easeInOutSine, ecg, smoothstep } from "../rhythm";
 
 const BEATS = 5;
 const BEAT_LEN = 9;
-const DRAW_S = 2.6;
+const DRAW_S = 3.8;
 const WARMUP_FRAMES = 3;
 const NIGHT = "#17121e";
 const PEACH = "#ffb48f";
@@ -152,15 +152,15 @@ function Trace({ segments, onStart, onPeak }: Props) {
       tube.geometry.setDrawRange(0, Math.floor(p * segments) * perRing);
       // Glow breathes in over the first half second and swells into the peak.
       const halo = i > 0 ? (tube.material as THREE.ShaderMaterial) : null;
-      if (halo) halo.uniforms.uOpacity.value = tube.opacity * (smoothstep(0, 0.6, elapsed) * 0.8 + smoothstep(0.7, PEAK_T, p) * 0.5);
+      if (halo) halo.uniforms.uOpacity.value = tube.opacity * (smoothstep(0, 1.4, elapsed) * 0.8 + smoothstep(0.55, PEAK_T, p) * 0.5);
     });
 
     curve.getPoint(Math.max(p, 0.0001), head);
     if (spark.current) {
       spark.current.position.copy(head);
       const phase = (p * BEATS) % 1;
-      const flare = Math.exp(-((phase - R_PHASE) ** 2) / 0.003);
-      spark.current.scale.setScalar((0.8 + flare * 1.4) * smoothstep(0, 0.4, elapsed));
+      const flare = Math.exp(-((phase - R_PHASE) ** 2) / 0.006);
+      spark.current.scale.setScalar((0.8 + flare * 1.2) * smoothstep(0, 0.9, elapsed));
       (spark.current.material as THREE.SpriteMaterial).opacity = 0.5 + flare * 0.5;
     }
 
