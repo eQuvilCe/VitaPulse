@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import Hex from "./Hex";
 import Reveal from "./Reveal";
 import SplitHeading from "./SplitHeading";
 
@@ -32,42 +32,38 @@ export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-20 py-24">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
-        <div className="text-center">
-          <SplitHeading text="Questions, answered" className="text-3xl font-semibold tracking-tight sm:text-5xl" />
-        </div>
+    <section id="faq" className="bg-ink px-5 py-24 text-paper sm:py-32">
+      <SplitHeading
+        text="Questions"
+        className="text-center font-serif text-[clamp(48px,9vw,94px)] font-normal leading-[0.84] tracking-[-0.009em]"
+      />
 
-        <div className="mt-12 space-y-3">
-          {FAQS.map(({ q, a }, i) => {
-            const isOpen = open === i;
-            return (
-              <Reveal key={q} delay={i * 70}>
-                <div
-                  className={`rounded-2xl border bg-card/60 transition-colors ${isOpen ? "border-accent/30" : "border-white/5 hover:border-white/15"}`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-${i}`}
-                    className="flex w-full items-center justify-between gap-4 p-5 text-left sm:p-6"
-                  >
-                    <span className="font-medium sm:text-lg">{q}</span>
-                    <ChevronDown
-                      className={`h-5 w-5 shrink-0 text-accent transition-transform duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${isOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-                  <div id={`faq-${i}`} className={`accordion ${isOpen ? "is-open" : ""}`}>
-                    <div className="overflow-hidden">
-                      <p className="px-5 pb-5 leading-relaxed text-slate-400 sm:px-6 sm:pb-6">{a}</p>
-                    </div>
-                  </div>
+      <div className="mx-auto mt-16 max-w-3xl border-t border-paper/15">
+        {FAQS.map(({ q, a }, i) => {
+          const isOpen = open === i;
+          return (
+            <Reveal key={q} delay={i * 60} className="border-b border-paper/15">
+              <button
+                type="button"
+                onClick={() => setOpen(isOpen ? null : i)}
+                aria-expanded={isOpen}
+                aria-controls={`faq-${i}`}
+                className="flex w-full items-center justify-between gap-6 py-6 text-left"
+              >
+                <span className="font-serif text-[22px] leading-snug sm:text-[26px]">{q}</span>
+                <Hex
+                  filled={isOpen}
+                  className={`transition-transform duration-500 [transition-timing-function:cubic-bezier(0.65,0,0.35,1)] ${isOpen ? "rotate-90" : ""}`}
+                />
+              </button>
+              <div id={`faq-${i}`} className={`accordion ${isOpen ? "is-open" : ""}`}>
+                <div className="overflow-hidden">
+                  <p className="max-w-xl pb-7 text-[15px] leading-relaxed text-paper/60">{a}</p>
                 </div>
-              </Reveal>
-            );
-          })}
-        </div>
+              </div>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );

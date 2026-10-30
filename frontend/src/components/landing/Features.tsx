@@ -1,72 +1,37 @@
-import { Droplets, Footprints, Moon, Repeat, Salad, Sparkles, type LucideIcon } from "lucide-react";
+import { Drop, Plate, Pulse, Ripple, SleepWave, Streak } from "./Vignettes";
 import Reveal from "./Reveal";
 import SplitHeading from "./SplitHeading";
 
-const FEATURES: { title: string; text: string; Icon: LucideIcon; tint: string }[] = [
-  {
-    title: "Sleep",
-    text: "Log bedtime and wake-up, see your real average and how consistent your rhythm is.",
-    Icon: Moon,
-    tint: "from-violet-400/20 text-violet-300",
-  },
-  {
-    title: "Water",
-    text: "Tap to add a glass. A daily goal that adapts to your weight and activity.",
-    Icon: Droplets,
-    tint: "from-sky-400/20 text-sky-300",
-  },
-  {
-    title: "Steps",
-    text: "Daily steps and trends over weeks, so a lazy Tuesday never hides a great month.",
-    Icon: Footprints,
-    tint: "from-emerald-400/20 text-emerald-300",
-  },
-  {
-    title: "Nutrition",
-    text: "Meals with calories, protein, fat and carbs — and daily totals at a glance.",
-    Icon: Salad,
-    tint: "from-lime-400/20 text-lime-300",
-  },
-  {
-    title: "Habits",
-    text: "Small daily check-ins with streaks that make good routines stick.",
-    Icon: Repeat,
-    tint: "from-amber-400/20 text-amber-300",
-  },
-  {
-    title: "AI coach",
-    text: "Personal tips based on your own data, not generic advice from the internet.",
-    Icon: Sparkles,
-    tint: "from-rose-400/20 text-rose-300",
-  },
+const FEATURES = [
+  { title: "Sleep", text: "Bedtime, wake-up and how steady your rhythm really is.", Art: SleepWave },
+  { title: "Water", text: "One tap per glass, with a goal that follows your day.", Art: Drop },
+  { title: "Steps", text: "Daily movement and the trend behind it, week over week.", Art: Pulse },
+  { title: "Nutrition", text: "Meals with calories, protein, fat and carbs, totalled for you.", Art: Plate },
+  { title: "Habits", text: "Small daily check-ins and streaks that make routines stick.", Art: Streak },
+  { title: "AI coach", text: "One clear suggestion a day, drawn from your own data.", Art: Ripple },
 ];
 
 export default function Features() {
   return (
-    <section id="features" className="scroll-mt-20 py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="mx-auto max-w-2xl text-center">
-          <SplitHeading text="Everything that keeps you going" className="text-3xl font-semibold tracking-tight sm:text-5xl" />
-          <Reveal as="p" delay={150} className="mt-4 text-lg text-slate-400">
-            Six signals your body sends every day, finally in one place.
-          </Reveal>
-        </div>
+    <section id="features" className="bg-ink px-5 py-24 text-paper sm:py-32">
+      <SplitHeading
+        text="Six signals, one rhythm"
+        className="mx-auto max-w-5xl text-center font-serif text-[clamp(48px,9vw,94px)] font-normal leading-[0.84] tracking-[-0.009em]"
+      />
+      <Reveal as="p" delay={150} className="mx-auto mt-8 max-w-lg text-center text-[15px] text-paper/60">
+        Everything your body tells you each day, kept in one quiet place.
+      </Reveal>
 
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map(({ title, text, Icon, tint }, i) => (
-            <Reveal key={title} delay={i * 80}>
-              <div className="group h-full rounded-3xl border border-white/5 bg-card/60 p-7 transition-all duration-500 hover:-translate-y-1 hover:border-white/15 hover:bg-card">
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br to-transparent ${tint} transition-transform duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] group-hover:scale-110 group-hover:-rotate-6`}
-                >
-                  <Icon className="h-6 w-6" />
-                </div>
-                <h3 className="mt-5 text-lg font-semibold">{title}</h3>
-                <p className="mt-2 leading-relaxed text-slate-400">{text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+      <div className="mx-auto mt-16 grid max-w-5xl grid-cols-2 gap-x-4 gap-y-12 sm:mt-20 sm:gap-x-10 sm:gap-y-16 lg:grid-cols-3">
+        {FEATURES.map(({ title, text, Art }, i) => (
+          <Reveal key={title} delay={(i % 3) * 110} className="flex flex-col items-center text-center">
+            <div className="flex h-36 w-36 items-center justify-center rounded-full bg-bone p-9 text-ink sm:h-[200px] sm:w-[200px] sm:p-12">
+              <Art />
+            </div>
+            <h3 className="mt-5 font-serif sm:mt-7 text-[22px] font-normal">{title}</h3>
+            <p className="mt-2 max-w-[16rem] text-[13px] leading-relaxed text-paper/60 sm:text-sm">{text}</p>
+          </Reveal>
+        ))}
       </div>
     </section>
   );

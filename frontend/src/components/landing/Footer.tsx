@@ -1,45 +1,54 @@
 import Link from "next/link";
-import { ArrowRight, HeartPulse } from "lucide-react";
 import Reveal from "./Reveal";
+import SplitHeading from "./SplitHeading";
+
+const LINKS = [
+  { href: "#features", label: "Features" },
+  { href: "#how", label: "How it works" },
+  { href: "#faq", label: "FAQ" },
+  { href: "/login", label: "Log in" },
+];
 
 export default function Footer() {
   return (
-    <footer className="relative pt-12">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-[2rem] border border-accent/20 bg-gradient-to-br from-accent/15 via-card to-card px-6 py-14 text-center sm:px-12">
-            <div className="hero-aurora opacity-60" aria-hidden="true" />
-            <h2 className="relative text-3xl font-semibold tracking-tight sm:text-4xl">
-              Start feeling your pulse today
-            </h2>
-            <p className="relative mx-auto mt-4 max-w-lg text-slate-400">
-              One minute to sign up. A lifetime of better days.
-            </p>
-            <Link
-              href="/register"
-              className="btn-shine group relative mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 font-semibold text-bg transition-transform hover:-translate-y-0.5"
-            >
-              Create free account
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
+    <footer className="bg-chalk px-5 pt-24 text-ink sm:pt-32">
+      <div className="flex flex-col items-center text-center">
+        <SplitHeading
+          as="h2"
+          text="Start your rhythm"
+          className="font-serif text-[clamp(48px,9vw,94px)] font-normal leading-[0.84] tracking-[-0.009em]"
+        />
+        <Reveal as="p" delay={150} className="mt-8 max-w-md text-[15px] text-graphite">
+          One minute to sign up. Better days, one signal at a time.
         </Reveal>
+        <Reveal delay={250} className="mt-8">
+          <Link
+            href="/register"
+            className="inline-block rounded-[28.8px] bg-ink px-[17px] py-[9px] text-xs font-medium text-paper transition-opacity hover:opacity-80"
+          >
+            Create account
+          </Link>
+        </Reveal>
+      </div>
 
-        <div className="mt-16 flex flex-col items-center justify-between gap-6 border-t border-white/5 py-10 text-sm text-slate-500 sm:flex-row">
-          <div className="flex items-center gap-2 text-slate-300">
-            <HeartPulse className="h-5 w-5 text-pulse" />
-            <span className="font-semibold">
-              Vita<span className="text-accent">Pulse</span>
-            </span>
-          </div>
-          <nav className="flex flex-wrap justify-center gap-6">
-            <a href="#features" className="hover:text-white">Features</a>
-            <a href="#how" className="hover:text-white">How it works</a>
-            <a href="#faq" className="hover:text-white">FAQ</a>
-            <Link href="/login" className="hover:text-white">Log in</Link>
-          </nav>
-          <p>© {new Date().getFullYear()} VitaPulse</p>
-        </div>
+      <div className="mx-auto mt-28 flex max-w-6xl flex-col items-center justify-between gap-6 border-t border-vellum py-8 text-[13px] text-graphite sm:flex-row">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-ink font-serif text-[15px] text-ink">
+          V
+        </span>
+        <nav className="flex flex-wrap justify-center gap-6">
+          {LINKS.map(({ href, label }) =>
+            href.startsWith("/") ? (
+              <Link key={href} href={href} className="underline-offset-4 hover:underline">
+                {label}
+              </Link>
+            ) : (
+              <a key={href} href={href} className="underline-offset-4 hover:underline">
+                {label}
+              </a>
+            ),
+          )}
+        </nav>
+        <p>© {new Date().getFullYear()} VitaPulse</p>
       </div>
     </footer>
   );
