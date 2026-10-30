@@ -5,7 +5,7 @@ from sqlalchemy import func, select
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import DailyMetric, Meal, SleepLog
-from app.schemas.stats import DayStats, WeekRead
+from app.schemas.stats import DayStats, WeekRead, WeightPoint, WeightTrend
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
@@ -66,4 +66,31 @@ def week(
         days=days,
         avg_sleep_minutes=sum(slept) / len(slept) if slept else None,
         avg_steps=sum(d.steps for d in days) / span,
+    )
+
+
+@router.get("/weight", response_model=WeightTrend)
+def weight_trend(
+    user: CurrentUser,
+    db: DbSession,
+    end: date | None = None,
+    span: int = Query(default=30, ge=2, le=365),
+) -> WeightTrend:
+    """Logged weights in the window, oldest first, plus the change from first to last."""
+    end = end or date.today()
+    start = end - timedelta(days=span - 1)
+    rows = db.execute(
+        select(DailyMetric.day, DailyMetric.value)
+        .where(
+            DailyMetric.user_id == user.id,
+            DailyMetric.kind == "weight_kg",
+            DailyMetric.day.between(start, end),
+        )
+        .order_by(DailyMetric.day)
+    ).all()
+    points = [WeightPoint(day=day, weight_kg=value) for day, value in rows]
+    return WeightTrend(
+        points=points,
+        latest_kg=points[-1].weight_kg if points else None,
+        change_kg=round(points[-1].weight_kg - points[0].weight_kg, 2) if len(points) > 1 else None,
     )
