@@ -4,15 +4,20 @@ import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { useEffect } from "react";
 
-const HEADER_OFFSET = 72;
 let lenis: Lenis | null = null;
 
 // Scrolls to an in-page anchor, through Lenis when it is running.
 export function scrollToHash(hash: string) {
   const el = document.querySelector<HTMLElement>(hash);
   if (!el) return;
-  if (lenis) lenis.scrollTo(el, { offset: -HEADER_OFFSET + 1, duration: 1.4 });
-  else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET + 1, behavior: "smooth" });
+  // Both paths honour html's scroll-padding-top (the navbar height), so the
+  // section lands flush under the navbar.
+  // Wait a frame so a closing mobile menu can release its scroll lock first;
+  // `force` still scrolls if Lenis has not restarted yet.
+  requestAnimationFrame(() => {
+    if (lenis) lenis.scrollTo(el, { duration: 1.7, easing: (t) => 1 - Math.pow(1 - t, 4), force: true });
+    else el.scrollIntoView({ behavior: "smooth" });
+  });
   history.replaceState(null, "", hash);
 }
 
@@ -23,7 +28,7 @@ export default function SmoothScroll() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const root = document.documentElement;
     root.classList.add("lenis-on");
-    lenis = new Lenis({ autoRaf: true, lerp: 0.085, wheelMultiplier: 0.9, allowNestedScroll: true });
+    lenis = new Lenis({ autoRaf: true, lerp: 0.07, wheelMultiplier: 0.8, allowNestedScroll: true });
 
     // The intro and the mobile menu lock the page; pause Lenis meanwhile.
     // Lenis rewrites its own classes (and overflow) on <html>, so read only our
