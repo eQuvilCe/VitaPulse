@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<Dashboard | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     fetchMe()
@@ -22,7 +23,9 @@ export default function DashboardPage() {
   }, [router]);
 
   useEffect(() => {
-    if (user) fetchDashboard().then(setData).catch(() => setData(null));
+    if (user) fetchDashboard()
+        .then(setData)
+        .catch(() => setFailed(true));
   }, [user]);
 
   if (!user) return <main className="min-h-screen bg-plum p-8 text-mist">Loading...</main>;
@@ -43,6 +46,7 @@ export default function DashboardPage() {
           </button>
         </header>
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Hi, {user.name || user.email}</h1>
+        {failed && <p className="mt-8 text-sm text-coral">Could not load today's stats.</p>}
         {data && (
           <section className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatCard
