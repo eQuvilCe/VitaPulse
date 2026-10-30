@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { PULSE_PATH } from "./pulse";
 
-const SHOW_MS = 2000;
-const FADE_MS = 500;
+const SHOW_MS = 1900;
+const FADE_MS = 700;
 
 // The intro plays on full page loads; client-side navigation back home skips it.
 let played = false;
@@ -39,17 +39,26 @@ export default function IntroLoader() {
 
   return (
     <div className={`intro ${phase === "fade" ? "intro-fade" : ""}`} aria-hidden="true">
-      <div className="intro-glow" />
-      <svg className="intro-heart" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.7 4.5c2.1 0 3.7 1.1 5.3 3 1.6-1.9 3.2-3 5.3-3 3.7 0 5.8 3.8 4.3 7.2C19.5 16.4 12 21 12 21z" />
-      </svg>
-      <svg className="intro-line" viewBox="0 0 600 120" fill="none" preserveAspectRatio="xMidYMid meet">
-        <path d={PULSE_PATH} pathLength={1} className="intro-line-shadow" />
-        <path d={PULSE_PATH} pathLength={1} className="intro-line-path" />
-      </svg>
-      <p className="intro-word">
-        Vita<span>Pulse</span>
-      </p>
+      <div className="intro-blob intro-blob-a" />
+      <div className="intro-blob intro-blob-b" />
+      <div className="intro-blob intro-blob-c" />
+      <div className="intro-glass">
+        <svg className="intro-line" viewBox="0 0 600 120" fill="none" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="intro-pulse" x1="0" y1="0" x2="600" y2="0" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#fb7185" stopOpacity="0.2" />
+              <stop offset="0.45" stopColor="#fb7185" />
+              <stop offset="0.7" stopColor="#f9a8d4" />
+              <stop offset="1" stopColor="#34d399" stopOpacity="0.3" />
+            </linearGradient>
+          </defs>
+          <path d={PULSE_PATH} pathLength={1} stroke="url(#intro-pulse)" className="intro-line-glow" />
+          <path d={PULSE_PATH} pathLength={1} stroke="url(#intro-pulse)" className="intro-line-path" />
+        </svg>
+        <p className="intro-word">
+          Vita<span>Pulse</span>
+        </p>
+      </div>
     </div>
   );
 }
