@@ -29,20 +29,22 @@ def week(
             )
         )
     }
-    sleep = dict(
-        db.execute(
+    sleep = {
+        day: minutes
+        for day, minutes in db.execute(
             select(SleepLog.day, SleepLog.minutes).where(
                 SleepLog.user_id == user.id, SleepLog.day.between(start, end)
             )
-        ).tuples()
-    )
-    calories = dict(
-        db.execute(
+        )
+    }
+    calories = {
+        day: total
+        for day, total in db.execute(
             select(Meal.day, func.sum(Meal.calories))
             .where(Meal.user_id == user.id, Meal.day.between(start, end))
             .group_by(Meal.day)
-        ).tuples()
-    )
+        )
+    }
 
     days = []
     for offset in range(span):
