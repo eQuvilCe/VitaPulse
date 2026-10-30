@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const sans = Manrope({ subsets: ["latin", "cyrillic"], variable: "--font-sans" });
+const sans = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" });
+const serif = Playfair_Display({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+});
 
 export const metadata: Metadata = {
   title: "VitaPulse",
@@ -11,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body className="font-sans">{children}</body>
     </html>
   );

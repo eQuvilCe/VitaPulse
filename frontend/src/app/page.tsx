@@ -8,7 +8,7 @@ import IntroLoader from "@/components/landing/IntroLoader";
 
 export default function Home() {
   return (
-    <>
+    <div className="landing">
       <IntroLoader />
       <Header />
       <main className="overflow-x-clip">
@@ -18,6 +18,6 @@ export default function Home() {
         <FAQ />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
