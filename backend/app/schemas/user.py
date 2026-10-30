@@ -13,6 +13,11 @@ class UserCreate(BaseModel):
     language: Language = "en"
 
 
+class UserUpdate(BaseModel):
+    name: str | None = Field(default=None, max_length=100)
+    language: Language | None = None
+
+
 class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
