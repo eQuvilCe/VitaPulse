@@ -46,7 +46,7 @@ export default function DashboardPage() {
           </button>
         </header>
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Hi, {user.name || user.email}</h1>
-        {failed && <p className="mt-8 text-sm text-coral">Could not load today's stats.</p>}
+        {failed && <p className="mt-8 text-sm text-coral">Could not load the stats for today.</p>}
         {data && (
           <section className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatCard
