@@ -1,3 +1,4 @@
-// ECG trace shared by the intro loader and the hero backdrop (viewBox 0 0 600 120).
-export const PULSE_PATH =
-  "M0 60 H180 l10 -9 l10 9 H232 l8 10 l14 -58 l15 76 l11 -28 H330 l14 -13 l16 13 H600";
+// ECG trace (viewBox 0 0 1400 360): flat line, P wave, tall QRS spike at the
+// centre (x = 700), T wave, flat line.
+export const ECG_PATH =
+  "M0 230 H500 C520 230 528 204 545 204 C562 204 570 230 590 230 H648 L668 252 L700 34 L738 330 L760 230 H822 C850 230 862 176 892 176 C922 176 934 230 962 230 H1400";

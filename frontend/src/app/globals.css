@@ -3,147 +3,95 @@
 @tailwind utilities;
 
 :root {
-  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Hero entrance starts as the intro overlay fades out. */
-  --intro-delay: 1.95s;
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-html.no-intro {
-  --intro-delay: 0s;
-}
-
 body {
   @apply bg-bg text-slate-100 antialiased;
 }
 
-/* ---------- Intro loader ---------- */
+/* The landing uses its own light palette; the app pages keep the dark theme. */
+body:has(.landing) {
+  background: #c4c3b6;
+  color: #000;
+}
+
+html.intro-lock {
+  overflow: hidden;
+}
+
+/* ---------- Intro: 3D ECG ribbon ---------- */
 
 .intro {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
-  background: #0b0f14;
-  transition: opacity 0.7s var(--ease-out);
+  background: #c4c3b6;
   /* Failsafe: fade out on its own even if JavaScript never hydrates. */
-  animation: intro-failsafe 0.6s ease 4s forwards;
+  animation: intro-failsafe 0.6s ease 4.5s forwards;
 }
 
-.intro-fade {
+/* Same colour as the hero underneath, so fading the overlay is invisible —
+   only the ribbon falling away reads as motion. */
+.intro-leave {
   opacity: 0;
-  pointer-events: none;
+  transition: opacity 0.7s var(--ease-io);
 }
 
-/* Soft colour blobs drifting behind the glass. Radial gradients are already
-   soft, so only transform is animated — no filter on large layers. */
-.intro-blob {
+.intro-scene {
   position: absolute;
-  width: 46vmax;
-  height: 46vmax;
-  border-radius: 9999px;
-  opacity: 0;
-  will-change: transform, opacity;
+  inset: 0;
+  perspective: 1100px;
+  perspective-origin: 50% 40%;
+}
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  /* Camera swings round to face the line, then the ribbon sinks away as the
+     wordmark rises out of the spike. */
   animation:
-    blob-in 1.2s var(--ease-out) forwards,
-    blob-drift 9s ease-in-out infinite alternate;
+    camera 1.75s var(--ease-io) both,
+    stage-leave 0.9s var(--ease-io) 1.75s forwards;
 }
 
-.intro-blob-a {
-  top: -14vmax;
-  left: -10vmax;
-  background: radial-gradient(circle, rgba(251, 113, 133, 0.42), transparent 62%);
-}
-
-.intro-blob-b {
-  right: -14vmax;
-  bottom: -16vmax;
-  background: radial-gradient(circle, rgba(52, 211, 153, 0.32), transparent 62%);
-  animation-delay: 0.15s, -3s;
-}
-
-.intro-blob-c {
-  top: 50%;
+.intro-ecg {
+  position: absolute;
   left: 50%;
-  margin: -24vmax 0 0 -12vmax;
-  width: 30vmax;
-  height: 30vmax;
-  background: radial-gradient(circle, rgba(244, 114, 182, 0.24), transparent 65%);
-  animation-delay: 0.3s, -6s;
-}
-
-.intro-glass {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  width: min(86vw, 560px);
-  padding: 2.75rem 2rem 2.25rem;
-  border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
-  box-shadow:
-    0 30px 80px -24px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
-  backdrop-filter: blur(28px) saturate(150%);
-  will-change: transform, opacity, filter;
-  animation: glass-in 0.9s var(--ease-out) both;
-  transition:
-    transform 0.7s var(--ease-out),
-    opacity 0.6s var(--ease-out),
-    filter 0.7s var(--ease-out);
-}
-
-/* Exit: the glass swells and dissolves while the site shows through. */
-.intro-fade .intro-glass {
-  transform: scale(1.08);
-  opacity: 0;
-  filter: blur(12px);
-}
-
-.intro-line {
-  width: 100%;
+  top: 50%;
+  width: 128vw;
   height: auto;
   overflow: visible;
+  transform: translate(-50%, -62%);
 }
 
-.intro-line path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+.intro-ecg path {
+  stroke: #000;
+  stroke-width: 9;
   stroke-linecap: round;
   stroke-linejoin: round;
-  animation: draw 1.25s cubic-bezier(0.65, 0, 0.35, 1) 0.35s forwards;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.45s cubic-bezier(0.45, 0, 0.25, 1) 0.05s forwards;
 }
 
-.intro-line-path {
-  stroke-width: 2;
-  filter: drop-shadow(0 0 6px rgba(251, 113, 133, 0.65));
+/* Echoes trail behind the main line in depth, giving it body like a ribbon. */
+.intro-echo {
+  transform: translate(-50%, -62%) translate3d(0, calc(var(--z) * 30px), calc(var(--z) * -120px));
+  opacity: calc(0.62 - var(--z) * 0.15);
 }
 
-.intro-line-glow {
+.intro-echo path {
+  stroke: #595855;
   stroke-width: 7;
-  opacity: 0.35;
-  filter: blur(7px);
-}
-
-.intro-word {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.92);
-  animation: word-in 1s var(--ease-out) 0.85s both;
-}
-
-.intro-word span {
-  color: #fb7185;
+  animation-delay: calc(0.05s + var(--z) * 0.07s);
 }
 
 @keyframes draw {
@@ -152,39 +100,23 @@ body {
   }
 }
 
-@keyframes blob-in {
+@keyframes camera {
+  from {
+    transform: translate3d(0, 0, -340px) rotateX(62deg) rotateY(-14deg) rotateZ(-7deg);
+  }
   to {
+    transform: translate3d(0, 0, 0) rotateX(20deg) rotateY(0) rotateZ(0);
+  }
+}
+
+@keyframes stage-leave {
+  from {
+    transform: translate3d(0, 0, 0) rotateX(20deg);
     opacity: 1;
   }
-}
-
-@keyframes blob-drift {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
   to {
-    transform: translate3d(6vmax, 4vmax, 0) scale(1.12);
-  }
-}
-
-@keyframes glass-in {
-  from {
+    transform: translate3d(0, 34vh, -320px) rotateX(72deg);
     opacity: 0;
-    transform: translateY(14px) scale(0.96);
-    filter: blur(8px);
-  }
-}
-
-@keyframes word-in {
-  from {
-    opacity: 0;
-    letter-spacing: 0.45em;
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    letter-spacing: 0.02em;
-    filter: blur(0);
   }
 }
 
@@ -196,113 +128,96 @@ body {
   }
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-    filter: blur(6px);
+@media (max-width: 640px) {
+  .intro-ecg {
+    width: 250vw;
   }
 }
 
 /* ---------- Hero ---------- */
 
-.hero-in {
-  animation: rise 0.9s var(--ease-out) both;
-  animation-delay: calc(var(--intro-delay) + var(--d, 0ms));
-}
-
-.hero-aurora {
-  position: absolute;
-  inset: -20% -10% auto;
-  height: 46rem;
-  pointer-events: none;
-  background:
-    radial-gradient(40% 40% at 25% 30%, rgba(52, 211, 153, 0.16), transparent 70%),
-    radial-gradient(35% 35% at 80% 20%, rgba(56, 189, 248, 0.12), transparent 70%),
-    radial-gradient(30% 30% at 60% 70%, rgba(251, 113, 133, 0.08), transparent 70%);
-  filter: blur(20px);
-}
-
-.hero-trace {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 6rem;
-  pointer-events: none;
-}
-
-.hero-trace path {
-  vector-effect: non-scaling-stroke;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.trace-base {
-  stroke: rgba(52, 211, 153, 0.08);
-  stroke-width: 1.5;
-}
-
-.trace-run {
-  stroke: rgba(52, 211, 153, 0.55);
-  stroke-width: 2;
-  stroke-dasharray: 0.12 0.88;
-  stroke-dashoffset: 0.12;
-  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.8));
-  animation: trace-run 3.2s linear var(--intro-delay) infinite;
-}
-
-@keyframes trace-run {
-  to {
-    stroke-dashoffset: -0.88;
-  }
-}
-
-.text-gradient {
-  background: linear-gradient(90deg, #34d399, #38bdf8 60%, #a78bfa);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.ring-fill {
-  stroke-dasharray: 1;
-  stroke-dashoffset: calc(1 - var(--pct));
-  animation: ring-fill 1.6s var(--ease-out) calc(var(--intro-delay) + 0.6s) both;
-}
-
-@keyframes ring-fill {
-  from {
-    stroke-dashoffset: 1;
-  }
-}
-
-.float-slow {
-  animation: float 7s ease-in-out infinite;
-}
-
-@keyframes float {
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.btn-shine {
+.hero-wordmark {
   position: relative;
-  overflow: hidden;
+  /* Sits above the intro overlay so it can grow out of the ECG spike. */
+  z-index: 110;
+  margin-bottom: 0.02em;
+  font-size: clamp(100px, min(31vw, 58svh), 520px);
+  line-height: 0.84;
+  letter-spacing: -0.009em;
+  /* Distance from the wordmark's resting spot to the centre of the viewport. */
+  --fly: calc(0.4em - 50svh);
 }
 
-.btn-shine::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translateX(-120%) skewX(-20deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  transition: transform 0.7s ease;
+html:not(.no-intro) .hero-wordmark {
+  animation:
+    wordmark-reveal 1s var(--ease-io) 1.45s both,
+    wordmark-land 1.1s var(--ease-io) 2s both;
 }
 
-.btn-shine:hover::after {
-  transform: translateX(120%) skewX(-20deg);
+html:not(.no-intro) .hero-cluster > *,
+html:not(.no-intro) .site-header {
+  animation: rise 1s var(--ease-out) both;
+}
+
+html:not(.no-intro) .hero-cluster > :nth-child(1) {
+  animation-delay: 2.5s;
+}
+
+html:not(.no-intro) .hero-cluster > :nth-child(2) {
+  animation-delay: 2.62s;
+}
+
+html:not(.no-intro) .hero-cluster > :nth-child(3) {
+  animation-delay: 2.74s;
+}
+
+html:not(.no-intro) .site-header {
+  animation-name: fade;
+  animation-delay: 2.8s;
+}
+
+@media (max-width: 640px) {
+  .hero-wordmark {
+    font-size: 30vw;
+  }
+}
+
+@keyframes wordmark-reveal {
+  from {
+    clip-path: circle(0% at 50% 12%);
+    filter: blur(14px);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    clip-path: circle(140% at 50% 12%);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes wordmark-land {
+  from {
+    transform: translateY(var(--fly)) scale(0.9);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
 }
 
 /* ---------- Scroll reveals ---------- */
@@ -310,76 +225,40 @@ body {
 .reveal {
   opacity: 0;
   transform: translateY(28px);
-  filter: blur(6px);
   transition:
-    opacity 0.9s var(--ease-out),
-    transform 0.9s var(--ease-out),
-    filter 0.9s var(--ease-out);
+    opacity 1s var(--ease-out),
+    transform 1s var(--ease-out);
 }
 
 .reveal.is-visible {
   opacity: 1;
   transform: none;
-  filter: none;
 }
 
 .split-word {
   display: inline-block;
   white-space: nowrap;
-  perspective: 600px;
 }
 
 .split-char {
   display: inline-block;
   opacity: 0;
-  filter: blur(10px);
-  transform: translate3d(0, 0.5em, 0) rotateX(-60deg);
-  transform-origin: 50% 100%;
+  transform: translate3d(0, 0.35em, 0);
   transition:
-    opacity 0.6s var(--ease-out),
-    filter 0.6s var(--ease-out),
-    transform 0.8s var(--ease-spring);
-  transition-delay: calc(var(--i) * 22ms);
+    opacity 0.7s var(--ease-out),
+    transform 0.9s var(--ease-out);
+  transition-delay: calc(var(--i) * 28ms);
 }
 
 .split.is-in .split-char {
   opacity: 1;
-  filter: none;
   transform: none;
-}
-
-/* ---------- How it works / FAQ ---------- */
-
-.steps-line {
-  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.35), transparent);
-  overflow: hidden;
-}
-
-.steps-line::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  width: 18%;
-  height: 3px;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, transparent, #34d399, transparent);
-  box-shadow: 0 0 12px #34d399;
-  animation: steps-run 3s ease-in-out infinite;
-}
-
-@keyframes steps-run {
-  from {
-    left: -20%;
-  }
-  to {
-    left: 100%;
-  }
 }
 
 .accordion {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s var(--ease-out);
+  transition: grid-template-rows 0.5s var(--ease-io);
 }
 
 .accordion.is-open {
@@ -400,9 +279,7 @@ body {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
+    animation: none !important;
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
   }
@@ -411,11 +288,5 @@ body {
   .split-char {
     opacity: 1;
     transform: none;
-    filter: none;
-  }
-
-  .trace-run,
-  .steps-line::after {
-    display: none;
   }
 }
