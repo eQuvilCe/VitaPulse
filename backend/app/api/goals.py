@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import Goal
@@ -13,7 +14,12 @@ def get_or_create_goal(db: DbSession, user_id: int) -> Goal:
     if goal is None:
         goal = Goal(user_id=user_id)
         db.add(goal)
-        db.commit()
+        try:
+            db.commit()
+        except IntegrityError:
+            # A parallel request created the row first.
+            db.rollback()
+            goal = db.scalar(select(Goal).where(Goal.user_id == user_id))
     return goal
 
 
