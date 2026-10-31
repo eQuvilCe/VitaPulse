@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import Badges from "@/components/Badges";
 import HabitList from "@/components/HabitList";
 import Logo from "@/components/landing/Logo";
 import MealForm from "@/components/MealForm";
@@ -12,6 +13,7 @@ import ScoreRing from "@/components/ScoreRing";
 import SleepForm from "@/components/SleepForm";
 import StatCard from "@/components/StatCard";
 import WeekChart from "@/components/WeekChart";
+import { fetchAchievements, type Achievements } from "@/lib/achievements";
 import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
 import { createHabit, fetchHabits, setDone, type Habit } from "@/lib/habits";
@@ -27,6 +29,7 @@ export default function DashboardPage() {
   const [data, setData] = useState<Dashboard | null>(null);
   const [week, setWeek] = useState<Week | null>(null);
   const [habits, setHabits] = useState<Habit[] | null>(null);
+  const [badges, setBadges] = useState<Achievements | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -44,6 +47,9 @@ export default function DashboardPage() {
       .catch(() => setFailed(true));
     fetchWeek()
       .then(setWeek)
+      .catch(() => undefined);
+    fetchAchievements()
+      .then(setBadges)
       .catch(() => undefined);
     fetchHabits()
       .then(setHabits)
@@ -162,6 +168,11 @@ export default function DashboardPage() {
               color="#f47b63"
               data={week.days.map((d) => ({ day: d.day, value: d.calories }))}
             />
+          </section>
+        )}
+        {badges && (
+          <section className="mt-6">
+            <Badges {...badges} />
           </section>
         )}
         {data && (
