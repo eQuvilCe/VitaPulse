@@ -94,6 +94,7 @@ export type Plan = Macros & {
   tdee: number;
   weekly_change_kg: number;
   target_weight_kg: number;
+  water_ml: number;
   // When the goal is reached at the planned pace; may be later than target_date
   // if the requested pace was unsafe.
   forecast_date: string;
@@ -348,6 +349,7 @@ function toPlan(p: ApiPlan, locale: string): Plan {
     created_at: created,
     weekly_change_kg: p.forecast.weekly_change_kg,
     target_weight_kg: p.forecast.target_weight_kg,
+    water_ml: n.water_ml,
     forecast_date: p.forecast.eta_date ?? p.forecast.requested_date ?? created.slice(0, 10),
     pace_capped: p.forecast.pace === "capped",
     source: p.source === "ai" ? "ai" : "formula",
@@ -559,7 +561,8 @@ export async function fetchAchievements(): Promise<Achievements> {
     badges: r.achievements.map((a) => ({
       code: a.code,
       earned_at: a.unlocked ? (a.unlocked_at ?? new Date().toISOString()) : null,
-      progress: a.progress,
+      // Weight badges count kg in the goal direction and can dip below zero.
+      progress: Math.max(0, a.progress),
       target: a.target,
     })),
     streaks: { diary_days: r.streaks.diary_current, workouts_total: r.streaks.workouts_total, water_days: r.streaks.water_current },

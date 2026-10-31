@@ -12,6 +12,7 @@ import { fmt, formatDate, formatNumber, useAppT } from "./i18n";
 import { CalorieRing, MacroBars, MacroLine } from "./MacroSummary";
 import { ErrorBlock, LoadingBlock, PageHeader, SectionTitle, useLoad } from "./states";
 
+// Used until the user has a plan with a personal water target.
 const WATER_GOAL = 2000;
 const EMPTY: MealInput = { name: "", calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 };
 
@@ -31,6 +32,7 @@ export default function DiaryView() {
     { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 },
   );
   const target: Macros | null = plan.data ?? null;
+  const waterGoal = plan.data?.water_ml ?? WATER_GOAL;
   const isToday = day === today();
 
   async function submit(e: React.FormEvent) {
@@ -138,8 +140,8 @@ export default function DiaryView() {
                 label={t.diary.water}
                 showLabel
                 value={water.data ?? 0}
-                max={WATER_GOAL}
-                valueText={`${formatNumber(water.data ?? 0, locale)} / ${formatNumber(WATER_GOAL, locale)} ${t.common.ml}`}
+                max={waterGoal}
+                valueText={`${formatNumber(water.data ?? 0, locale)} / ${formatNumber(waterGoal, locale)} ${t.common.ml}`}
               />
               <Button size="sm" variant="secondary" onClick={drink}>
                 {t.diary.addWater}
