@@ -263,6 +263,8 @@ const en = {
     p: "P",
     c: "C",
     f: "F",
+    min: "min",
+    sec: "s",
     today: "Today",
   },
 };

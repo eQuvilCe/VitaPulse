@@ -264,6 +264,8 @@ const ru: AppDictionary = {
     p: "Б",
     c: "У",
     f: "Ж",
+    min: "мин",
+    sec: "сек",
     today: "Сегодня",
   },
 };
