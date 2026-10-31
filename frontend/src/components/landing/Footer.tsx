@@ -2,39 +2,32 @@
 
 import Link from "next/link";
 
+import { LOCALES, useI18n } from "@/i18n/I18nProvider";
 import { useCopy } from "./copy";
-import Logo from "./Logo";
 
+// One line: wordmark, language, sign in, the year and the disclaimer.
 export default function Footer() {
   const { c } = useCopy();
-  const links = [
-    { href: "#how", label: c.nav.how },
-    { href: "#features", label: c.nav.features },
-    { href: "#recipes", label: c.nav.recipes },
-    { href: "#faq", label: c.nav.faq },
-  ];
+  const { locale, setLocale } = useI18n();
 
   return (
-    <footer className="border-t border-line px-4 pb-10 pt-12 sm:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
-        <div className="max-w-xs">
-          <Logo />
-          <p className="mt-3 text-body text-fg-muted">{c.footer.tagline}</p>
-        </div>
-        <nav className="flex flex-wrap gap-x-6 gap-y-3 text-body text-fg-muted">
-          {links.map((l) => (
-            <a key={l.href} href={l.href} className="transition-colors hover:text-brand-700">
-              {l.label}
-            </a>
+    <footer className="border-t border-line">
+      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-6 text-caption text-fg-muted sm:px-8">
+        <span className="font-semibold text-fg">Vita Health</span>
+        <span>
+          © {new Date().getFullYear()} · {c.footer.disclaimer}
+        </span>
+        <span className="flex items-center gap-4">
+          {LOCALES.filter((l) => l !== locale).map((l) => (
+            <button key={l} type="button" lang={l} onClick={() => setLocale(l)} className="uppercase hover:text-fg">
+              {l}
+            </button>
           ))}
-          <Link href="/login" className="transition-colors hover:text-brand-700">
+          <Link href="/login" className="hover:text-fg">
             {c.nav.login}
           </Link>
-        </nav>
+        </span>
       </div>
-      <p className="mx-auto mt-10 max-w-6xl text-caption text-fg-subtle">
-        © {new Date().getFullYear()} Vita Health · {c.footer.disclaimer}
-      </p>
     </footer>
   );
 }
