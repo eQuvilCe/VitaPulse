@@ -6,9 +6,10 @@ from sqlalchemy import func, select
 from app.api.deps import CurrentUser, DbSession
 from app.api.goals import get_or_create_goal
 from app.models import DailyMetric, Habit, HabitCheckin, Meal, SleepLog
-from app.schemas.dashboard import DashboardRead
+from app.schemas.dashboard import DashboardRead, ScoreRead
 from app.schemas.goal import GoalRead
 from app.services.coach import DaySnapshot, build_tips
+from app.services.score import ScoreInput, daily_score
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
@@ -53,6 +54,18 @@ def dashboard(user: CurrentUser, db: DbSession, day: date | None = None) -> Dash
         water_goal=goal.water_ml,
         steps_goal=goal.steps,
     )
+    score = daily_score(
+        ScoreInput(
+            sleep_minutes=sleep,
+            sleep_goal=goal.sleep_minutes,
+            water_ml=snapshot.water_ml,
+            water_goal=goal.water_ml,
+            steps=snapshot.steps,
+            steps_goal=goal.steps,
+            habits_done=done,
+            habits_total=len(habit_ids),
+        )
+    )
     return DashboardRead(
         day=day,
         sleep_minutes=sleep,
@@ -64,5 +77,6 @@ def dashboard(user: CurrentUser, db: DbSession, day: date | None = None) -> Dash
         habits_done=done,
         habits_total=len(habit_ids),
         goals=GoalRead.model_validate(goal),
+        score=ScoreRead(**score),
         tips=build_tips(snapshot),
     )

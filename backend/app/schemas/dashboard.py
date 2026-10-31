@@ -5,6 +5,14 @@ from pydantic import BaseModel
 from app.schemas.goal import GoalRead
 
 
+class ScoreRead(BaseModel):
+    total: int
+    sleep: int
+    water: int
+    steps: int
+    habits: int
+
+
 class DashboardRead(BaseModel):
     day: date
     sleep_minutes: int | None
@@ -16,4 +24,5 @@ class DashboardRead(BaseModel):
     habits_done: int
     habits_total: int
     goals: GoalRead
+    score: ScoreRead
     tips: list[str]
