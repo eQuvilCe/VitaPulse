@@ -33,7 +33,7 @@ const config: Config = {
         fg: { DEFAULT: vh("fg"), muted: vh("fg-muted"), subtle: vh("fg-subtle") },
         brand: { DEFAULT: vh("brand-600"), ...scale("brand", [50, 100, 300, 500, 600, 700, 800]) },
         kcal: { DEFAULT: vh("kcal-500"), ...scale("kcal", [50, 100, 300, 500, 600, 700]) },
-        warn: { DEFAULT: vh("warn"), soft: vh("warn-soft") },
+        warn: { DEFAULT: vh("warn"), soft: vh("warn-soft"), strong: vh("warn-strong") },
         danger: { DEFAULT: vh("danger"), soft: vh("danger-soft") },
         info: { DEFAULT: vh("info"), soft: vh("info-soft") },
       },
