@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import Logo from "@/components/landing/Logo";
 import MealForm from "@/components/MealForm";
 import QuickAdd from "@/components/QuickAdd";
+import ScoreRing from "@/components/ScoreRing";
 import SleepForm from "@/components/SleepForm";
 import StatCard from "@/components/StatCard";
 import WeekChart from "@/components/WeekChart";
@@ -66,6 +67,18 @@ export default function DashboardPage() {
         </header>
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Hi, {user.name || user.email}</h1>
         {failed && <p className="mt-8 text-sm text-coral">Could not load the stats for today.</p>}
+        {data?.score && (
+          <section className="mt-8 flex items-center gap-6 rounded-2xl border border-white/10 bg-plum-2 p-5">
+            <ScoreRing value={data.score.total} />
+            <div>
+              <h2 className="font-serif text-2xl tracking-tight">Today&apos;s score</h2>
+              <p className="mt-1 text-sm text-mist">
+                Sleep {data.score.sleep}/30 · Water {data.score.water}/20 · Steps{" "}
+                {data.score.steps}/25 · Habits {data.score.habits}/25
+              </p>
+            </div>
+          </section>
+        )}
         {data && (
           <section className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatCard
