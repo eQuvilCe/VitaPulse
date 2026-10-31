@@ -62,3 +62,13 @@ def test_cannot_touch_other_users_reminder(client, auth_headers):
     assert patch.status_code == 404
     assert client.delete(f"/api/v1/reminders/{rid}", headers=other).status_code == 404
     assert client.get("/api/v1/reminders", headers=other).json() == []
+
+
+def test_due_returns_only_matching_reminders(client, auth_headers):
+    _make(client, auth_headers, at="09:00:00", message="now")
+    _make(client, auth_headers, at="15:00:00", message="later")
+    _make(client, auth_headers, at="09:01:00", enabled=False, message="off")
+    r = client.get(
+        "/api/v1/reminders/due", params={"now": "2026-11-02T09:02:00"}, headers=auth_headers
+    )
+    assert [x["message"] for x in r.json()] == ["now"]
