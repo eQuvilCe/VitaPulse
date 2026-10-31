@@ -26,7 +26,7 @@ After changing a model, run `alembic revision --autogenerate -m "what changed"` 
 ```bash
 cd frontend
 npm install
-npm run dev                    # http://localhost:3000
+npm run dev                    # http://localhost:3001
 ```
 
 Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` if the API is not on `http://localhost:8000/api/v1`.

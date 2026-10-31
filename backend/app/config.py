@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./vitapulse.db"
     secret_key: str = "dev-secret-change-me-please-use-32-bytes-min"
     access_token_expire_minutes: int = 60
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "http://localhost:3000,http://localhost:3001"
 
     @property
     def cors_origin_list(self) -> list[str]:
