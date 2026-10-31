@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button, Card, Input } from "@/components/ui";
-import { ApiError, createPlan, googleLoginUrl, login, register } from "@/lib/api-vita";
+import { ApiError, createPlan, googleEnabled, googleLoginUrl, login, register } from "@/lib/api-vita";
 
 import { clearDraft, draftFromQuery, isComplete, loadDraft, saveDraft } from "./draft";
 import { useAppT } from "./i18n";
@@ -39,6 +39,12 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [error, setError] = useState<string | null>(params.get("error") === "google" ? t.auth.googleFailed : null);
   const [busy, setBusy] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
+  // Google sign-in stays hidden until the backend has it configured.
+  const [google, setGoogle] = useState(false);
+
+  useEffect(() => {
+    googleEnabled().then(setGoogle);
+  }, []);
 
   // /signup?height=..&weight=.. carries answers from the landing questionnaire.
   useEffect(() => {
@@ -80,19 +86,23 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
       )}
 
       <Card className="space-y-5 rounded-panel p-6 sm:p-7">
-        <a
-          href={googleLoginUrl(next ?? "/plan")}
-          className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-line-strong bg-surface text-body font-semibold text-fg transition-colors hover:border-fg-subtle hover:bg-subtle focus-visible:outline-none focus-visible:shadow-focus"
-        >
-          <GoogleIcon />
-          {t.auth.google}
-        </a>
+        {google && (
+          <>
+            <a
+              href={googleLoginUrl(next ?? "/plan")}
+              className="flex h-11 w-full items-center justify-center gap-3 rounded-full border border-line-strong bg-surface text-body font-semibold text-fg transition-colors hover:border-fg-subtle hover:bg-subtle focus-visible:outline-none focus-visible:shadow-focus"
+            >
+              <GoogleIcon />
+              {t.auth.google}
+            </a>
 
-        <div className="flex items-center gap-3 text-caption text-fg-subtle">
-          <span className="h-px flex-1 bg-line" />
-          {t.auth.or}
-          <span className="h-px flex-1 bg-line" />
-        </div>
+            <div className="flex items-center gap-3 text-caption text-fg-subtle">
+              <span className="h-px flex-1 bg-line" />
+              {t.auth.or}
+              <span className="h-px flex-1 bg-line" />
+            </div>
+          </>
+        )}
 
         <form onSubmit={onSubmit} className="space-y-4" noValidate={false}>
           {mode === "signup" && <Input label={t.auth.name} autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />}

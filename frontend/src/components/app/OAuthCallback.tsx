@@ -8,7 +8,8 @@ import { setToken } from "@/lib/api-vita";
 import { finishWithDraft } from "./AuthForm";
 import { useAppT } from "./i18n";
 
-// The backend's Google OAuth callback lands here with ?token=... (or #access_token=...).
+// The backend's Google OAuth callback lands here with #access_token=...&next=...
+// (or #error=... when sign-in failed).
 export default function OAuthCallback() {
   const { t, locale } = useAppT();
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function OAuthCallback() {
       return;
     }
     setToken(token);
-    const next = params.get("next");
+    const next = hash.get("next") ?? params.get("next");
     finishWithDraft(locale).then((target) => {
       router.replace(target ?? (next && next.startsWith("/") && !next.startsWith("//") ? next : "/plan"));
     });
