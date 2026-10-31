@@ -2,7 +2,7 @@
   "name": "VitaPulse",
   "short_name": "VitaPulse",
   "description": "AI Health OS: sleep, water, steps, food, mood and weight in one place.",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
