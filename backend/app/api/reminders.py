@@ -1,9 +1,9 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException, Response, status
 from sqlalchemy import select
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import Reminder
-from app.schemas.reminder import ReminderCreate, ReminderRead
+from app.schemas.reminder import ReminderCreate, ReminderRead, ReminderUpdate
 
 router = APIRouter(prefix="/reminders", tags=["reminders"])
 
@@ -31,3 +31,31 @@ def create_reminder(data: ReminderCreate, user: CurrentUser, db: DbSession) -> R
 def list_reminders(user: CurrentUser, db: DbSession) -> list[Reminder]:
     stmt = select(Reminder).where(Reminder.user_id == user.id).order_by(Reminder.at, Reminder.id)
     return list(db.scalars(stmt))
+
+
+def _get_owned(db: DbSession, user: CurrentUser, reminder_id: int) -> Reminder:
+    reminder = db.get(Reminder, reminder_id)
+    if reminder is None or reminder.user_id != user.id:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Reminder not found")
+    return reminder
+
+
+@router.patch("/{reminder_id}", response_model=ReminderRead)
+def update_reminder(
+    reminder_id: int, data: ReminderUpdate, user: CurrentUser, db: DbSession
+) -> Reminder:
+    reminder = _get_owned(db, user, reminder_id)
+    changes = data.model_dump(exclude_unset=True)
+    if "days" in changes:
+        changes["days"] = _days_to_str(changes["days"])
+    for field, value in changes.items():
+        setattr(reminder, field, value)
+    db.commit()
+    return reminder
+
+
+@router.delete("/{reminder_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_reminder(reminder_id: int, user: CurrentUser, db: DbSession) -> Response:
+    db.delete(_get_owned(db, user, reminder_id))
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
