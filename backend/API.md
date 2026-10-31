@@ -312,3 +312,168 @@ saves; `POST /scan` and `POST /progress/workouts` also return `new_achievements`
 `/metrics/{water_ml|steps|weight_kg|mood}` (PUT set, POST `/add`, GET list), `/sleep`, `/habits`,
 `/goals` (GET/PATCH `{sleep_minutes, water_ml, steps, calories}`), `/dashboard`,
 `/stats/week`, `/stats/weight`, `/stats/body`, `/export/daily`. See `/docs`.
+
+---
+
+## 8. Exercises & ready workouts
+
+All public (no auth). Texts come in `lang` (`en` | `ru`, default `en`). Calories depend on
+`weight_kg` (query, default 70): `kcal_per_min = MET × 3.5 × weight_kg / 200`.
+
+### GET `/exercises`
+Filters (all optional, combine with AND): `tag`, `place`, `level`, `muscle`, `equipment`, `q`
+(search in name/description, both languages), plus `lang`, `weight_kg`.
+
+| Field | Values |
+| --- | --- |
+| `tag` | `cardio | hiit | strength | core | stretch` |
+| `place` | `home | gym` |
+| `level` | `beginner | intermediate | advanced` |
+| `muscle` | `full_body | legs | glutes | core | chest | back | shoulders | arms` |
+| `equipment` | `none | mat | chair | dumbbells | kettlebell | band | jump_rope | bench | pullup_bar | machine | cable | barbell | treadmill | bike | rower | elliptical | box` |
+
+→ `[Exercise]`, sorted by name.
+
+### GET `/exercises/{id}` → `Exercise` (404 if unknown). `id` is a slug, e.g. `"jumping_jacks"`.
+
+`Exercise`:
+```json
+{
+  "id": "jumping_jacks",
+  "name": "Jumping jacks",
+  "description": "A classic full-body cardio move ...",
+  "steps": ["Stand tall, feet together ...", "..."],
+  "mistakes": ["Landing on the heels", "..."],
+  "muscles": ["full_body", "legs"],
+  "level": "beginner",
+  "places": ["home", "gym"],
+  "equipment": ["none"],
+  "tags": ["cardio", "hiit"],
+  "met": 8.0,
+  "kcal_per_min": 9.8,
+  "dosage": {"mode": "time", "sets": 3, "reps": null, "seconds": 40, "rest_sec": 20},
+  "image_url": null              // reserved for a picture/GIF; null for now — show an icon by tag
+}
+```
+`dosage.mode`: `time` (use `seconds`) or `reps` (use `reps`, e.g. `"12"` or `"10 each leg"`).
+
+### GET `/workouts` — ready-made sessions
+Filters: `place`, `level`, `tag`, `max_minutes`, plus `lang`, `weight_kg`. → `[ReadyWorkout]`.
+### GET `/workouts/{id}` → `ReadyWorkout` (404 if unknown).
+
+`ReadyWorkout`:
+```json
+{
+  "id": "hiit_15_home",
+  "title": "15-minute HIIT at home",
+  "description": "...",
+  "level": "intermediate",
+  "place": "home",
+  "tags": ["hiit", "cardio"],
+  "equipment": ["none"],
+  "duration_min": 15,
+  "kcal_estimate": 150,
+  "rounds": 3,                   // repeat the block of items this many times
+  "items": [
+    {"exercise_id": "jumping_jacks", "name": "Jumping jacks", "mode": "time",
+     "seconds": 40, "reps": null, "rest_sec": 20}
+  ]
+}
+```
+
+### POST `/workouts/{id}/complete` — auth
+Body (optional): `{"day": "2026-10-31", "duration_min": 17, "note": ""}` → 201
+`{"workout": Workout, "new_achievements": [...]}` — the same check-in as `POST /progress/workouts`
+(counts for `workouts_10` etc.). The check-in's `title` is the workout title, `kind` is derived
+from its tags, `program_id` is the ready workout id.
+
+`Workout` (check-in) gains two fields: `program_id: string | null`, `kcal: int | null`
+(`POST /progress/workouts` accepts them too).
+
+---
+
+## 9. Cooking assistant (auth)
+
+### POST `/cook/suggest`
+```json
+{
+  "ingredients": ["chicken", "rice", "broccoli", "eggs"],   // what's in the fridge, 1..30 items
+  "kcal": 550,              // optional target per serving; default: what is left of today's norm
+                            // split over the remaining meals (300..900)
+  "time_min": 30,           // optional max cooking time
+  "meal_type": "dinner",    // optional: breakfast | lunch | dinner | snack
+  "restrictions": ["vegetarian"],   // optional; default: the active plan's restrictions
+  "servings": 1,            // 1..6, default 1
+  "language": "ru"          // optional
+}
+```
+→ `{"source": "ai" | "template", "kcal_target": 550, "recipes": [CookRecipe, CookRecipe, CookRecipe]}`
+
+`CookRecipe`:
+```json
+{
+  "key": "chicken_rice_bowl",          // template id, or "ai-<hash>" for AI recipes
+  "name": "Chicken, rice and broccoli bowl",
+  "description": "High-protein bowl ready in 30 minutes.",
+  "meal_type": "lunch",
+  "time_min": 30,
+  "servings": 1,
+  "calories": 560, "protein_g": 50, "fat_g": 14, "carbs_g": 60,   // per serving
+  "ingredients": [
+    {"name": "Chicken breast", "amount": 150, "unit": "g", "have": true}
+  ],                                    // amounts for all servings
+  "missing": ["Brown rice"],            // names of ingredients with have=false
+  "steps": [
+    {"text": "Cook the rice according to the pack.", "timer_sec": null},
+    {"text": "Pan-fry the chicken, 5–6 minutes a side.", "timer_sec": 360}
+  ],
+  "tags": ["high_protein"]              // high_protein | low_calorie | vegetarian | vegan | quick
+}
+```
+Template mode matches the fridge list against 30+ built-in recipes (en/ru names, ru stems),
+always assumes salt, pepper, spices, water and oil are available, and scales portions to `kcal`.
+
+### POST `/cook/swap` — make a dish healthier
+```json
+{"dish": "Pasta carbonara", "ingredients": ["pasta", "bacon", "cream", "parmesan"],
+ "goal": "lower_kcal", "language": "en"}
+```
+`goal`: `lower_kcal | more_protein | less_sugar | less_fat` (default `lower_kcal`); `ingredients`
+optional. →
+```json
+{"source": "template", "dish": "Pasta carbonara",
+ "swaps": [{"from": "cream", "to": "milk 1.5% + 1 egg yolk", "why": "...", "kcal_saved": 150}],
+ "tips": ["Bake or grill instead of frying."],
+ "kcal_saved_total": 320}
+```
+
+### Favorite recipes
+| Method | Path | Notes |
+| --- | --- | --- |
+| GET | `/cook/favorites` | `[Favorite]`, newest first |
+| POST | `/cook/favorites` | `{recipe: CookRecipe, note?}` → `Favorite`, 201. Same `key` twice → 409 |
+| PATCH | `/cook/favorites/{id}` | `{note}` → `Favorite` |
+| DELETE | `/cook/favorites/{id}` | 204 |
+
+`Favorite`: `{id, recipe: CookRecipe, note, created_at}`.
+
+### POST `/cook/diary` — log a recipe as a meal
+`{recipe: CookRecipe, servings_eaten?: 1 (0.25..6), day?, meal_type?}` →
+`{"meal": MealRead, "new_achievements": [...]}`, 201. The meal has `source: "cook"`
+(`MealIn.source` now also accepts `"cook"`), calories/macros = per serving × `servings_eaten`.
+
+### POST `/cook/missing` — missing ingredients to the shopping list
+`{recipe: CookRecipe}` → `[ShoppingItem]` (the full list after adding). Items already on the list
+(same name, case-insensitive, unchecked) are not duplicated.
+
+### Shopping list (persistent, per user)
+| Method | Path | Notes |
+| --- | --- | --- |
+| GET | `/shopping` | `[ShoppingItem]`, unchecked first, then by name |
+| POST | `/shopping` | `{items: [{name, amount?, unit?}]}` (1..50) → full list, 201. Duplicates merged as above |
+| PATCH | `/shopping/{id}` | `{checked?, name?, amount?, unit?}` → `ShoppingItem` |
+| DELETE | `/shopping/{id}` | 204 |
+| DELETE | `/shopping?checked=true` | remove all checked items (without the flag: clear all), 204 |
+
+`ShoppingItem`: `{id, name, amount: number | null, unit: string | null, checked, source: "manual" | "cook" | "plan", created_at}`.
+To add the plan's weekly list, POST its `shopping_list` items to `/shopping`.
