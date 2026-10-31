@@ -1,12 +1,16 @@
-/* Landing-only styles. Flat: no shadows, gradients or glows. */
+/* Landing-only styles. Flat: no shadows or glows. One soft easing for all motion. */
+
+:root {
+  --vl-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 /* Content fades up once as it scrolls into view. */
 .vl-reveal {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(20px);
   transition:
-    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.8s var(--vl-ease),
+    transform 0.8s var(--vl-ease);
 }
 
 .vl-reveal.is-visible {
@@ -14,10 +18,211 @@
   transform: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .vl-reveal {
+/* ---------- Hero ---------- */
+
+/* Headline lines slide up from behind a mask, one after another. */
+.vl-line {
+  display: block;
+  overflow: hidden;
+  /* Room for Anton's tall caps inside the 0.85 line box. */
+  padding-block: 0.04em;
+  margin-block: -0.04em;
+}
+
+.vl-line > span {
+  display: block;
+  transform: translateY(105%);
+  animation: vl-line-up 1s var(--vl-ease) forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes vl-line-up {
+  to {
+    transform: none;
+  }
+}
+
+.vl-fade-up {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: vl-fade-up 0.9s var(--vl-ease) forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes vl-fade-up {
+  to {
     opacity: 1;
     transform: none;
+  }
+}
+
+.vl-video {
+  opacity: 0;
+  transition: opacity 1s var(--vl-ease);
+}
+
+.vl-video.is-playing {
+  opacity: 1;
+}
+
+/* ---------- Statement ---------- */
+
+/* Words appear one by one; the inline photo opens up to its width. */
+.vl-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.25em);
+  transition:
+    opacity 0.7s var(--vl-ease),
+    transform 0.7s var(--vl-ease);
+  transition-delay: var(--d, 0ms);
+}
+
+.is-visible .vl-word {
+  opacity: 1;
+  transform: none;
+}
+
+.vl-inline-photo {
+  display: inline-block;
+  width: 0;
+  opacity: 0;
+  transition:
+    width 1s var(--vl-ease),
+    opacity 0.6s var(--vl-ease);
+  transition-delay: var(--d, 0ms);
+}
+
+.is-visible .vl-inline-photo {
+  width: 1.5em;
+  opacity: 1;
+}
+
+/* Feature cards lift and lean a little on hover. */
+.vl-card {
+  transition: transform 0.6s var(--vl-ease);
+}
+
+@media (hover: hover) {
+  .vl-card:hover {
+    transform: translateY(-6px) rotate(-0.6deg);
+  }
+}
+
+/* Calorie ring fills once the card is in view. */
+.vl-ring {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s var(--vl-ease) 0.3s;
+}
+
+.is-visible .vl-ring {
+  stroke-dashoffset: 0.28;
+}
+
+/* Weight chart: the line draws, then the points pop in. */
+.vl-chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.4s var(--vl-ease) 0.3s;
+}
+
+.is-visible .vl-chart-line {
+  stroke-dashoffset: 0;
+}
+
+.vl-chart-dot {
+  opacity: 0;
+  transform: scale(0.2);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 0.5s var(--vl-ease),
+    transform 0.5s var(--vl-ease);
+  transition-delay: var(--d, 0ms);
+}
+
+.is-visible .vl-chart-dot {
+  opacity: 1;
+  transform: none;
+}
+
+/* The scan frame glides back and forth over the plate. */
+.vl-scan {
+  animation: vl-scan 3.2s var(--vl-ease) infinite alternate;
+}
+
+@keyframes vl-scan {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--travel, 120px));
+  }
+}
+
+/* ---------- Quiz ---------- */
+
+.vl-marker {
+  transition: left 0.9s var(--vl-ease);
+}
+
+/* ---------- Marquee ---------- */
+
+.vl-marquee {
+  display: flex;
+  width: max-content;
+  animation: vl-marquee 36s linear infinite;
+}
+
+@keyframes vl-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .vl-reveal,
+  .vl-word,
+  .vl-fade-up,
+  .vl-line > span {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  .vl-inline-photo {
+    width: 1.5em;
+    opacity: 1;
+    transition: none;
+  }
+
+  .vl-ring {
+    stroke-dashoffset: 0.28;
+    transition: none;
+  }
+
+  .vl-chart-line {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .vl-chart-dot {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .vl-scan,
+  .vl-marquee {
+    animation: none;
+  }
+
+  .vl-card,
+  .vl-marker {
     transition: none;
   }
 }

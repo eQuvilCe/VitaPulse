@@ -35,7 +35,6 @@ export default function Photo({ id, alt, width, height, className, priority, siz
 }
 
 export const PHOTOS = {
-  // A trail runner on a sunlit ridge above the clouds.
-  hero: "1530143311094-34d807799e8f",
   bowl: "1512621776951-a57141f2eefd",
+  plate: "1490645935967-10de6ba17061",
 } as const;
