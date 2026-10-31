@@ -12,4 +12,6 @@ class TelegramClient:
         return r.json().get("result", [])
 
     def send_message(self, chat_id: int, text: str) -> None:
-        self._client.post("/sendMessage", json={"chat_id": chat_id, "text": text}).raise_for_status()
+        self._client.post(
+            "/sendMessage", json={"chat_id": chat_id, "text": text}
+        ).raise_for_status()
