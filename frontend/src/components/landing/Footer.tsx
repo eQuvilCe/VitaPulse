@@ -1,19 +1,40 @@
+"use client";
+
 import Link from "next/link";
+
+import { useCopy } from "./copy";
 import Logo from "./Logo";
 
 export default function Footer() {
+  const { c } = useCopy();
+  const links = [
+    { href: "#how", label: c.nav.how },
+    { href: "#features", label: c.nav.features },
+    { href: "#recipes", label: c.nav.recipes },
+    { href: "#faq", label: c.nav.faq },
+  ];
+
   return (
-    <footer className="bg-plum px-5 pb-10 text-glow sm:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 border-t border-white/10 pt-10 text-sm text-mist sm:flex-row">
-        <Logo />
-        <nav className="flex flex-wrap justify-center gap-6">
-          <a href="#features" className="link-soft">Features</a>
-          <a href="#how" className="link-soft">How it works</a>
-          <a href="#faq" className="link-soft">FAQ</a>
-          <Link href="/login" className="link-soft">Log in</Link>
+    <footer className="border-t border-line px-4 pb-10 pt-12 sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
+        <div className="max-w-xs">
+          <Logo />
+          <p className="mt-3 text-body text-fg-muted">{c.footer.tagline}</p>
+        </div>
+        <nav className="flex flex-wrap gap-x-6 gap-y-3 text-body text-fg-muted">
+          {links.map((l) => (
+            <a key={l.href} href={l.href} className="transition-colors hover:text-brand-700">
+              {l.label}
+            </a>
+          ))}
+          <Link href="/login" className="transition-colors hover:text-brand-700">
+            {c.nav.login}
+          </Link>
         </nav>
-        <p>© {new Date().getFullYear()} Vita Health · Not medical advice</p>
       </div>
+      <p className="mx-auto mt-10 max-w-6xl text-caption text-fg-subtle">
+        © {new Date().getFullYear()} Vita Health · {c.footer.disclaimer}
+      </p>
     </footer>
   );
 }

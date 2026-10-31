@@ -1,8 +1,4 @@
-// Shared heartbeat model. The landing breathes at a calm resting 40 BPM.
-export const BEAT_MS = 1500;
-
-// Fired when the intro hands over to the hero (detail: ripple origin in px).
-export const RIPPLE_EVENT = "vp:intro-ripple";
+// Shared heartbeat model for the intro and the flat pulse drawings.
 
 const wave = (x: number, mu: number, sigma: number, amp: number) =>
   amp * Math.exp(-((x - mu) ** 2) / (2 * sigma * sigma));
@@ -33,8 +29,6 @@ export function ecgPath(width: number, height: number, beats = 3, samples = 360)
   }
   return d;
 }
-
-export const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 // Gentlest S-curve: peak speed only ~1.57x the average, so no lurches.
 export const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;

@@ -2,14 +2,15 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { RIPPLE_EVENT } from "../rhythm";
+
+import { useCopy } from "../copy";
 
 // three.js only loads when the intro actually plays.
 const IntroScene = dynamic(() => import("./IntroScene"), { ssr: false });
 
 const READY_TIMEOUT_MS = 2500;
-const HARD_TIMEOUT_MS = 9500;
-const RIPPLE_MS = 1450;
+const HARD_TIMEOUT_MS = 11000;
+const RIPPLE_MS = 1500;
 
 // The intro plays on full page loads; client-side navigation back home skips it.
 let played = false;
@@ -28,32 +29,26 @@ function canPlay() {
   }
 }
 
-// Full-screen 3D ECG intro. On the final beat's peak a ripple opens the overlay
-// from that point and hands its wave over to the hero field underneath.
+// Full-screen 3D ECG intro: the pulse runs into the night, then writes VITA
+// and a ripple opens the dark overlay from the word onto the light hero.
 // The overlay is server-rendered so the page never flashes, a CSS failsafe in
-// globals.css hides it if JavaScript never runs, and reduced-motion, weak or
+// landing.css hides it if JavaScript never runs, and reduced-motion, weak or
 // WebGL-less devices go straight to the site.
 export default function IntroLoader() {
+  const { c } = useCopy();
   const [phase, setPhase] = useState<"show" | "ripple" | "done" | "gone">(() => (played ? "gone" : "show"));
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
   const [play, setPlay] = useState(false);
   const [started, setStarted] = useState(false);
   const ready = useRef(false);
-  const rippled = useRef(false);
+  const rippling = useRef(false);
   const timers = useRef<number[]>([]);
-
-  const ripple = (x: number, y: number) => {
-    rippled.current = true;
-    window.dispatchEvent(new CustomEvent(RIPPLE_EVENT, { detail: { x, y } }));
-  };
 
   const finish = useCallback(() => {
     played = true;
-    // Bailed out before the peak: still wake the hero field with a centred wave.
-    if (!rippled.current) ripple(window.innerWidth / 2, window.innerHeight / 2);
     const root = document.documentElement;
-    root.classList.remove("intro-lock", "intro-pending");
-    root.classList.add("intro-done");
+    root.classList.remove("vl-lock", "vl-pending");
+    root.classList.add("vl-done");
     // Hide now, but tear the WebGL scene down only when the browser is idle so
     // disposing it never hitches the hero's entrance.
     setPhase("done");
@@ -61,16 +56,30 @@ export default function IntroLoader() {
     idle(() => setPhase("gone"), { timeout: 2500 });
   }, []);
 
+  // Opens the overlay from (x, y); the hero rises as it goes.
+  const ripple = useCallback(
+    (x: number, y: number) => {
+      if (rippling.current) return;
+      rippling.current = true;
+      setOrigin({ x, y });
+      setPhase("ripple");
+      document.documentElement.classList.add("vl-done");
+      timers.current.push(window.setTimeout(finish, RIPPLE_MS));
+    },
+    [finish],
+  );
+
+  const skip = useCallback(() => ripple(window.innerWidth / 2, window.innerHeight / 2), [ripple]);
+
   useIsoLayoutEffect(() => {
     const root = document.documentElement;
     if (played || !canPlay()) {
-      rippled.current = true;
-      root.classList.add("intro-done", "intro-skip");
+      root.classList.add("vl-done", "vl-skip");
       setPhase("gone");
       return;
     }
     // Hide the hero content under the overlay; it rises once the ripple opens.
-    root.classList.add("intro-pending", "intro-lock");
+    root.classList.add("vl-pending", "vl-lock");
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
     setPlay(true);
@@ -81,42 +90,42 @@ export default function IntroLoader() {
     return () => {
       t.forEach(window.clearTimeout);
       t.length = 0;
-      root.classList.remove("intro-lock");
+      root.classList.remove("vl-lock");
     };
   }, [finish]);
 
-  const onPeak = useCallback(
-    (x: number, y: number) => {
-      setOrigin({ x, y });
-      setPhase("ripple");
-      document.documentElement.classList.add("intro-done");
-      ripple(x, y);
-      timers.current.push(window.setTimeout(finish, RIPPLE_MS));
-    },
-    [finish],
-  );
+  useEffect(() => {
+    if (phase !== "show") return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && skip();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [phase, skip]);
 
   if (phase === "gone") return null;
 
   return (
     <div
-      className={`intro ${phase === "ripple" ? "intro-ripple" : ""} ${phase === "done" ? "hidden" : ""}`}
+      className={`vl-intro ${phase === "ripple" ? "is-ripple" : ""} ${phase === "done" ? "hidden" : ""}`}
       style={{ "--rx": `${origin.x}px`, "--ry": `${origin.y}px` } as React.CSSProperties}
-      aria-hidden="true"
     >
-      <div className={`intro-canvas ${started ? "is-on" : ""}`}>
+      <div className={`vl-intro-canvas ${started ? "is-on" : ""}`} aria-hidden="true">
         {play && (
           <IntroScene
             onStart={() => {
               ready.current = true;
               setStarted(true);
             }}
-            onPeak={onPeak}
+            onPeak={ripple}
           />
         )}
       </div>
-      <div className="intro-ring" />
-      <div className="intro-flash" />
+      <div className="vl-intro-ring" aria-hidden="true" />
+      <div className="vl-intro-flash" aria-hidden="true" />
+      {phase === "show" && (
+        <button type="button" onClick={skip} className="vl-intro-skip">
+          {c.intro.skip}
+        </button>
+      )}
     </div>
   );
 }
