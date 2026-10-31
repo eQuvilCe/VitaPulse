@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { today } from "./habits";
 
 export type Goals = {
   sleep_minutes: number;
@@ -32,5 +33,5 @@ export type Dashboard = {
 };
 
 export function fetchDashboard(): Promise<Dashboard> {
-  return api<Dashboard>("/dashboard");
+  return api<Dashboard>(`/dashboard?day=${today()}`);
 }

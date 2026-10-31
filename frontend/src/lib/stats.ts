@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { today } from "./habits";
 
 export type DayStats = {
   day: string;
@@ -17,7 +18,7 @@ export type Week = {
 };
 
 export function fetchWeek(span = 7): Promise<Week> {
-  return api<Week>(`/stats/week?span=${span}`);
+  return api<Week>(`/stats/week?end=${today()}&span=${span}`);
 }
 
 export type Report = {
@@ -32,5 +33,5 @@ export type Report = {
 };
 
 export function fetchReport(span = 7): Promise<Report> {
-  return api<Report>(`/stats/report?span=${span}`);
+  return api<Report>(`/stats/report?end=${today()}&span=${span}`);
 }
