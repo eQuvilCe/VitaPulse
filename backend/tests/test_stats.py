@@ -59,3 +59,28 @@ def test_weight_trend_ignores_days_outside_window(client, auth_headers):
     )
     r = client.get("/api/v1/stats/weight?end=2026-10-10&span=7", headers=auth_headers).json()
     assert r["points"] == []
+
+
+def test_report_summarises_the_window(client, auth_headers):
+    h = auth_headers
+    client.put("/api/v1/sleep", json={"day": "2026-10-05", "minutes": 450}, headers=h)
+    client.put("/api/v1/metrics/steps", json={"day": "2026-10-06", "value": 9000}, headers=h)
+    client.put("/api/v1/metrics/steps", json={"day": "2026-10-07", "value": 11000}, headers=h)
+    client.post(
+        "/api/v1/meals",
+        json={"day": "2026-10-07", "name": "Plov", "calories": 700},
+        headers=h,
+    )
+    r = client.get("/api/v1/stats/report?end=2026-10-07&span=7", headers=h).json()
+    assert r["start"] == "2026-10-01"
+    assert r["days_logged"] == 3
+    assert r["goal_hits"] == {"sleep": 1, "water": 0, "steps": 2}
+    assert r["best_steps_day"] == "2026-10-07"
+    assert r["avg_calories"] == 100
+
+
+def test_report_empty_window(client, auth_headers):
+    r = client.get("/api/v1/stats/report?end=2026-10-07", headers=auth_headers).json()
+    assert r["days_logged"] == 0
+    assert r["best_steps_day"] is None
+    assert r["avg_sleep_minutes"] is None
