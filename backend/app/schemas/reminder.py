@@ -10,6 +10,14 @@ def _parse_days(value: str) -> list[int]:
     return [int(d) for d in value.split(",") if d != ""]
 
 
+def _check_days(days: list[int] | None) -> list[int] | None:
+    if days is None:
+        return None
+    if any(d < 0 or d > 6 for d in days):
+        raise ValueError("days must be weekday numbers 0 (Mon) to 6 (Sun)")
+    return sorted(set(days))
+
+
 class ReminderBase(BaseModel):
     kind: ReminderKind
     at: time
@@ -17,12 +25,7 @@ class ReminderBase(BaseModel):
     message: str = Field(default="", max_length=200)
     enabled: bool = True
 
-    @field_validator("days")
-    @classmethod
-    def _valid_days(cls, days: list[int]) -> list[int]:
-        if any(d < 0 or d > 6 for d in days):
-            raise ValueError("days must be weekday numbers 0 (Mon) to 6 (Sun)")
-        return sorted(set(days))
+    _valid_days = field_validator("days")(_check_days)
 
 
 class ReminderCreate(ReminderBase):
@@ -36,7 +39,7 @@ class ReminderUpdate(BaseModel):
     message: str | None = Field(default=None, max_length=200)
     enabled: bool | None = None
 
-    _valid_days = field_validator("days")(ReminderBase._valid_days.__func__)  # type: ignore[attr-defined]
+    _valid_days = field_validator("days")(_check_days)
 
 
 class ReminderRead(ReminderBase):
