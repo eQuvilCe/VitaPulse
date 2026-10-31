@@ -19,3 +19,18 @@ export type Week = {
 export function fetchWeek(span = 7): Promise<Week> {
   return api<Week>(`/stats/week?span=${span}`);
 }
+
+export type Report = {
+  start: string;
+  end: string;
+  days_logged: number;
+  goal_hits: { sleep: number; water: number; steps: number };
+  best_steps_day: string | null;
+  avg_sleep_minutes: number | null;
+  avg_steps: number;
+  avg_calories: number;
+};
+
+export function fetchReport(span = 7): Promise<Report> {
+  return api<Report>(`/stats/report?span=${span}`);
+}
