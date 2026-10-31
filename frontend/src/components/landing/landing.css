@@ -149,7 +149,8 @@
 
 /* The scan frame glides back and forth over the plate. */
 .vl-scan {
-  animation: vl-scan 3.2s var(--vl-ease) infinite alternate;
+  /* Symmetric easing: a looping sweep should not linger at either end. */
+  animation: vl-scan 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
 }
 
 @keyframes vl-scan {
