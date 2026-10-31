@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import HabitList from "@/components/HabitList";
 import Logo from "@/components/landing/Logo";
 import MealForm from "@/components/MealForm";
 import QuickAdd from "@/components/QuickAdd";
@@ -13,6 +14,7 @@ import StatCard from "@/components/StatCard";
 import WeekChart from "@/components/WeekChart";
 import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
+import { createHabit, fetchHabits, setDone, type Habit } from "@/lib/habits";
 import { addMeal } from "@/lib/meals";
 import { addMetric } from "@/lib/metrics";
 import { logSleep } from "@/lib/sleep";
@@ -24,6 +26,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<Dashboard | null>(null);
   const [week, setWeek] = useState<Week | null>(null);
+  const [habits, setHabits] = useState<Habit[] | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -41,6 +44,9 @@ export default function DashboardPage() {
       .catch(() => setFailed(true));
     fetchWeek()
       .then(setWeek)
+      .catch(() => undefined);
+    fetchHabits()
+      .then(setHabits)
       .catch(() => undefined);
   }, []);
 
@@ -122,6 +128,15 @@ export default function DashboardPage() {
               unit="steps"
               presets={[1000, 2500, 5000]}
               onAdd={(n) => addMetric("steps", n).then(reload)}
+            />
+          </section>
+        )}
+        {habits && (
+          <section className="mt-6">
+            <HabitList
+              habits={habits}
+              onToggle={(h) => setDone(h.id, !h.done_today).then(reload)}
+              onCreate={(name) => createHabit(name).then(reload)}
             />
           </section>
         )}
