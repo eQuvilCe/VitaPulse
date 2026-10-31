@@ -10,6 +10,7 @@ const display = ["var(--font-display)", "var(--font-display-cyr)", "Impact", "sa
 
 const config: Config = {
   content: ["./src/**/*.{ts,tsx}"],
+  // Themes switch CSS variables, not classes: see globals.css.
   theme: {
     extend: {
       fontFamily: {
@@ -26,6 +27,9 @@ const config: Config = {
         fg: { DEFAULT: vh("fg"), muted: vh("fg-muted"), subtle: vh("fg-subtle") },
         brand: { DEFAULT: vh("brand-600"), ...scale("brand", [50, 100, 300, 500, 600, 700, 800]) },
         accent: { DEFAULT: vh("accent"), on: vh("on-accent") },
+        // Fixed, theme-independent: text and scrims over photos and video.
+        cream: vh("cream"),
+        ink: vh("ink"),
         kcal: { DEFAULT: vh("kcal-500"), ...scale("kcal", [50, 100, 300, 500, 600, 700]) },
         warn: { DEFAULT: vh("warn"), soft: vh("warn-soft"), strong: vh("warn-strong") },
         danger: { DEFAULT: vh("danger"), soft: vh("danger-soft") },

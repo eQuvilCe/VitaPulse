@@ -1,20 +1,40 @@
 # Vita Health — design
 
 Flat, confident, like the cover of a nature magazine. Cream paper, black ink, one violet accent.
-No 3D, no glow, no gradients, no glass, no shadows.
+No 3D, no glow, no glass, no shadows. Light and dark themes share one violet accent.
 
-## Tokens (`src/app/globals.css`, mapped in `tailwind.config.ts`)
+## Themes and tokens
 
-| Token | Value | Use |
-|---|---|---|
-| `canvas` / `surface` | `#F7F4E8` | every background (never pure white) |
-| `subtle` | `#EEEADB` | quiet fills: segmented controls, hover |
-| `fg` | `#000000` | text, primary buttons, outlines, data fills |
-| `line` | `#C6C3BA` | muted dividers and resting input borders |
-| `accent` / `accent-on` | `#643AED` / `#F7F4E8` | **background of one feature block only** — never text, never a border |
-| `kcal-*` | earth browns | calorie data in the cabinet (quiet, not a second accent) |
+All colour comes from CSS variables in `src/app/globals.css`, mapped to Tailwind in
+`tailwind.config.ts`. Components never branch on the theme and never hard-code colours
+(no `text-white`, `bg-black`, hex values or `white/10`): use the token classes below and both
+themes work for free.
 
-`brand-*` now resolves to ink so older cabinet code stays monochrome.
+| Token (Tailwind) | Light | Dark | Use |
+|---|---|---|---|
+| `canvas` | `#F7F4E8` cream | `#12110E` warm near-black | page background |
+| `surface` | `#F7F4E8` | `#1A1915` | cards, inputs |
+| `subtle` | `#EEEADB` | `#24221D` | quiet fills: segmented controls, hover |
+| `fg` / `fg-muted` / `fg-subtle` | black / `#4A4842` / `#7D7A71` | cream / `#BEBAAF` / `#8A867C` | text; `fg` is also the primary button fill |
+| `line` | `#C6C3BA` | cream ~16% | dividers, resting input borders |
+| `line-strong` | black | cream ~20% | card and control outlines |
+| `accent` / `accent-on` | `#643AED` / cream | same | **background of one block per screen only** — never text or borders |
+| `cream` / `ink` | cream / black | same (fixed) | text and scrims over photos and video only |
+| `brand-*` | ink scale | cream scale | legacy name for ink: active states, healthy data |
+| `kcal-*`, `warn`, `danger`, `info` | earth / semantic | lifted for dark | calorie data and status |
+
+Rules of thumb: text on `bg-fg` is `text-canvas` (not `text-white`); text on `bg-accent` is
+`text-accent-on`; outlines are `border-line-strong`; dividers are `border-line`.
+
+**Switching.** `:root[data-theme="dark"]` (or `light`) is an explicit choice; with none, the
+system theme applies through `prefers-color-scheme`. An inline script in `app/layout.tsx`
+applies the saved choice before first paint, so there is no flash.
+
+**Toggles** (export from `@/components/ui`, use them in every navbar, including the cabinet):
+- `ThemeToggle` — sun/moon button; saves to `localStorage["vh-theme"]`. `useTheme()` returns
+  `{ theme, setTheme }` if a screen needs the current theme.
+- `LanguageToggle` — EN/RU; English by default for non-Russian browsers.
+Both inherit `currentColor`, so they work on the page and over the hero video.
 
 ## Type
 
@@ -25,7 +45,7 @@ No 3D, no glow, no gradients, no glass, no shadows.
 ## Shape
 
 - 20px radius on everything: buttons, cards, inputs, images, tags.
-- No shadows: separate things with a 1px black outline (`border-fg`) or a `line` divider.
+- No shadows: separate things with a 1px outline (`border-line-strong`) or a `line` divider.
 
 ## Components (`src/components/ui`)
 

@@ -3,8 +3,10 @@
 import { LOCALES, useI18n } from "@/i18n/I18nProvider";
 import { cx } from "@/lib/cx";
 
-// Compact EN / RU segmented toggle. `onDark` fits the landing's night navbar.
-export default function LanguageSwitcher({ onDark = false, className }: { onDark?: boolean; className?: string }) {
+// Compact EN / RU toggle. It inherits the text colour, so it fits the cream
+// page, the dark theme and the hero video alike. `onDark` is kept for older
+// call sites and no longer changes anything.
+export default function LanguageSwitcher({ className }: { onDark?: boolean; className?: string }) {
   const { locale, setLocale, t } = useI18n();
 
   return (
@@ -12,8 +14,7 @@ export default function LanguageSwitcher({ onDark = false, className }: { onDark
       role="group"
       aria-label={t.language.label}
       className={cx(
-        "inline-flex items-center rounded-full p-0.5 text-[12px] font-bold tracking-wide",
-        onDark ? "bg-white/[0.07] ring-1 ring-inset ring-white/10" : "bg-subtle ring-1 ring-inset ring-line",
+        "inline-flex h-10 items-center gap-0.5 rounded-card border border-[color-mix(in_srgb,currentColor_30%,transparent)] p-1 text-[13px] font-medium",
         className,
       )}
     >
@@ -28,14 +29,8 @@ export default function LanguageSwitcher({ onDark = false, className }: { onDark
             aria-pressed={active}
             title={t.language[l]}
             className={cx(
-              "rounded-full px-2.5 py-1 uppercase transition-colors duration-300",
-              onDark
-                ? active
-                  ? "bg-white/15 text-glow"
-                  : "text-mist hover:text-glow"
-                : active
-                  ? "bg-surface text-fg shadow-card"
-                  : "text-fg-muted hover:text-fg",
+              "h-full rounded-[14px] px-2.5 uppercase transition-[background-color,color,opacity] duration-300",
+              active ? "bg-[color-mix(in_srgb,currentColor_14%,transparent)]" : "opacity-60 hover:opacity-100",
             )}
           >
             {l}

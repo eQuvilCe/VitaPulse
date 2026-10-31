@@ -5,12 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { cx } from "@/lib/cx";
 import { useCopy } from "./copy";
 
-const POSTER = "/video/hero-run.jpg";
-const VIDEO = "/video/hero-run.mp4";
+const POSTER = "/video/hero-athlete.jpg";
+const VIDEO = "/video/hero-athlete.mp4";
 
 const d = (ms: number) => ({ "--d": `${ms}ms` }) as React.CSSProperties;
 
-// Full-bleed video of a runner in a sunlit forest (Pexels, free licence).
+// Full-bleed video of an athlete running across a sunny stadium (Pexels, free
+// licence), mirrored so the runner sits to the right of the headline.
 // The poster paints first; the video fades in once it actually plays, and
 // reduced-motion visitors keep the still poster. The footage drifts slower
 // than the page while scrolling, and the headline lines rise one by one.
@@ -54,13 +55,13 @@ export default function Hero() {
   }, [motion]);
 
   return (
-    <section id="top" className="relative isolate flex h-[100svh] max-h-[1000px] min-h-[600px] items-end overflow-hidden text-canvas">
+    <section id="top" className="relative isolate flex h-[100svh] max-h-[1000px] min-h-[600px] items-end overflow-hidden text-cream">
       <div ref={media} className="absolute inset-0 -z-20 will-change-transform" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={POSTER} alt="" className="absolute inset-0 h-full w-full bg-kcal-300 object-cover object-[45%_center]" />
+        <img src={POSTER} alt="" className="absolute inset-0 h-full w-full -scale-x-100 bg-kcal-300 object-cover object-[22%_center]" />
         {motion && (
           <video
-            className={cx("vl-video absolute inset-0 h-full w-full object-cover object-[45%_center]", playing && "is-playing")}
+            className={cx("vl-video absolute inset-0 h-full w-full -scale-x-100 object-cover object-[22%_center]", playing && "is-playing")}
             poster={POSTER}
             autoPlay
             muted
@@ -74,7 +75,7 @@ export default function Hero() {
         )}
       </div>
       {/* A light scrim at the bottom keeps the cream headline readable. */}
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-fg/55 via-fg/20 to-transparent" aria-hidden="true" />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-ink/55 via-ink/20 to-transparent" aria-hidden="true" />
       <p className="sr-only">{h.photo}</p>
 
       <div className="mx-auto w-full max-w-[1400px] px-4 pb-24 sm:px-8 sm:pb-32">
@@ -91,7 +92,7 @@ export default function Hero() {
           </p>
           <a
             href="#plan"
-            className="vl-fade-up inline-flex h-14 w-fit items-center rounded-card border border-canvas px-7 text-base font-medium transition-colors duration-300 hover:bg-canvas hover:text-fg"
+            className="vl-fade-up inline-flex h-14 w-fit items-center rounded-card border border-cream px-7 text-base font-medium transition-colors duration-300 hover:bg-cream hover:text-ink"
             style={d(680)}
           >
             {h.cta}
