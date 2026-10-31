@@ -29,7 +29,7 @@ class BmiRead(BaseModel):
 
 def compute(height_cm: float | None, weight_kg: float | None, target: float | None) -> BmiRead:
     if not height_cm or not weight_kg:
-        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "height_and_weight_required")
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_CONTENT, "height_and_weight_required")
     value = body.bmi(weight_kg, height_cm)
     low, high = body.healthy_range(height_cm)
     target_bmi = body.bmi(target, height_cm) if target else None
@@ -48,17 +48,21 @@ def compute(height_cm: float | None, weight_kg: float | None, target: float | No
     )
 
 
-Height = Query(default=None, gt=100, lt=250)
-Weight = Query(default=None, gt=30, lt=300)
+def _height():
+    return Query(default=None, gt=100, lt=250)
+
+
+def _weight():
+    return Query(default=None, gt=30, lt=300)
 
 
 @router.get("", response_model=BmiRead)
 def my_bmi(
     user: CurrentUser,
     db: DbSession,
-    height_cm: float | None = Height,
-    weight_kg: float | None = Weight,
-    target_weight_kg: float | None = Weight,
+    height_cm: float | None = _height(),
+    weight_kg: float | None = _weight(),
+    target_weight_kg: float | None = _weight(),
 ) -> BmiRead:
     plan = userdata.active_plan(db, user.id)
     height = height_cm or user.height_cm or (plan.input["height_cm"] if plan else None)
@@ -75,7 +79,7 @@ def my_bmi(
 def calc_bmi(
     height_cm: float = Query(gt=100, lt=250),
     weight_kg: float = Query(gt=30, lt=300),
-    target_weight_kg: float | None = Weight,
+    target_weight_kg: float | None = _weight(),
 ) -> BmiRead:
     """Public calculator for the landing page."""
     return compute(height_cm, weight_kg, target_weight_kg)
