@@ -20,7 +20,7 @@ export default function Statement() {
 
   return (
     <section id="features" className="px-4 py-20 sm:px-8 sm:py-32">
-      <Reveal as="h2" className="mx-auto max-w-6xl text-center font-display text-[clamp(44px,9.5vw,120px)] uppercase leading-[0.85]">
+      <Reveal as="h2" className="mx-auto max-w-6xl text-center font-display text-[clamp(44px,9.5vw,120px)] uppercase leading-[0.92]">
         {s.before}{" "}
         <Photo
           id={PHOTOS.bowl}

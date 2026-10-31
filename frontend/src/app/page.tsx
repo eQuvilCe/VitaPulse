@@ -1,5 +1,6 @@
 import "@/components/landing/landing.css";
 
+import Closing from "@/components/landing/Closing";
 import Footer from "@/components/landing/Footer";
 import Header from "@/components/landing/Header";
 import Hero from "@/components/landing/Hero";
@@ -14,6 +15,7 @@ export default function Home() {
         <Hero />
         <Statement />
         <Quiz />
+        <Closing />
       </main>
       <Footer />
     </div>

@@ -72,7 +72,7 @@ export default function Header() {
           </div>
           <a
             href="#plan"
-            className="inline-flex h-10 items-center rounded-card border border-canvas px-4 text-caption font-medium transition-colors hover:bg-canvas hover:text-fg sm:px-5"
+            className="inline-flex h-10 items-center whitespace-nowrap rounded-card border border-canvas px-3 text-caption font-medium transition-colors hover:bg-canvas hover:text-fg sm:px-5"
           >
             {c.nav.cta}
           </a>

@@ -4,7 +4,8 @@ import "./globals.css";
 import I18nProvider from "@/i18n/I18nProvider";
 
 const sans = Inter({ subsets: ["latin", "cyrillic"], variable: "--font-sans" });
-const display = Anton({ weight: "400", subsets: ["latin"], variable: "--font-display" });
+// No metric fallback: it would cover Cyrillic before Oswald gets the chance.
+const display = Anton({ weight: "400", subsets: ["latin"], variable: "--font-display", adjustFontFallback: false });
 // Anton has no Cyrillic glyphs; Oswald fills them in for Russian headlines.
 const displayCyr = Oswald({ weight: "700", subsets: ["cyrillic"], variable: "--font-display-cyr" });
 
