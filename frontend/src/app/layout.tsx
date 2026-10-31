@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import I18nProvider from "@/i18n/I18nProvider";
 
 const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Fraunces({
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <I18nProvider>{children}</I18nProvider>
+      </body>
     </html>
   );
 }

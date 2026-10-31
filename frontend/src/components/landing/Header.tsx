@@ -2,18 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useI18n } from "@/i18n/I18nProvider";
 import Logo from "./Logo";
 
-const NAV = [
-  { id: "features", label: "Features" },
-  { id: "how", label: "How it works" },
-  { id: "dashboard", label: "Dashboard" },
-  { id: "faq", label: "FAQ" },
-];
+const NAV = ["features", "how", "dashboard", "faq"] as const;
 
 // Floating glass navbar: tightens once you scroll, a pill glides under the
 // hovered link, the current section stays marked, and phones get a sheet menu.
 export default function Header() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -38,7 +37,7 @@ export default function Header() {
     );
     const hero = document.querySelector("#top");
     if (hero) observer.observe(hero);
-    NAV.forEach(({ id }) => {
+    NAV.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -49,7 +48,7 @@ export default function Header() {
   useEffect(() => {
     const el = target ? links.current[target] : null;
     setPill(el ? { left: el.offsetLeft, width: el.offsetWidth } : null);
-  }, [target, scrolled]);
+  }, [target, scrolled, t]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("menu-open", open);
@@ -63,7 +62,7 @@ export default function Header() {
         }`}
       >
         <div className="flex items-center justify-between gap-4 pl-4 pr-2">
-          <Link href="/" aria-label="VitaPulse home" className="shrink-0 rounded-full">
+          <Link href="/" aria-label={t.brand.home} className="shrink-0 rounded-full">
             <Logo />
           </Link>
 
@@ -73,7 +72,7 @@ export default function Header() {
               style={{ left: pill?.left ?? 0, width: pill?.width ?? 0, opacity: pill ? 1 : 0 }}
               aria-hidden="true"
             />
-            {NAV.map(({ id, label }) => (
+            {NAV.map((id) => (
               <a
                 key={id}
                 ref={(el) => {
@@ -86,24 +85,25 @@ export default function Header() {
                   active === id || hovered === id ? "text-glow" : "text-mist"
                 }`}
               >
-                {label}
+                {t.nav[id]}
               </a>
             ))}
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <Link href="/login" className="hidden rounded-full px-4 py-2 text-sm text-mist transition-colors duration-500 hover:text-glow sm:block">
-              Log in
+            <LanguageSwitcher onDark className="mr-1" />
+            <Link href="/login" className="hidden whitespace-nowrap rounded-full px-4 py-2 text-sm text-mist transition-colors duration-500 hover:text-glow sm:block">
+              {t.nav.login}
             </Link>
-            <Link href="/register" className="btn-warm rounded-full px-5 py-2.5 text-sm font-semibold">
-              Start free
+            <Link href="/register" className="btn-warm whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold">
+              {t.nav.start}
             </Link>
             <button
               type="button"
               onClick={() => setOpen((o) => !o)}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
               className="relative ml-1 h-10 w-10 rounded-full transition-colors hover:bg-white/10 md:hidden"
             >
               <span className={`burger ${open ? "is-open" : ""}`} aria-hidden="true">
@@ -117,7 +117,7 @@ export default function Header() {
         <div id="mobile-menu" className={`menu-sheet md:hidden ${open ? "is-open" : ""}`}>
           <div className="overflow-hidden">
             <nav className="flex flex-col gap-1 px-2 pb-3 pt-3">
-              {[...NAV.map(({ id, label }) => ({ href: `#${id}`, label })), { href: "/login", label: "Log in" }].map(
+              {[...NAV.map((id) => ({ href: `#${id}`, label: t.nav[id] })), { href: "/login", label: t.nav.login }].map(
                 ({ href, label }, i) => (
                   <a
                     key={href}
