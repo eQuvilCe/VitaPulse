@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 
@@ -23,4 +24,7 @@ class SessionStore:
             self._save()
 
     def _save(self) -> None:
-        self._path.write_text(json.dumps(self._data))
+        fd = os.open(self._path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as f:
+            f.write(json.dumps(self._data))
+        os.chmod(self._path, 0o600)
