@@ -38,6 +38,8 @@ Interactive docs: `/docs` (Swagger) on the same host.
 Google flow for the frontend: link the button to `GET {API}/auth/google/login?next=/app`, add a
 page `/auth/callback` that reads `location.hash`, stores `access_token` and navigates to `next`.
 A Google login with an email that already has a password account links to that account.
+Configure with `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` (must point to
+`/api/v1/auth/google/callback` and be registered in Google Cloud) and `FRONTEND_URL`.
 
 ---
 
@@ -63,8 +65,15 @@ Request `PlanInput`:
 Known restriction codes (used by the template fallback; AI understands anything):
 `vegetarian, vegan, pescatarian, lactose_free, gluten_free, nut_free, no_pork, low_carb, halal`.
 
+With AI on, building a plan takes about 1–3 minutes (one long generation); show a progress
+state and keep the request open. Without AI it is instant. Calories, macros, water and the
+forecast always come from the formulas (Mifflin-St Jeor × activity, ±7700 kcal per kg, a safe
+pace of 0.5 kg/week for loss and 0.25 kg/week for gain, max 1% / 0.5% of body weight per week,
+floor 1200 kcal for women and 1500 for men); only the menu, shopping list and workouts are
+written by the AI.
+
 Saving a plan also updates the profile (`height_cm`, `sex`, `activity`, `birth_year`), logs today's
-`weight_kg` metric if none is logged, and sets `goals.calories` to the plan target.
+`weight_kg` metric if none is logged, and sets `goals.calories` / `goals.water_ml` to the plan targets.
 
 Response `Plan` (201 for `POST /plan`, 200 for preview):
 ```json
@@ -126,7 +135,7 @@ Units: `g | ml | pcs | tbsp | tsp`.
 ### POST `/scan` — `multipart/form-data`
 | Field | Type | Notes |
 | --- | --- | --- |
-| `image` | file | jpeg/png/webp/gif, ≤ 8 MB |
+| `image` | file | jpeg/png/webp/gif, ≤ 5 MB (the type is checked from the bytes; 413/415 otherwise) |
 | `add_to_diary` | bool | default `false` |
 | `day` | date | default today; used with `add_to_diary` |
 | `meal_type` | string | `breakfast/lunch/dinner/snack`, optional |
@@ -208,12 +217,12 @@ Missing height or weight → 422 `{"detail": "height_and_weight_required"}`.
 {"day": "2026-10-31", "title": "Protein first", "text": "You're 50 g short on protein ...",
  "category": "nutrition", "source": "ai"}
 ```
-`category`: `nutrition | workout | water | sleep | motivation`. `?refresh=true` regenerates.
+`category`: `nutrition | workout | water | sleep | motivation`. `?refresh=true` regenerates. Template tips: `source: "template"`.
 
 ### Chat
 | Method | Path | Notes |
 | --- | --- | --- |
-| POST | `/chat` | `{message (1–2000), language?}` → `{reply: ChatMessage, source}`. The last 20 messages are sent as context |
+| POST | `/chat` | `{message (1–2000), language?}` → `{reply: ChatMessage, source}`. The last 20 messages are sent as context. Takes a few seconds with AI |
 | GET | `/chat?limit=50` | history, oldest first: `[ChatMessage]` |
 | DELETE | `/chat` | clear history, 204 |
 
@@ -238,7 +247,7 @@ and `/stats/weight`.
 ### Before/after photos (private)
 | Method | Path | Notes |
 | --- | --- | --- |
-| POST | `/progress/photos` | multipart: `image` (jpeg/png/webp, ≤ 8 MB), `day?`, `kind?` (`before/after/progress`, default `progress`), `note?` → `Photo`, 201 |
+| POST | `/progress/photos` | multipart: `image` (jpeg/png/webp, ≤ 8 MB), `day?`, `kind?` (`before/after/progress`, default `progress`), `note?` (≤ 200) → `Photo`, 201 |
 | GET | `/progress/photos` | `[Photo]`, oldest first |
 | GET | `/progress/photos/{id}/file` | the image bytes; **owner only** (404 for anyone else) |
 | DELETE | `/progress/photos/{id}` | removes the file too, 204 |
