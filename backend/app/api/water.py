@@ -1,4 +1,5 @@
 from datetime import UTC, date, datetime, timedelta
+from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, status
 from sqlalchemy import select
@@ -8,6 +9,8 @@ from app.models import WaterLog
 from app.schemas.water import WaterCreate, WaterDay, WaterRead
 
 router = APIRouter(prefix="/water", tags=["water"])
+
+DayParam = Annotated[date | None, Query()]
 
 
 def _day_bounds(day: date) -> tuple[datetime, datetime]:
@@ -28,9 +31,7 @@ def add_water(data: WaterCreate, user: CurrentUser, db: DbSession) -> WaterLog:
 
 
 @router.get("", response_model=list[WaterRead])
-def list_water(
-    user: CurrentUser, db: DbSession, day: date | None = Query(default=None)
-) -> list[WaterLog]:
+def list_water(user: CurrentUser, db: DbSession, day: DayParam = None) -> list[WaterLog]:
     day = day or datetime.now(UTC).date()
     start, end = _day_bounds(day)
     stmt = (
@@ -42,9 +43,7 @@ def list_water(
 
 
 @router.get("/summary", response_model=WaterDay)
-def water_summary(
-    user: CurrentUser, db: DbSession, day: date | None = Query(default=None)
-) -> WaterDay:
+def water_summary(user: CurrentUser, db: DbSession, day: DayParam = None) -> WaterDay:
     day = day or datetime.now(UTC).date()
     return WaterDay(day=day, total_ml=sum(w.amount_ml for w in list_water(user, db, day)))
 

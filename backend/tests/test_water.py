@@ -13,7 +13,8 @@ def test_rejects_bad_amount(client, auth_headers):
 
 
 def test_delete_own_entry_only(client, auth_headers):
-    log_id = client.post("/api/v1/water", json={"amount_ml": 200}, headers=auth_headers).json()["id"]
+    created = client.post("/api/v1/water", json={"amount_ml": 200}, headers=auth_headers)
+    log_id = created.json()["id"]
     client.post("/api/v1/auth/register", json={"email": "x@y.co", "password": "password123"})
     t = client.post("/api/v1/auth/login", data={"username": "x@y.co", "password": "password123"})
     other = {"Authorization": f"Bearer {t.json()['access_token']}"}
