@@ -48,7 +48,8 @@ function pick(q: URLSearchParams, ...names: string[]): string | null {
 }
 
 // Reads questionnaire answers from a query string. Accepts a few spellings so the
-// landing form can pass `height=180&weight=82&goal=lose&kg=6` or the API field names.
+// landing quiz passes `sex&age&height&weight&goal&goalKg&activity` (low|moderate|high);
+// the API field names work too.
 export function draftFromQuery(q: URLSearchParams): Draft {
   const d: Draft = {};
   const height = num(pick(q, "height_cm", "height", "h"));
@@ -62,7 +63,7 @@ export function draftFromQuery(q: URLSearchParams): Draft {
   if (sex === "male" || sex === "m") d.sex = "male" as Sex;
   if (sex === "female" || sex === "f") d.sex = "female" as Sex;
 
-  let change = num(pick(q, "target_change_kg", "change", "kg", "delta", "target_kg"));
+  let change = num(pick(q, "target_change_kg", "goalKg", "goal_kg", "change", "kg", "delta", "target_kg"));
   const rawGoal = pick(q, "goal");
   // A signed change like `delta=-6` also tells the direction.
   const signed = Number(pick(q, "delta", "change") ?? NaN);
@@ -85,8 +86,11 @@ export function draftFromQuery(q: URLSearchParams): Draft {
   const date = pick(q, "target_date", "date", "by");
   if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) d.target_date = date;
 
+  // The landing quiz uses a three-level scale: low / moderate / high.
+  const LANDING_ACTIVITY: Record<string, Activity> = { low: "sedentary", moderate: "moderate", high: "active" };
   const activity = pick(q, "activity");
   if (activity && ["sedentary", "light", "moderate", "active"].includes(activity)) d.activity = activity as Activity;
+  else if (activity && LANDING_ACTIVITY[activity]) d.activity = LANDING_ACTIVITY[activity];
 
   const place = pick(q, "place", "train");
   if (place === "home" || place === "gym") d.place = place as Place;
