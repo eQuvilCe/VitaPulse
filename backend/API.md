@@ -399,7 +399,7 @@ from its tags, `program_id` is the ready workout id.
 {
   "ingredients": ["chicken", "rice", "broccoli", "eggs"],   // what's in the fridge, 1..30 items
   "kcal": 550,              // optional target per serving; default: what is left of today's norm
-                            // split over the remaining meals (300..900)
+                            // split over the remaining meals (300..750)
   "time_min": 30,           // optional max cooking time
   "meal_type": "dinner",    // optional: breakfast | lunch | dinner | snack
   "restrictions": ["vegetarian"],   // optional; default: the active plan's restrictions

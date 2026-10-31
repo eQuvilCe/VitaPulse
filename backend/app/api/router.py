@@ -5,6 +5,7 @@ from app.api import (
     auth,
     bmi,
     coach,
+    cook,
     dashboard,
     exercises,
     export,
@@ -36,3 +37,4 @@ api_router.include_router(coach.router)
 api_router.include_router(progress.router)
 api_router.include_router(achievements.router)
 api_router.include_router(exercises.router)
+api_router.include_router(cook.router)

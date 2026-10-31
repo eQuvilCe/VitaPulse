@@ -107,7 +107,8 @@ def list_exercises(
         ):
             continue
         found.append(catalog.localize_exercise(ex, lang, weight_kg))
-    return sorted(found, key=lambda e: e["name"].lower())
+    # Ignore leading quotes so «Супермен» sorts under С.
+    return sorted(found, key=lambda e: e["name"].lstrip("«\"'").lower())
 
 
 @router.get("/exercises/{exercise_id}", response_model=ExerciseRead)

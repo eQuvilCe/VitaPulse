@@ -4,7 +4,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 MealType = Literal["breakfast", "lunch", "dinner", "snack"]
-MealSource = Literal["manual", "scan", "plan"]
+MealSource = Literal["manual", "scan", "plan", "cook"]
 
 
 class MealIn(BaseModel):
