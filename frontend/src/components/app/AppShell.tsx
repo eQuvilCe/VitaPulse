@@ -18,7 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { ApiError, fetchMe, getToken, logout, type User } from "@/lib/api-vita";
+import { ApiError, fetchMe, getToken, logout, saveLanguage, type User } from "@/lib/api-vita";
 import { cx } from "@/lib/cx";
 
 import { useAppT } from "./i18n";
@@ -48,7 +48,7 @@ export function useUser(): User | null {
 // Cabinet frame: sidebar on desktop, bottom tab bar with a "More" sheet on phones.
 // Visitors without a token are sent to /login and come back afterwards.
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  const { t } = useAppT();
+  const { t, locale } = useAppT();
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -72,6 +72,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     // Only on mount: navigation inside the cabinet keeps the session.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // The coach writes tips in the profile language, so keep it in step with the switcher.
+  useEffect(() => {
+    if (user && user.language !== locale) {
+      saveLanguage(locale)
+        .then(setUser)
+        .catch(() => undefined);
+    }
+  }, [user, locale]);
 
   useEffect(() => setMoreOpen(false), [pathname]);
 
