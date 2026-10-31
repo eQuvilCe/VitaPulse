@@ -4,37 +4,29 @@ import { Lightbulb, RefreshCw, Send, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button, Card } from "@/components/ui";
-import { chat, dailyTip, rebuildPlan, type ChatMessage } from "@/lib/api-vita";
+import { chat, chatHistory, dailyTip, rebuildPlan, type ChatMessage } from "@/lib/api-vita";
 import { cx } from "@/lib/cx";
 
 import { useAppT } from "./i18n";
 import { PageHeader, Skeleton, useLoad } from "./states";
 
-const HISTORY_KEY = "vh-coach-chat";
-
 export default function CoachView() {
   const { t, locale } = useAppT();
-  const tip = useLoad(() => dailyTip(locale), [locale]);
+  const tip = useLoad(dailyTip);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
   const [thinking, setThinking] = useState(false);
   const [rebuilt, setRebuilt] = useState<"idle" | "busy" | "done">("idle");
   const scroller = useRef<HTMLDivElement>(null);
 
+  // The server keeps the conversation.
   useEffect(() => {
-    try {
-      setMessages(JSON.parse(sessionStorage.getItem(HISTORY_KEY) ?? "[]"));
-    } catch {
-      // Fresh conversation.
-    }
+    chatHistory()
+      .then((history) => setMessages((current) => (current.length ? current : history)))
+      .catch(() => undefined);
   }, []);
 
   useEffect(() => {
-    try {
-      sessionStorage.setItem(HISTORY_KEY, JSON.stringify(messages.slice(-30)));
-    } catch {
-      // Not kept.
-    }
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" });
   }, [messages, thinking]);
 
@@ -46,7 +38,7 @@ export default function CoachView() {
     setText("");
     setThinking(true);
     try {
-      const reply = await chat(next.slice(-20), locale);
+      const reply = await chat(q, locale);
       setMessages([...next, reply]);
     } catch {
       setMessages([...next, { role: "assistant", content: t.common.error }]);

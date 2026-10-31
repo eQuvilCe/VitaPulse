@@ -13,7 +13,7 @@ import { ErrorBlock, LoadingBlock, PageHeader, useLoad } from "./states";
 
 export default function BmiView() {
   const { t, locale } = useAppT();
-  const { data, error, loading, reload } = useLoad(() => fetchBmi(locale), [locale]);
+  const { data, error, loading, reload } = useLoad(fetchBmi);
 
   if (loading && data === undefined) return <LoadingBlock rows={2} />;
   if (error) return <ErrorBlock onRetry={reload} />;
