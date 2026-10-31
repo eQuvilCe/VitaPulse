@@ -4,14 +4,14 @@ import { useState } from "react";
 import Reveal from "./Reveal";
 
 const FAQS = [
-  { q: "Is VitaPulse free?", a: "Yes. Tracking, the dashboard and coach tips are free while we are in early access." },
+  { q: "Is Vita Health free?", a: "Yes. Tracking, the dashboard and coach tips are free while we are in early access." },
   { q: "Do I need a fitness tracker?", a: "No. You can log everything by hand in a few taps. Device sync is on our roadmap." },
   {
     q: "How does the AI coach work?",
     a: "It looks at your own sleep, water, steps, meals and habits over time and suggests one small, specific change for today.",
   },
   { q: "Is my health data private?", a: "Your data is tied to your account, sent over HTTPS and never sold or shared with advertisers." },
-  { q: "Is this medical advice?", a: "No. VitaPulse helps you build healthy routines. For medical questions, please talk to a doctor." },
+  { q: "Is this medical advice?", a: "No. Vita Health helps you build healthy routines. For medical questions, please talk to a doctor." },
 ];
 
 export default function FAQ() {

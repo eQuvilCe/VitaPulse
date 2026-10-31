@@ -12,7 +12,7 @@ export default function Footer() {
           <a href="#faq" className="link-soft">FAQ</a>
           <Link href="/login" className="link-soft">Log in</Link>
         </nav>
-        <p>© {new Date().getFullYear()} VitaPulse · Not medical advice</p>
+        <p>© {new Date().getFullYear()} Vita Health · Not medical advice</p>
       </div>
     </footer>
   );

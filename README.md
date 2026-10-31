@@ -1,6 +1,6 @@
-# VitaPulse
+# Vita Health
 
-AI Health OS: sleep, water, steps, food, mood and weight in one place, with an AI coach and a daily dashboard.
+Healthy eating, workouts and a free AI coach to help you lose or gain weight: a personal plan, calorie tracking, progress and daily tips.
 
 - `backend/` — Python 3.11+, FastAPI, SQLAlchemy 2, Alembic
 - `frontend/` — Next.js, TypeScript, Tailwind

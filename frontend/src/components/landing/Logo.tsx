@@ -7,7 +7,9 @@ export default function Logo({ className = "" }: { className?: string }) {
           <path d="M1 9h6.5l2-3 2.5 7.5 3.5-12 2.5 7.5H27" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
-      Vita<span className="-ml-2 italic">Pulse</span>
+      <span>
+        Vita <span className="italic">Health</span>
+      </span>
     </span>
   );
 }

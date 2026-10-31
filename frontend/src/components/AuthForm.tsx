@@ -37,7 +37,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-plum px-4 text-glow">
       <div className="hero-glow absolute inset-0 -z-0" aria-hidden="true" />
-      <Link href="/" aria-label="VitaPulse home" className="relative mb-8 rounded-full">
+      <Link href="/" aria-label="Vita Health home" className="relative mb-8 rounded-full">
         <Logo />
       </Link>
       <form onSubmit={onSubmit} className="glass-card relative w-full max-w-sm space-y-4 rounded-[28px] p-7">

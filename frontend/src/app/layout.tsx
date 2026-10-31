@@ -12,8 +12,8 @@ const serif = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "VitaPulse",
-  description: "AI Health OS: sleep, water, steps, food, mood and weight in one place.",
+  title: "Vita Health",
+  description: "Healthy eating, workouts and a free AI coach for losing or gaining weight.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
