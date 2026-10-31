@@ -1,60 +1,66 @@
 "use client";
 
 import { useState } from "react";
+
+import { cx } from "@/lib/cx";
+import { useCopy } from "./copy";
 import Reveal from "./Reveal";
 
-const FAQS = [
-  { q: "Is Vita Health free?", a: "Yes. Tracking, the dashboard and coach tips are free while we are in early access." },
-  { q: "Do I need a fitness tracker?", a: "No. You can log everything by hand in a few taps. Device sync is on our roadmap." },
-  {
-    q: "How does the AI coach work?",
-    a: "It looks at your own sleep, water, steps, meals and habits over time and suggests one small, specific change for today.",
-  },
-  { q: "Is my health data private?", a: "Your data is tied to your account, sent over HTTPS and never sold or shared with advertisers." },
-  { q: "Is this medical advice?", a: "No. Vita Health helps you build healthy routines. For medical questions, please talk to a doctor." },
-];
-
 export default function FAQ() {
+  const { c } = useCopy();
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative z-10 bg-cream px-5 pb-36 pt-24 text-ink sm:px-8 sm:pt-32">
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.5fr]">
+    <section id="faq" className="bg-surface px-4 py-20 sm:px-8 sm:py-28">
+      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.5fr] lg:gap-12">
         <div>
-          <Reveal as="p" className="eyebrow text-coral">FAQ</Reveal>
-          <Reveal as="h2" delay={140} className="display mt-4 text-[clamp(40px,5.6vw,64px)] leading-[1.02]">
-            Questions, <em>kindly answered</em>
+          <Reveal as="p" className="vl-eyebrow">
+            {c.faq.eyebrow}
+          </Reveal>
+          <Reveal as="h2" delay={100} className="vl-display mt-3 text-[clamp(32px,4.6vw,52px)] leading-[1.06] text-fg">
+            {c.faq.title}
           </Reveal>
         </div>
         <div className="space-y-3">
-          {FAQS.map(({ q, a }, i) => {
+          {c.faq.items.map(({ q, a }, i) => {
             const isOpen = open === i;
             return (
-              <Reveal key={q} delay={i * 130}>
-                <div className={`rounded-[24px] border transition-[background-color,border-color,box-shadow] duration-500 ${isOpen ? "border-ink/[0.06] bg-white shadow-soft" : "border-transparent bg-cream-2/70 hover:bg-white/70"}`}>
-                <button
-                  type="button"
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-${i}`}
-                  className="flex w-full items-center justify-between gap-6 rounded-[24px] px-6 py-5 text-left"
+              <Reveal key={i} delay={i * 80}>
+                <div
+                  className={cx(
+                    "rounded-card border transition-[background-color,border-color,box-shadow] duration-500",
+                    isOpen ? "border-line bg-canvas shadow-card" : "border-transparent bg-subtle/70 hover:bg-subtle",
+                  )}
                 >
-                  <span className="text-lg font-semibold">{q}</span>
-                  <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "rotate-45 bg-coral text-white" : "bg-white text-coral"}`}
-                    aria-hidden="true"
-                  >
-                    <span className="relative h-3 w-3">
-                      <span className="absolute left-0 top-1/2 h-0.5 w-3 -translate-y-1/2 rounded-full bg-current" />
-                      <span className="absolute left-1/2 top-0 h-3 w-0.5 -translate-x-1/2 rounded-full bg-current" />
-                    </span>
-                  </span>
-                </button>
-                <div id={`faq-${i}`} className={`accordion ${isOpen ? "is-open" : ""}`}>
-                  <div className="overflow-hidden">
-                    <p className="max-w-xl px-6 pb-6 leading-relaxed text-ink-soft">{a}</p>
+                  <h3>
+                    <button
+                      type="button"
+                      onClick={() => setOpen(isOpen ? null : i)}
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-${i}`}
+                      id={`faq-q-${i}`}
+                      className="flex w-full items-center justify-between gap-5 rounded-card px-5 py-4 text-left sm:px-6 sm:py-5"
+                    >
+                      <span className="text-body font-semibold text-fg sm:text-lead">{q}</span>
+                      <span
+                        className={cx(
+                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-[transform,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                          isOpen ? "rotate-45 bg-brand-700 text-white" : "bg-surface text-brand-700",
+                        )}
+                        aria-hidden="true"
+                      >
+                        <span className="relative h-3 w-3">
+                          <span className="absolute left-0 top-1/2 h-0.5 w-3 -translate-y-1/2 rounded-full bg-current" />
+                          <span className="absolute left-1/2 top-0 h-3 w-0.5 -translate-x-1/2 rounded-full bg-current" />
+                        </span>
+                      </span>
+                    </button>
+                  </h3>
+                  <div id={`faq-${i}`} role="region" aria-labelledby={`faq-q-${i}`} className={cx("vl-accordion", isOpen && "is-open")}>
+                    <div className="overflow-hidden">
+                      <p className="max-w-xl px-5 pb-5 text-body text-fg-muted sm:px-6 sm:pb-6">{a}</p>
+                    </div>
                   </div>
-                </div>
                 </div>
               </Reveal>
             );
