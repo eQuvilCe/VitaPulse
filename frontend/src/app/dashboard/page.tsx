@@ -2,18 +2,27 @@
 
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Logo from "@/components/landing/Logo";
+import MealForm from "@/components/MealForm";
+import QuickAdd from "@/components/QuickAdd";
+import SleepForm from "@/components/SleepForm";
 import StatCard from "@/components/StatCard";
+import WeekChart from "@/components/WeekChart";
 import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
+import { addMeal } from "@/lib/meals";
+import { addMetric } from "@/lib/metrics";
+import { logSleep } from "@/lib/sleep";
+import { fetchWeek, type Week } from "@/lib/stats";
 import { tipText } from "@/lib/tips";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<Dashboard | null>(null);
+  const [week, setWeek] = useState<Week | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -22,11 +31,21 @@ export default function DashboardPage() {
       .catch(() => router.replace("/login"));
   }, [router]);
 
+  const reload = useCallback(() => {
+    fetchDashboard()
+      .then((d) => {
+        setData(d);
+        setFailed(false);
+      })
+      .catch(() => setFailed(true));
+    fetchWeek()
+      .then(setWeek)
+      .catch(() => undefined);
+  }, []);
+
   useEffect(() => {
-    if (user) fetchDashboard()
-        .then(setData)
-        .catch(() => setFailed(true));
-  }, [user]);
+    if (user) reload();
+  }, [user, reload]);
 
   if (!user) return <main className="min-h-screen bg-plum p-8 text-mist">Loading...</main>;
 
@@ -72,6 +91,48 @@ export default function DashboardPage() {
               value={`${data.calories} kcal`}
               goal={`${data.goals.calories} kcal`}
               progress={data.calories / data.goals.calories}
+            />
+          </section>
+        )}
+        {data && (
+          <section className="mt-6 grid gap-4 md:grid-cols-2">
+            <QuickAdd
+              title="Log water"
+              unit="ml"
+              presets={[200, 300, 500]}
+              onAdd={(n) => addMetric("water_ml", n).then(reload)}
+            />
+            <MealForm onSave={(m) => addMeal(m).then(reload)} />
+            <SleepForm onSave={(m, q) => logSleep(m, q).then(reload)} />
+            <QuickAdd
+              title="Log steps"
+              unit="steps"
+              presets={[1000, 2500, 5000]}
+              onAdd={(n) => addMetric("steps", n).then(reload)}
+            />
+          </section>
+        )}
+        {week && (
+          <section className="mt-6 grid gap-4 md:grid-cols-3">
+            <WeekChart
+              title="Sleep"
+              unit="h"
+              color="#ffb48f"
+              data={week.days.map((d) => ({
+                day: d.day,
+                value: d.sleep_minutes === null ? null : Number((d.sleep_minutes / 60).toFixed(1)),
+              }))}
+            />
+            <WeekChart
+              title="Steps"
+              unit="steps"
+              data={week.days.map((d) => ({ day: d.day, value: d.steps }))}
+            />
+            <WeekChart
+              title="Calories"
+              unit="kcal"
+              color="#f47b63"
+              data={week.days.map((d) => ({ day: d.day, value: d.calories }))}
             />
           </section>
         )}
