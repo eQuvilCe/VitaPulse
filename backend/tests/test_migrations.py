@@ -21,4 +21,6 @@ def test_upgrade_creates_every_table(tmp_path, monkeypatch):
         "daily_tips",
         "chat_messages",
         "user_achievements",
+        "favorite_recipes",
+        "shopping_items",
     } <= tables

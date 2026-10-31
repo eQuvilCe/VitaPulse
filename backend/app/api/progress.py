@@ -157,16 +157,21 @@ def delete_photo(photo_id: int, user: CurrentUser, db: DbSession) -> None:
 # --- workouts
 
 
-@router.post("/workouts", response_model=WorkoutCreated, status_code=status.HTTP_201_CREATED)
-def log_workout(data: WorkoutIn, user: CurrentUser, db: DbSession) -> WorkoutCreated:
-    workout = Workout(user_id=user.id, **{**data.model_dump(), "day": data.day or date.today()})
+def check_in(db: DbSession, user_id: int, data: WorkoutIn) -> WorkoutCreated:
+    """Store a workout check-in and grant whatever achievements it unlocks."""
+    workout = Workout(user_id=user_id, **{**data.model_dump(), "day": data.day or date.today()})
     db.add(workout)
     db.commit()
     db.refresh(workout)
     return WorkoutCreated(
         workout=WorkoutRead.model_validate(workout),
-        new_achievements=achievements.evaluate(db, user.id),
+        new_achievements=achievements.evaluate(db, user_id),
     )
+
+
+@router.post("/workouts", response_model=WorkoutCreated, status_code=status.HTTP_201_CREATED)
+def log_workout(data: WorkoutIn, user: CurrentUser, db: DbSession) -> WorkoutCreated:
+    return check_in(db, user.id, data)
 
 
 @router.get("/workouts", response_model=list[WorkoutRead])

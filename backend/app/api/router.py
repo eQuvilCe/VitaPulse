@@ -6,6 +6,7 @@ from app.api import (
     bmi,
     coach,
     dashboard,
+    exercises,
     export,
     goals,
     habits,
@@ -34,3 +35,4 @@ api_router.include_router(bmi.router)
 api_router.include_router(coach.router)
 api_router.include_router(progress.router)
 api_router.include_router(achievements.router)
+api_router.include_router(exercises.router)

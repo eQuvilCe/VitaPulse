@@ -1,5 +1,6 @@
 from app.models.achievement import UserAchievement
 from app.models.coach import ChatMessage, DailyTip
+from app.models.cook import FavoriteRecipe, ShoppingItem
 from app.models.goal import Goal
 from app.models.habit import Habit, HabitCheckin
 from app.models.meal import Meal
@@ -13,6 +14,7 @@ __all__ = [
     "ChatMessage",
     "DailyMetric",
     "DailyTip",
+    "FavoriteRecipe",
     "Goal",
     "Habit",
     "HabitCheckin",
@@ -20,6 +22,7 @@ __all__ = [
     "Measurement",
     "Plan",
     "ProgressPhoto",
+    "ShoppingItem",
     "SleepLog",
     "User",
     "UserAchievement",

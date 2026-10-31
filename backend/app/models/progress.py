@@ -43,5 +43,8 @@ class Workout(Base):
     kind: Mapped[str] = mapped_column(String(10), default="other")
     duration_min: Mapped[int | None] = mapped_column(Integer, default=None)
     plan_day: Mapped[int | None] = mapped_column(Integer, default=None)
+    # Set when the check-in completes one of the ready workouts (GET /workouts).
+    program_id: Mapped[str | None] = mapped_column(String(40), default=None)
+    kcal: Mapped[int | None] = mapped_column(Integer, default=None)
     note: Mapped[str] = mapped_column(String(300), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

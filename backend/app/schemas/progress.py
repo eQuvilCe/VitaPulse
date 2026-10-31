@@ -48,6 +48,8 @@ class WorkoutIn(BaseModel):
     kind: WorkoutKind = "other"
     duration_min: int | None = Field(default=None, ge=1, le=600)
     plan_day: int | None = Field(default=None, ge=1, le=7)
+    program_id: str | None = Field(default=None, max_length=40)
+    kcal: int | None = Field(default=None, ge=0, le=5000)
     note: str = Field(default="", max_length=300)
 
 
@@ -60,6 +62,8 @@ class WorkoutRead(BaseModel):
     kind: WorkoutKind
     duration_min: int | None
     plan_day: int | None
+    program_id: str | None = None
+    kcal: int | None = None
     note: str
     created_at: datetime
 
