@@ -20,7 +20,7 @@ export default function AchievementsView() {
   const earned = data.badges.filter((b) => b.earned_at).length;
   const streaks = [
     { label: t.achievements.diaryStreak, value: data.streaks.diary_days, icon: CalendarCheck, tone: "kcal" },
-    { label: t.achievements.workoutStreak, value: data.streaks.workout_days, icon: Dumbbell, tone: "brand" },
+    { label: t.achievements.workoutStreak, value: data.streaks.workouts_total, icon: Dumbbell, tone: "brand" },
     { label: t.achievements.waterStreak, value: data.streaks.water_days, icon: Droplets, tone: "info" },
   ] as const;
 

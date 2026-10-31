@@ -1,6 +1,6 @@
 "use client";
 
-import { Award, CalendarCheck, Camera, ClipboardCheck, Droplets, Dumbbell, RotateCcw, Scale, Trophy, type LucideIcon } from "lucide-react";
+import { Award, CalendarCheck, CalendarHeart, Camera, ClipboardCheck, Droplets, Dumbbell, Flag, Medal, RotateCcw, Scale, Trophy, Utensils, type LucideIcon } from "lucide-react";
 
 import type { Badge, BadgeCode } from "@/lib/api-vita";
 import { cx } from "@/lib/cx";
@@ -10,13 +10,17 @@ import { formatNumber, useAppT } from "./i18n";
 const ICONS: Record<BadgeCode, LucideIcon> = {
   first_plan: ClipboardCheck,
   first_scan: Camera,
+  first_meal: Utensils,
   diary_7: CalendarCheck,
+  diary_30: CalendarHeart,
   weight_1: Scale,
   weight_5: Award,
   weight_10: Trophy,
   workouts_10: Dumbbell,
+  workouts_50: Medal,
   water_week: Droplets,
   comeback: RotateCcw,
+  goal_reached: Flag,
 };
 
 export function BadgeTile({ badge, compact = false }: { badge: Badge; compact?: boolean }) {

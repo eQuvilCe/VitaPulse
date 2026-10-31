@@ -7,7 +7,7 @@ export type Draft = Partial<PlanInput>;
 
 const KEY = "vh-plan-draft";
 
-const RESTRICTIONS: Restriction[] = ["vegetarian", "vegan", "no_lactose", "no_gluten", "no_pork", "no_nuts", "no_fish"];
+const RESTRICTIONS: Restriction[] = ["vegetarian", "vegan", "lactose_free", "gluten_free", "no_pork", "nut_free", "no_fish"];
 
 export function loadDraft(): Draft {
   try {
