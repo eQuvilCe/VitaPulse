@@ -84,3 +84,13 @@ def test_report_empty_window(client, auth_headers):
     assert r["days_logged"] == 0
     assert r["best_steps_day"] is None
     assert r["avg_sleep_minutes"] is None
+
+
+def test_report_counts_weight_only_days(client, auth_headers):
+    client.put(
+        "/api/v1/metrics/weight_kg",
+        json={"day": "2026-10-06", "value": 70.5},
+        headers=auth_headers,
+    )
+    r = client.get("/api/v1/stats/report?end=2026-10-07", headers=auth_headers).json()
+    assert r["days_logged"] == 1
