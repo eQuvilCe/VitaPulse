@@ -1,24 +1,27 @@
 import { cx } from "@/lib/cx";
 
-type Tone = "surface" | "subtle" | "brand" | "calorie";
+type Tone = "surface" | "subtle" | "brand" | "calorie" | "accent";
 
 const tones: Record<Tone, string> = {
-  surface: "border border-line bg-surface shadow-card",
-  subtle: "bg-subtle",
-  brand: "bg-brand-50 ring-1 ring-inset ring-brand-100",
-  calorie: "bg-kcal-50 ring-1 ring-inset ring-kcal-100",
+  // Cream with a 1px black outline: no shadows anywhere.
+  surface: "border border-fg bg-surface text-fg",
+  subtle: "bg-subtle text-fg",
+  brand: "border border-line bg-subtle text-fg",
+  calorie: "border border-kcal-300 bg-kcal-50 text-fg",
+  // The single violet accent, for one highlighted block per screen.
+  accent: "border border-accent bg-accent text-accent-on",
 };
 
 type Props = React.HTMLAttributes<HTMLDivElement> & { tone?: Tone; padded?: boolean };
 
 export default function Card({ tone = "surface", padded = true, className, ...rest }: Props) {
-  return <div className={cx("rounded-card text-fg", tones[tone], padded && "p-5 sm:p-6", className)} {...rest} />;
+  return <div className={cx("rounded-card", tones[tone], padded && "p-6", className)} {...rest} />;
 }
 
 export function CardTitle({ className, ...rest }: React.HTMLAttributes<HTMLHeadingElement>) {
-  return <h3 className={cx("text-heading text-fg", className)} {...rest} />;
+  return <h3 className={cx("text-heading", className)} {...rest} />;
 }
 
 export function CardDescription({ className, ...rest }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cx("mt-1 text-body text-fg-muted", className)} {...rest} />;
+  return <p className={cx("mt-1 text-body opacity-75", className)} {...rest} />;
 }
