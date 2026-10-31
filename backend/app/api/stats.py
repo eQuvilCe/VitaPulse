@@ -140,7 +140,14 @@ def report(
     goal = get_or_create_goal(db, user.id)
     rows = [DayRow(d.day, d.sleep_minutes, d.water_ml, d.steps) for d in data.days]
     logged = sum(
-        1 for d in data.days if d.sleep_minutes is not None or d.water_ml or d.steps or d.calories
+        1
+        for d in data.days
+        if d.sleep_minutes is not None
+        or d.water_ml
+        or d.steps
+        or d.calories
+        or d.weight_kg is not None
+        or d.mood is not None
     )
     return ReportRead(
         start=data.days[0].day,
