@@ -29,3 +29,33 @@ def test_week_is_per_user(client, auth_headers):
     other = {"Authorization": f"Bearer {r.json()['access_token']}"}
     body = client.get("/api/v1/stats/week?end=2026-10-07", headers=other).json()
     assert body["avg_sleep_minutes"] is None
+
+
+def test_weight_trend_change_and_order(client, auth_headers):
+    for day, kg in [("2026-10-10", 81.5), ("2026-10-02", 83.0), ("2026-10-06", 82.2)]:
+        body = {"day": day, "value": kg}
+        client.put("/api/v1/metrics/weight_kg", json=body, headers=auth_headers)
+    r = client.get("/api/v1/stats/weight?end=2026-10-10&span=30", headers=auth_headers).json()
+    assert [p["day"] for p in r["points"]] == ["2026-10-02", "2026-10-06", "2026-10-10"]
+    assert r["latest_kg"] == 81.5
+    assert r["change_kg"] == -1.5
+
+
+def test_weight_trend_empty_and_single(client, auth_headers):
+    empty = client.get("/api/v1/stats/weight?end=2026-10-10", headers=auth_headers).json()
+    assert empty == {"points": [], "latest_kg": None, "change_kg": None}
+
+    client.put(
+        "/api/v1/metrics/weight_kg", json={"day": "2026-10-09", "value": 80}, headers=auth_headers
+    )
+    one = client.get("/api/v1/stats/weight?end=2026-10-10", headers=auth_headers).json()
+    assert one["latest_kg"] == 80
+    assert one["change_kg"] is None
+
+
+def test_weight_trend_ignores_days_outside_window(client, auth_headers):
+    client.put(
+        "/api/v1/metrics/weight_kg", json={"day": "2026-08-01", "value": 90}, headers=auth_headers
+    )
+    r = client.get("/api/v1/stats/weight?end=2026-10-10&span=7", headers=auth_headers).json()
+    assert r["points"] == []
