@@ -1,4 +1,4 @@
-from datetime import datetime, time, timedelta
+from datetime import datetime, timedelta
 
 from app.models import Reminder
 
@@ -25,6 +25,3 @@ def next_fire(reminder: Reminder, now: datetime) -> datetime | None:
             return candidate
     return None
 
-
-def parse_clock(value: str) -> time:
-    return time.fromisoformat(value)
