@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { Badge, Button, buttonClasses, Card, Input } from "@/components/ui";
-import { addMeal, ApiError, scanPhoto, type MealInput } from "@/lib/api-vita";
+import { addMeal, ApiError, scanPhoto, today, type MealInput } from "@/lib/api-vita";
 import { cx } from "@/lib/cx";
 
 import CameraCapture from "./CameraCapture";
@@ -40,10 +40,12 @@ export default function ScanView() {
     try {
       const r = await scanPhoto(file, locale);
       setMeal({ name: r.name, calories: r.calories, protein_g: r.protein_g, carbs_g: r.carbs_g, fat_g: r.fat_g });
-      setConfidence(r.confidence != null ? Math.round(r.confidence <= 1 ? r.confidence * 100 : r.confidence) : null);
+      // 0 means the dish wasn't recognized: the numbers are a rough guess to correct.
+      if (r.confidence === 0) setNote(t.scan.failed);
+      else setConfidence(r.confidence != null ? Math.round(r.confidence * 100) : null);
     } catch (err) {
       setMeal(EMPTY);
-      const offline = err instanceof TypeError || (err instanceof ApiError && [404, 405, 501, 503].includes(err.status));
+      const offline = err instanceof TypeError || (err instanceof ApiError && err.status >= 500);
       setNote(offline ? t.scan.offline : t.scan.failed);
     }
     setPhase("result");
@@ -59,7 +61,7 @@ export default function ScanView() {
     setSaving(true);
     setSaveError(false);
     try {
-      await addMeal({ ...meal, name: meal.name.trim() });
+      await addMeal({ ...meal, name: meal.name.trim() }, today(), "scan");
       setPhase("saved");
     } catch {
       setSaveError(true);
