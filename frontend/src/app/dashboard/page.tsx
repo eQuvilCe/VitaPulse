@@ -12,6 +12,7 @@ import QuickAdd from "@/components/QuickAdd";
 import ScoreRing from "@/components/ScoreRing";
 import SleepForm from "@/components/SleepForm";
 import StatCard from "@/components/StatCard";
+import WeekReport from "@/components/WeekReport";
 import WeekChart from "@/components/WeekChart";
 import { fetchAchievements, type Achievements } from "@/lib/achievements";
 import { fetchMe, logout, type User } from "@/lib/auth";
@@ -20,7 +21,7 @@ import { createHabit, fetchHabits, setDone, type Habit } from "@/lib/habits";
 import { addMeal } from "@/lib/meals";
 import { addMetric } from "@/lib/metrics";
 import { logSleep } from "@/lib/sleep";
-import { fetchWeek, type Week } from "@/lib/stats";
+import { fetchReport, fetchWeek, type Report, type Week } from "@/lib/stats";
 import { tipText } from "@/lib/tips";
 
 export default function DashboardPage() {
@@ -30,6 +31,7 @@ export default function DashboardPage() {
   const [week, setWeek] = useState<Week | null>(null);
   const [habits, setHabits] = useState<Habit[] | null>(null);
   const [badges, setBadges] = useState<Achievements | null>(null);
+  const [report, setReport] = useState<Report | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
@@ -47,6 +49,9 @@ export default function DashboardPage() {
       .catch(() => setFailed(true));
     fetchWeek()
       .then(setWeek)
+      .catch(() => undefined);
+    fetchReport()
+      .then(setReport)
       .catch(() => undefined);
     fetchAchievements()
       .then(setBadges)
@@ -168,6 +173,11 @@ export default function DashboardPage() {
               color="#f47b63"
               data={week.days.map((d) => ({ day: d.day, value: d.calories }))}
             />
+          </section>
+        )}
+        {report && (
+          <section className="mt-6">
+            <WeekReport report={report} />
           </section>
         )}
         {badges && (
