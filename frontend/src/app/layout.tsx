@@ -9,6 +9,10 @@ const display = Anton({ weight: "400", subsets: ["latin"], variable: "--font-dis
 // Anton has no Cyrillic glyphs; Oswald fills them in for Russian headlines.
 const displayCyr = Oswald({ weight: "700", subsets: ["cyrillic"], variable: "--font-display-cyr" });
 
+// Applies a saved theme before first paint so the page never flashes. With no
+// saved choice the CSS follows the system theme. Key: THEME_STORAGE_KEY.
+const themeScript = `try{var t=localStorage.getItem("vh-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
+
 export const metadata: Metadata = {
   title: "Vita Health",
   description: "Healthy eating, workouts and a free AI coach for losing or gaining weight.",
@@ -16,7 +20,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable} ${displayCyr.variable}`}>
+    // The theme script sets data-theme before React hydrates.
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${display.variable} ${displayCyr.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="font-sans">
         <I18nProvider>{children}</I18nProvider>
       </body>

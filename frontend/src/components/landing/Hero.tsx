@@ -54,7 +54,7 @@ export default function Hero() {
   }, [motion]);
 
   return (
-    <section id="top" className="relative isolate flex h-[100svh] max-h-[1000px] min-h-[600px] items-end overflow-hidden text-canvas">
+    <section id="top" className="relative isolate flex h-[100svh] max-h-[1000px] min-h-[600px] items-end overflow-hidden text-cream">
       <div ref={media} className="absolute inset-0 -z-20 will-change-transform" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={POSTER} alt="" className="absolute inset-0 h-full w-full bg-kcal-300 object-cover object-[45%_center]" />
@@ -74,7 +74,7 @@ export default function Hero() {
         )}
       </div>
       {/* A light scrim at the bottom keeps the cream headline readable. */}
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-fg/55 via-fg/20 to-transparent" aria-hidden="true" />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-t from-ink/55 via-ink/20 to-transparent" aria-hidden="true" />
       <p className="sr-only">{h.photo}</p>
 
       <div className="mx-auto w-full max-w-[1400px] px-4 pb-24 sm:px-8 sm:pb-32">
@@ -91,7 +91,7 @@ export default function Hero() {
           </p>
           <a
             href="#plan"
-            className="vl-fade-up inline-flex h-14 w-fit items-center rounded-card border border-canvas px-7 text-base font-medium transition-colors duration-300 hover:bg-canvas hover:text-fg"
+            className="vl-fade-up inline-flex h-14 w-fit items-center rounded-card border border-cream px-7 text-base font-medium transition-colors duration-300 hover:bg-cream hover:text-ink"
             style={d(680)}
           >
             {h.cta}

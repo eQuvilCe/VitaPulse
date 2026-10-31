@@ -2,23 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Vita Health tokens — see DESIGN.md.
+/* Vita Health tokens — see DESIGN.md ("Themes and tokens").
    Flat and confident: cream paper, black ink, muted dividers, one violet
    accent used only as a card background. No shadows, no gradients: depth
-   comes from 1px black outlines. Colours are RGB channels so Tailwind can
-   add alpha. */
+   comes from 1px outlines. Colours are RGB channels so Tailwind can add alpha.
+
+   Every colour in the app must come from these variables. The dark theme
+   redefines them below; components never branch on the theme. */
 :root {
+  color-scheme: light;
+
   --vh-canvas: 247 244 232;
   --vh-surface: 247 244 232;
   --vh-subtle: 238 234 219;
   --vh-line: 198 195 186;
+  /* Card and control outlines. */
   --vh-line-strong: 0 0 0;
 
   --vh-fg: 0 0 0;
   --vh-fg-muted: 74 72 66;
   --vh-fg-subtle: 125 122 113;
 
-  /* "Brand" is ink: actions, active states and healthy data are black. */
+  /* "Brand" is ink: actions, active states and healthy data. */
   --vh-brand-50: 238 234 219;
   --vh-brand-100: 228 224 207;
   --vh-brand-300: 198 195 186;
@@ -27,9 +32,14 @@
   --vh-brand-700: 0 0 0;
   --vh-brand-800: 0 0 0;
 
-  /* The one bright accent. Role: background of a feature block only. */
+  /* The one bright accent. Role: background of a feature/result block only. */
   --vh-accent: 100 58 237;
   --vh-on-accent: 247 244 232;
+
+  /* Fixed colours for text and scrims laid over photos and video:
+     they do not flip with the theme. */
+  --vh-cream: 247 244 232;
+  --vh-ink: 0 0 0;
 
   /* Calories: a quiet earth tone so data stays readable without a second accent. */
   --vh-kcal-50: 242 236 221;
@@ -56,6 +66,86 @@
   --vh-ring: 0 0 0 2px rgb(var(--vh-canvas)), 0 0 0 3px rgb(var(--vh-fg));
 }
 
+/* Dark: warm near-black paper, cream ink, cream outlines at ~20%, same violet.
+   Applied when chosen explicitly, or by the system when nothing is chosen
+   (the media query below repeats the same values: keep the two in sync). */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --vh-canvas: 18 17 14;
+  --vh-surface: 26 25 21;
+  --vh-subtle: 36 34 29;
+  /* Cream at ~16% and ~20% over the canvas. */
+  --vh-line: 55 54 49;
+  --vh-line-strong: 64 63 58;
+
+  --vh-fg: 247 244 232;
+  --vh-fg-muted: 190 186 175;
+  --vh-fg-subtle: 138 134 124;
+
+  --vh-brand-50: 36 34 29;
+  --vh-brand-100: 46 44 38;
+  --vh-brand-300: 64 63 58;
+  --vh-brand-500: 247 244 232;
+  --vh-brand-600: 247 244 232;
+  --vh-brand-700: 247 244 232;
+  --vh-brand-800: 247 244 232;
+
+  --vh-kcal-50: 40 34 26;
+  --vh-kcal-100: 58 48 34;
+  --vh-kcal-300: 120 96 64;
+  --vh-kcal-500: 196 160 110;
+  --vh-kcal-600: 212 178 128;
+  --vh-kcal-700: 226 196 150;
+
+  --vh-warn: 224 170 70;
+  --vh-warn-soft: 48 38 20;
+  --vh-warn-strong: 236 196 120;
+  --vh-danger: 232 110 98;
+  --vh-danger-soft: 52 26 22;
+  --vh-info: 120 168 220;
+  --vh-info-soft: 26 34 42;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --vh-canvas: 18 17 14;
+    --vh-surface: 26 25 21;
+    --vh-subtle: 36 34 29;
+    --vh-line: 55 54 49;
+    --vh-line-strong: 64 63 58;
+
+    --vh-fg: 247 244 232;
+    --vh-fg-muted: 190 186 175;
+    --vh-fg-subtle: 138 134 124;
+
+    --vh-brand-50: 36 34 29;
+    --vh-brand-100: 46 44 38;
+    --vh-brand-300: 64 63 58;
+    --vh-brand-500: 247 244 232;
+    --vh-brand-600: 247 244 232;
+    --vh-brand-700: 247 244 232;
+    --vh-brand-800: 247 244 232;
+
+    --vh-kcal-50: 40 34 26;
+    --vh-kcal-100: 58 48 34;
+    --vh-kcal-300: 120 96 64;
+    --vh-kcal-500: 196 160 110;
+    --vh-kcal-600: 212 178 128;
+    --vh-kcal-700: 226 196 150;
+
+    --vh-warn: 224 170 70;
+    --vh-warn-soft: 48 38 20;
+    --vh-warn-strong: 236 196 120;
+    --vh-danger: 232 110 98;
+    --vh-danger-soft: 52 26 22;
+    --vh-info: 120 168 220;
+    --vh-info-soft: 26 34 42;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
@@ -66,6 +156,9 @@ body {
   font-size: 16px;
   line-height: 1.4;
   letter-spacing: -0.01em;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
 }
 
 ::selection {
@@ -81,5 +174,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  body {
+    transition: none;
   }
 }
