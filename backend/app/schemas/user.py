@@ -32,7 +32,7 @@ class UserUpdate(BaseModel):
 
 
 class PasswordChange(BaseModel):
-    current_password: str
+    current_password: str = ""
     new_password: str = Field(min_length=8, max_length=128)
 
 
@@ -47,6 +47,8 @@ class UserRead(BaseModel):
     birth_year: int | None = None
     sex: Sex | None = None
     activity: Activity = "light"
+    has_password: bool = True
+    google_linked: bool = False
     created_at: datetime
 
 

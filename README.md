@@ -18,6 +18,13 @@ uvicorn app.main:app --reload  # http://localhost:8000/docs
 
 Checks: `ruff check .` and `pytest`.
 
+API contract for the frontend: [`backend/API.md`](backend/API.md).
+
+AI features (plan, plate scan, daily tip, chat) use Claude when `ANTHROPIC_API_KEY` is set and
+fall back to built-in formulas and templates otherwise, so everything works offline.
+Google sign-in turns on once `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set; register
+`GOOGLE_REDIRECT_URI` as an authorized redirect URI of the OAuth client.
+
 SQLite is used by default for local development; point `DATABASE_URL` at PostgreSQL for anything real.
 After changing a model, run `alembic revision --autogenerate -m "what changed"` and commit the new file.
 

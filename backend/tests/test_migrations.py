@@ -13,3 +13,12 @@ def test_upgrade_creates_every_table(tmp_path, monkeypatch):
     command.upgrade(cfg, "head")
     tables = set(inspect(create_engine(url)).get_table_names())
     assert {"users", "sleep_logs", "daily_metrics", "meals", "habits", "goals"} <= tables
+    assert {
+        "plans",
+        "measurements",
+        "progress_photos",
+        "workouts",
+        "daily_tips",
+        "chat_messages",
+        "user_achievements",
+    } <= tables

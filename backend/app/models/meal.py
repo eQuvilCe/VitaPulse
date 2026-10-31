@@ -17,3 +17,5 @@ class Meal(Base):
     protein_g: Mapped[float] = mapped_column(Float, default=0)
     carbs_g: Mapped[float] = mapped_column(Float, default=0)
     fat_g: Mapped[float] = mapped_column(Float, default=0)
+    meal_type: Mapped[str | None] = mapped_column(String(10), default=None)
+    source: Mapped[str] = mapped_column(String(10), default="manual", server_default="manual")

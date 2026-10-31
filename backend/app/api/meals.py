@@ -6,6 +6,7 @@ from sqlalchemy import func, select
 from app.api.deps import CurrentUser, DbSession
 from app.models import Meal
 from app.schemas.meal import DayTotals, MealIn, MealRead
+from app.services import achievements
 
 router = APIRouter(prefix="/meals", tags=["meals"])
 
@@ -22,6 +23,7 @@ def create_meal(data: MealIn, user: CurrentUser, db: DbSession) -> Meal:
     meal = Meal(user_id=user.id, **data.model_dump())
     db.add(meal)
     db.commit()
+    achievements.evaluate(db, user.id)
     return meal
 
 

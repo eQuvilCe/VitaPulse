@@ -6,6 +6,7 @@ from sqlalchemy import select
 from app.api.deps import CurrentUser, DbSession
 from app.models import DailyMetric
 from app.schemas.metric import MAX_VALUES, MetricAdd, MetricKind, MetricRead, MetricSet
+from app.services import achievements
 
 router = APIRouter(prefix="/metrics", tags=["metrics"])
 
@@ -32,6 +33,8 @@ def set_metric(kind: MetricKind, data: MetricSet, user: CurrentUser, db: DbSessi
         db.add(row)
     row.value = data.value
     db.commit()
+    if kind in ("weight_kg", "water_ml"):
+        achievements.evaluate(db, user.id)
     return row
 
 
@@ -48,6 +51,8 @@ def add_to_metric(
         db.add(row)
     row.value = total
     db.commit()
+    if kind in ("weight_kg", "water_ml"):
+        achievements.evaluate(db, user.id)
     return row
 
 

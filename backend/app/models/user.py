@@ -11,7 +11,9 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String(255))
+    # Empty for accounts created through Google until a password is set.
+    password_hash: Mapped[str] = mapped_column(String(255), default="")
+    google_sub: Mapped[str | None] = mapped_column(String(64), unique=True, default=None)
     name: Mapped[str] = mapped_column(String(100), default="")
     language: Mapped[str] = mapped_column(String(5), default="en")
     height_cm: Mapped[float | None] = mapped_column(Float, default=None)
@@ -19,3 +21,11 @@ class User(Base):
     sex: Mapped[str | None] = mapped_column(String(10), default=None)
     activity: Mapped[str] = mapped_column(String(10), default="light")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    @property
+    def has_password(self) -> bool:
+        return bool(self.password_hash)
+
+    @property
+    def google_linked(self) -> bool:
+        return self.google_sub is not None
