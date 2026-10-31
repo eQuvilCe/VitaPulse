@@ -19,9 +19,9 @@ export default function AchievementsView() {
 
   const earned = data.badges.filter((b) => b.earned_at).length;
   const streaks = [
-    { label: t.achievements.diaryStreak, value: data.streaks.diary_days, icon: CalendarCheck, tone: "kcal" },
-    { label: t.achievements.workoutStreak, value: data.streaks.workouts_total, icon: Dumbbell, tone: "brand" },
-    { label: t.achievements.waterStreak, value: data.streaks.water_days, icon: Droplets, tone: "info" },
+    { label: t.achievements.diaryStreak, value: data.streaks.diary_days, days: true, icon: CalendarCheck, tone: "kcal" },
+    { label: t.achievements.workoutStreak, value: data.streaks.workouts_total, days: false, icon: Dumbbell, tone: "brand" },
+    { label: t.achievements.waterStreak, value: data.streaks.water_days, days: true, icon: Droplets, tone: "info" },
   ] as const;
 
   return (
@@ -30,7 +30,7 @@ export default function AchievementsView() {
 
       <SectionTitle>{t.achievements.streaks}</SectionTitle>
       <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {streaks.map(({ label, value, icon: Icon, tone }) => (
+        {streaks.map(({ label, value, days, icon: Icon, tone }) => (
           <Card key={label} className="flex items-center gap-4">
             <span
               className={cx(
@@ -43,7 +43,7 @@ export default function AchievementsView() {
               {value > 0 && <Flame className="absolute -right-1 -top-1 h-4 w-4 fill-kcal-500 text-kcal-500" />}
             </span>
             <div>
-              <p className="text-title font-semibold tabular-nums">{fmt(t.achievements.days, { n: value })}</p>
+              <p className="text-title font-semibold tabular-nums">{days ? fmt(t.achievements.days, { n: value }) : value}</p>
               <p className="text-caption text-fg-muted">{label}</p>
             </div>
           </Card>
