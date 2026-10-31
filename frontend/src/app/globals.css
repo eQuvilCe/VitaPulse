@@ -7,6 +7,49 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   /* The landing breathes at a calm resting 40 BPM. */
   --beat: 1.5s;
+
+  /* ---------- Vita Health tokens ----------
+     Light and fresh: warm white paper, a mint-to-forest health green, coral
+     for calories. Colors are RGB channels so Tailwind can add alpha. */
+  --vh-canvas: 251 249 244;
+  --vh-surface: 255 255 255;
+  --vh-subtle: 244 241 233;
+  --vh-line: 230 225 214;
+  --vh-line-strong: 210 203 189;
+
+  --vh-fg: 28 40 34;
+  --vh-fg-muted: 92 106 98;
+  --vh-fg-subtle: 138 148 142;
+
+  --vh-brand-50: 236 249 243;
+  --vh-brand-100: 211 241 227;
+  --vh-brand-300: 134 218 184;
+  --vh-brand-500: 43 185 138;
+  --vh-brand-600: 20 153 111;
+  --vh-brand-700: 14 122 89;
+  --vh-brand-800: 12 95 70;
+
+  --vh-kcal-50: 255 241 236;
+  --vh-kcal-100: 255 220 208;
+  --vh-kcal-300: 255 159 130;
+  --vh-kcal-500: 242 112 79;
+  --vh-kcal-600: 196 71 42;
+  --vh-kcal-700: 160 54 30;
+
+  --vh-warn: 214 140 30;
+  --vh-warn-soft: 253 243 222;
+  --vh-danger: 200 59 52;
+  --vh-danger-soft: 252 233 231;
+  --vh-info: 46 117 182;
+  --vh-info-soft: 228 239 250;
+
+  --vh-radius-field: 14px;
+  --vh-radius-card: 20px;
+  --vh-radius-panel: 28px;
+
+  --vh-shadow-card: 0 1px 2px rgb(28 40 34 / 0.04), 0 8px 24px -12px rgb(28 40 34 / 0.12);
+  --vh-shadow-raised: 0 2px 4px rgb(28 40 34 / 0.05), 0 20px 40px -16px rgb(28 40 34 / 0.18);
+  --vh-ring: 0 0 0 4px rgb(var(--vh-brand-500) / 0.22);
 }
 
 html {
@@ -21,10 +64,14 @@ html.lenis-on {
 }
 
 body {
-  @apply bg-bg text-slate-100 antialiased;
+  @apply bg-canvas text-fg antialiased;
 }
 
-/* The landing has its own palette; app pages keep the default dark theme. */
+::selection {
+  background: rgb(var(--vh-brand-300) / 0.45);
+}
+
+/* The landing has its own night palette; everything else is Vita Health light. */
 body:has(.landing) {
   background: #17121e;
   color: #fff7f1;
