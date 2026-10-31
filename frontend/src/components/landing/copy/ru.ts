@@ -12,9 +12,6 @@ const ru: LandingCopy = {
     openMenu: "Открыть меню",
     closeMenu: "Закрыть меню",
   },
-  intro: {
-    skip: "Пропустить",
-  },
   hero: {
     badge: "Бесплатный AI-тренер по питанию и спорту",
     titleA: "Ешь вкусно, двигайся больше —",

@@ -11,9 +11,6 @@ const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
   },
-  intro: {
-    skip: "Skip intro",
-  },
   hero: {
     badge: "Free AI coach for food and fitness",
     titleA: "Eat well, move more,",

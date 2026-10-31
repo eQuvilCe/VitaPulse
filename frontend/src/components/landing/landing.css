@@ -6,7 +6,6 @@
   border-radius: 12px;
 }
 
-html.vl-lock,
 html.vl-menu {
   overflow: hidden;
 }
@@ -32,148 +31,10 @@ html.vl-menu {
   color: rgb(var(--vh-brand-700));
 }
 
-/* ---------- Intro ---------- */
-
-@property --vl-r {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-
-.vl-intro {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: #0a1c16;
-  /* Failsafe: fade out on its own even if JavaScript never hydrates. */
-  animation: vl-failsafe 1s ease 12s forwards;
-}
-
-/* The canvas fades in only after the scene has warmed up. */
-.vl-intro-canvas {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 1.1s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.vl-intro-canvas.is-on {
-  opacity: 1;
-}
-
-/* A soft-edged hole opens from the word outwards onto the light page. */
-.vl-intro.is-ripple {
-  -webkit-mask-image: radial-gradient(circle at var(--rx) var(--ry), transparent var(--vl-r), #000 calc(var(--vl-r) + 90px));
-  mask-image: radial-gradient(circle at var(--rx) var(--ry), transparent var(--vl-r), #000 calc(var(--vl-r) + 90px));
-  --vl-r: 160vmax;
-  transition: --vl-r 1.5s cubic-bezier(0.37, 0, 0.2, 1);
-}
-
-.vl-intro-ring,
-.vl-intro-flash {
-  position: fixed;
-  left: var(--rx);
-  top: var(--ry);
-  border-radius: 9999px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
-}
-
-.vl-intro-ring {
-  width: 320vmax;
-  height: 320vmax;
-  border: 2px solid rgb(134 218 184 / 0.75);
-  box-shadow:
-    0 0 60px rgb(134 218 184 / 0.45),
-    inset 0 0 60px rgb(134 218 184 / 0.3);
-}
-
-.vl-intro-flash {
-  width: 28rem;
-  height: 28rem;
-  background: radial-gradient(circle, rgb(239 255 248 / 0.8), rgb(134 218 184 / 0) 65%);
-}
-
-.vl-intro.is-ripple .vl-intro-ring {
-  animation: vl-ring 1.5s cubic-bezier(0.37, 0, 0.2, 1) forwards;
-}
-
-.vl-intro.is-ripple .vl-intro-flash {
-  animation: vl-flash 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.vl-intro-skip {
-  position: absolute;
-  bottom: max(24px, env(safe-area-inset-bottom));
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 8px 16px;
-  border-radius: 9999px;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgb(239 255 248 / 0.7);
-  border: 1px solid rgb(239 255 248 / 0.18);
-  background: rgb(239 255 248 / 0.04);
-  opacity: 0;
-  animation: vl-fade-in 0.8s ease 1.2s forwards;
-  transition:
-    color 0.3s,
-    border-color 0.3s;
-}
-
-.vl-intro-skip:hover {
-  color: #effff8;
-  border-color: rgb(239 255 248 / 0.4);
-}
-
-@keyframes vl-ring {
-  0% {
-    opacity: 0.9;
-    transform: translate(-50%, -50%) scale(0);
-  }
-  60% {
-    opacity: 0.55;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@keyframes vl-flash {
-  0% {
-    opacity: 0.9;
-    transform: translate(-50%, -50%) scale(0.2);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(1.8);
-  }
-}
-
-@keyframes vl-fade-in {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes vl-failsafe {
-  to {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-}
-
 /* ---------- Hero entrance ---------- */
 
 /* Hidden under the intro, then rising as its ripple opens. */
-html.vl-pending:not(.vl-done) .vl-in {
-  opacity: 0;
-}
-
-html.vl-done:not(.vl-skip) .vl-in {
+.vl-in {
   animation: vl-rise 1.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(0.35s + var(--d, 0ms));
 }
@@ -215,7 +76,7 @@ html.vl-done:not(.vl-skip) .vl-in {
   stroke-dashoffset: 1;
 }
 
-html.vl-done .vl-draw.is-hero,
+.vl-draw.is-hero,
 .is-visible .vl-draw {
   animation: vl-draw 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.5s forwards;
 }
@@ -358,10 +219,6 @@ html.vl-done .vl-draw.is-hero,
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .vl-intro {
-    display: none;
-  }
-
   .vh-landing *,
   .vh-landing *::before,
   .vh-landing *::after {
