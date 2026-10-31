@@ -32,3 +32,33 @@ def test_rejects_bad_weekday_and_kind(client, auth_headers):
 def test_days_are_deduplicated_and_sorted(client, auth_headers):
     r = _make(client, auth_headers, days=[4, 0, 4, 2])
     assert r.json()["days"] == [0, 2, 4]
+
+
+def test_patch_updates_only_given_fields(client, auth_headers):
+    rid = _make(client, auth_headers, message="x").json()["id"]
+    r = client.patch(
+        f"/api/v1/reminders/{rid}", json={"enabled": False, "days": [5, 6]}, headers=auth_headers
+    )
+    assert r.status_code == 200
+    data = r.json()
+    assert data["enabled"] is False
+    assert data["days"] == [5, 6]
+    assert data["message"] == "x"
+
+
+def test_delete_reminder(client, auth_headers):
+    rid = _make(client, auth_headers).json()["id"]
+    assert client.delete(f"/api/v1/reminders/{rid}", headers=auth_headers).status_code == 204
+    assert client.get("/api/v1/reminders", headers=auth_headers).json() == []
+    assert client.delete(f"/api/v1/reminders/{rid}", headers=auth_headers).status_code == 404
+
+
+def test_cannot_touch_other_users_reminder(client, auth_headers):
+    rid = _make(client, auth_headers).json()["id"]
+    client.post("/api/v1/auth/register", json={"email": "c@d.co", "password": "password123"})
+    r = client.post("/api/v1/auth/login", data={"username": "c@d.co", "password": "password123"})
+    other = {"Authorization": f"Bearer {r.json()['access_token']}"}
+    patch = client.patch(f"/api/v1/reminders/{rid}", json={"enabled": False}, headers=other)
+    assert patch.status_code == 404
+    assert client.delete(f"/api/v1/reminders/{rid}", headers=other).status_code == 404
+    assert client.get("/api/v1/reminders", headers=other).json() == []
