@@ -1,0 +1,198 @@
+// Landing page copy. Every locale must provide the same keys (see `LandingCopy`).
+const en = {
+  units: { cm: "cm", kg: "kg", g: "g", kcal: "kcal" },
+  nav: {
+    how: "How it works",
+    features: "Features",
+    recipes: "Recipes",
+    faq: "FAQ",
+    login: "Log in",
+    cta: "Get free plan",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+  },
+  intro: {
+    skip: "Skip intro",
+  },
+  hero: {
+    badge: "Free AI coach for food and fitness",
+    titleA: "Eat well, move more,",
+    titleB: "reach your weight.",
+    lead: "Answer five quick questions and get a free nutrition and workout plan built for your body and goal. Snap your meals to count calories and watch the progress add up.",
+    primary: "Get my free plan",
+    secondary: "How it works",
+    trust: ["Free forever plan", "No card needed", "Ready in a minute"],
+    photoFood: "A bowl of salad with avocado, tomatoes and chickpeas",
+    photoWorkout: "A woman doing crunches on a mat at home",
+    scanLabel: "Scanned by photo",
+    scanDish: "Rainbow bowl",
+    bmiLabel: "BMI",
+    bmiState: "Healthy",
+    todayLabel: "Today",
+    todayValue: "1,240 of 1,850 kcal",
+    streak: "7-day streak",
+  },
+  quiz: {
+    eyebrow: "Free plan",
+    title: "See your numbers in one minute",
+    lead: "Your BMI, a healthy weight range and a daily calorie target, worked out right here in your browser. Nothing is sent anywhere until you sign up.",
+    sex: "Sex",
+    female: "Female",
+    male: "Male",
+    age: "Age",
+    ageUnit: "yrs",
+    height: "Height",
+    weight: "Weight",
+    goal: "Goal",
+    lose: "Lose weight",
+    gain: "Gain weight",
+    amount: "How much",
+    activity: "Activity",
+    activityLow: "Mostly sitting",
+    activityModerate: "Active now and then",
+    activityHigh: "Very active",
+    errors: {
+      age: "Enter an age from 14 to 90",
+      height: "Enter a height from 120 to 230 cm",
+      weight: "Enter a weight from 35 to 300 kg",
+    },
+    results: "Your results",
+    empty: "Fill in your height, weight and age to see your results.",
+    bmi: "Body mass index",
+    bmiNow: "Now",
+    bmiGoal: "Goal",
+    categories: {
+      under: "Underweight",
+      normal: "Healthy",
+      over: "Overweight",
+      obese: "Obesity",
+    },
+    healthyRange: "Healthy weight for {height} cm: {min}–{max} kg",
+    calories: "Daily calories",
+    maintenance: "{kcal} kcal keeps your weight steady",
+    protein: "Protein",
+    fat: "Fat",
+    carbs: "Carbs",
+    eta: "Reach {weight} kg in about {weeks} weeks",
+    etaDate: "around {date}",
+    pace: {
+      lose: "At a gentle 0.5 kg a week",
+      gain: "At a steady 0.25 kg a week",
+    },
+    lowTarget: "This goal is below the healthy range for your height. Your plan will aim for the lower end of the healthy range instead.",
+    cta: "Get my full plan, free",
+    note: "Estimates use the Mifflin–St Jeor formula. This is not medical advice.",
+  },
+  how: {
+    eyebrow: "How it works",
+    title: "From a few answers to visible results",
+    steps: [
+      { title: "Quick questionnaire", text: "Height, weight, age, goal and how active you are. It takes about a minute.", tag: "1 minute" },
+      { title: "Your AI plan", text: "Calories and macros, a weekly menu with recipes and a shopping list, plus workouts for home or the gym.", tag: "Instant" },
+      { title: "Scan your meals", text: "Snap your plate. The AI recognises the dish and logs its calories, protein, fat and carbs.", tag: "3 seconds" },
+      { title: "Track your progress", text: "Weight chart, measurements and workouts done. The plan adapts as you go.", tag: "Every day" },
+    ],
+  },
+  features: {
+    eyebrow: "Features",
+    title: "Everything you need to change your weight, for free",
+    plan: {
+      title: "AI meal and workout plan",
+      text: "A week of meals that fits your calories and taste, with recipes, a shopping list and workouts for burning fat or building muscle.",
+      days: ["Mon", "Tue", "Wed"],
+      meals: ["Oatmeal with berries", "Chicken and quinoa bowl", "Salmon with greens"],
+      workout: "Home HIIT · 25 min",
+    },
+    scan: {
+      title: "Calorie scan by photo",
+      text: "Point your camera at a plate and get the dish, calories and macros in seconds.",
+      photo: "A plate with salad, eggs, avocado and tomatoes",
+      dish: "Egg and avocado salad",
+    },
+    bmi: {
+      title: "BMI scale",
+      text: "See where you are now, where you will be and the healthy range for your height.",
+    },
+    tips: {
+      title: "AI tips and chat",
+      text: "A daily tip based on your log, and answers to any question about food and training.",
+      question: "Can I eat after 6 pm?",
+      answer: "Yes. What matters is your daily total. Try a light dinner with protein, like cottage cheese or fish.",
+    },
+    progress: {
+      title: "Progress you can see",
+      text: "Weight chart, body measurements, private before and after photos and every workout ticked off.",
+      start: "Start",
+      now: "Now",
+    },
+    achievements: {
+      title: "Achievements",
+      text: "Streaks and badges that keep you going.",
+      badges: ["First scan", "7-day diary", "−5 kg", "10 workouts", "Water week", "Back on track"],
+    },
+  },
+  library: {
+    eyebrow: "Open to everyone",
+    title: "Recipes and workouts, no sign-up needed",
+    lead: "Simple, tasty dishes with calories counted and short workouts you can do anywhere.",
+    tabs: { recipes: "Recipes", workouts: "Workouts" },
+    min: "min",
+    protein: "protein",
+    burns: "burns ~{kcal} kcal",
+    recipes: [
+      { title: "Salmon power bowl", tag: "High protein" },
+      { title: "Avocado toast with egg", tag: "Breakfast" },
+      { title: "Quinoa with roasted veggies", tag: "Vegetarian" },
+      { title: "Yogurt bowl with berries", tag: "Sweet tooth" },
+    ],
+    workouts: [
+      { title: "Core in 15 minutes", tag: "Home" },
+      { title: "Full-body pilates", tag: "Home" },
+      { title: "Strength basics", tag: "Gym" },
+      { title: "Easy run intervals", tag: "Outdoors" },
+    ],
+    levels: { easy: "Beginner", medium: "Intermediate" },
+    cta: "Get a menu made for you",
+  },
+  reviews: {
+    eyebrow: "Stories",
+    title: "People who found their pace",
+    items: [
+      { name: "Anna, 29", result: "−6 kg in 3 months", text: "I stopped guessing. The photo scan showed me where the extra calories were hiding, and the menu is actually tasty." },
+      { name: "Mark, 34", result: "+4 kg of muscle", text: "I needed to gain, not lose. The plan pushed my protein up and gave me three gym days a week I could stick to." },
+      { name: "Elena, 41", result: "−9 kg in 5 months", text: "The badges sound silly, but my 40-day diary streak kept me going through the holidays." },
+    ],
+  },
+  faq: {
+    eyebrow: "FAQ",
+    title: "Questions, answered",
+    items: [
+      { q: "Is Vita Health really free?", a: "Yes. The questionnaire, your plan, the calorie scan, recipes and workouts are free. We may add optional extras later, but the core will stay free." },
+      { q: "Can it help me gain weight, not just lose it?", a: "Yes. Pick “Gain weight” and the plan sets a calorie surplus, more protein and strength workouts to help you build muscle." },
+      { q: "How accurate is the photo calorie scan?", a: "It is a good estimate for everyday meals. You can always adjust the portion or the dish before saving it to your diary." },
+      { q: "Do I need a gym?", a: "No. Choose home or gym when you set up your plan, and the workouts will match what you have." },
+      { q: "Is my data private?", a: "Your data belongs to your account and is never sold. Before and after photos are visible only to you." },
+      { q: "Is this medical advice?", a: "No. Vita Health helps you build healthy habits. If you have a medical condition or are pregnant, talk to a doctor first." },
+    ],
+  },
+  cta: {
+    title: "Your plan is one minute away",
+    text: "Answer five questions and get a personal menu and workouts, free.",
+    primary: "Get my free plan",
+    secondary: "Create account",
+  },
+  footer: {
+    tagline: "Healthy eating, workouts and a free AI coach.",
+    disclaimer: "Not medical advice",
+  },
+};
+
+type Shape<T> = T extends string
+  ? string
+  : T extends readonly (infer U)[]
+    ? readonly Shape<U>[]
+    : { [K in keyof T]: Shape<T[K]> };
+
+export type LandingCopy = Shape<typeof en>;
+
+export default en;
