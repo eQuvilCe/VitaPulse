@@ -28,3 +28,11 @@ class WeightTrend(BaseModel):
     points: list[WeightPoint]
     latest_kg: float | None
     change_kg: float | None
+
+
+class BodyStats(BaseModel):
+    weight_kg: float | None
+    bmi: float | None
+    bmi_category: str | None
+    bmr: int | None
+    daily_calories: int | None

@@ -88,3 +88,27 @@ def test_change_password_rejects_same_password(client, auth_headers):
         headers=auth_headers,
     )
     assert r.status_code == 400
+
+
+def test_update_body_profile(client, auth_headers):
+    r = client.patch(
+        "/api/v1/auth/me",
+        json={"height_cm": 178, "birth_year": 1995, "sex": "male", "activity": "moderate"},
+        headers=auth_headers,
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["height_cm"] == 178
+    assert body["activity"] == "moderate"
+
+
+def test_body_profile_rejects_bad_values(client, auth_headers):
+    r = client.patch("/api/v1/auth/me", json={"height_cm": 10}, headers=auth_headers)
+    assert r.status_code == 422
+    r = client.patch("/api/v1/auth/me", json={"activity": "extreme"}, headers=auth_headers)
+    assert r.status_code == 422
+
+
+def test_birth_year_in_future_rejected(client, auth_headers):
+    r = client.patch("/api/v1/auth/me", json={"birth_year": 2999}, headers=auth_headers)
+    assert r.status_code == 422

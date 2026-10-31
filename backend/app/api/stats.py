@@ -5,7 +5,8 @@ from sqlalchemy import func, select
 
 from app.api.deps import CurrentUser, DbSession
 from app.models import DailyMetric, Meal, SleepLog
-from app.schemas.stats import DayStats, WeekRead, WeightPoint, WeightTrend
+from app.schemas.stats import BodyStats, DayStats, WeekRead, WeightPoint, WeightTrend
+from app.services import body
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
@@ -94,3 +95,25 @@ def weight_trend(
         latest_kg=points[-1].weight_kg if points else None,
         change_kg=round(points[-1].weight_kg - points[0].weight_kg, 2) if len(points) > 1 else None,
     )
+
+
+@router.get("/body", response_model=BodyStats)
+def body_stats(user: CurrentUser, db: DbSession) -> BodyStats:
+    """BMI and calorie needs from the latest logged weight and the profile."""
+    weight = db.scalar(
+        select(DailyMetric.value)
+        .where(DailyMetric.user_id == user.id, DailyMetric.kind == "weight_kg")
+        .order_by(DailyMetric.day.desc())
+        .limit(1)
+    )
+    result = BodyStats(weight_kg=weight, bmi=None, bmi_category=None, bmr=None, daily_calories=None)
+    if weight is None or user.height_cm is None:
+        return result
+    result.bmi = body.bmi(weight, user.height_cm)
+    result.bmi_category = body.bmi_category(result.bmi)
+    if user.birth_year and user.sex:
+        # year-only age, good enough for a calorie estimate
+        age = date.today().year - user.birth_year
+        result.bmr = body.bmr(weight, user.height_cm, age, user.sex)
+        result.daily_calories = body.daily_calories(result.bmr, user.activity)
+    return result
