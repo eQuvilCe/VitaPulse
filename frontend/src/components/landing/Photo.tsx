@@ -35,15 +35,7 @@ export default function Photo({ id, alt, width, height, className, priority, siz
 }
 
 export const PHOTOS = {
+  // A trail runner on a sunlit ridge above the clouds.
+  hero: "1530143311094-34d807799e8f",
   bowl: "1512621776951-a57141f2eefd",
-  plate: "1490645935967-10de6ba17061",
-  crunches: "1571019613454-1cb2f99b2d8b",
-  salmonBowl: "1546069901-ba9599a7e63c",
-  avocadoToast: "1525351484163-7529414344d8",
-  quinoa: "1547592180-85f173990554",
-  yogurt: "1494390248081-4e521a5940db",
-  pilates: "1518611012118-696072aa579a",
-  deadlift: "1517836357463-d25dfeac3438",
-  running: "1552674605-db6ffd4facb5",
-  vegetables: "1498837167922-ddd27525d352",
 } as const;
