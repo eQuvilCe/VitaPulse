@@ -7,6 +7,14 @@ export type Goals = {
   calories: number;
 };
 
+export type Score = {
+  total: number;
+  sleep: number;
+  water: number;
+  steps: number;
+  habits: number;
+};
+
 export type Dashboard = {
   day: string;
   sleep_minutes: number | null;
@@ -18,6 +26,8 @@ export type Dashboard = {
   habits_done: number;
   habits_total: number;
   goals: Goals;
+  // older API builds do not send a score
+  score?: Score;
   tips: string[];
 };
 
