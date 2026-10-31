@@ -291,7 +291,7 @@ function PhotosSection() {
       >
         {t.progress.photos}
       </SectionTitle>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid max-w-xl grid-cols-2 gap-3 sm:gap-4">
         <PhotoSlot kind="before" photo={before} onChange={photos.reload} />
         <PhotoSlot kind="after" photo={after} onChange={photos.reload} />
       </div>

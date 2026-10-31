@@ -24,10 +24,9 @@ function Marker({ bmi, label, tone, below }: { bmi: number; label: string; tone:
       <div
         className={cx(
           "absolute left-1/2 flex -translate-x-1/2 flex-col items-center whitespace-nowrap",
-          below ? "top-full mt-2" : "bottom-full mb-2",
+          below ? "top-full mt-11" : "bottom-full mb-2",
         )}
       >
-        {below && <span className="mb-1 h-2 w-px bg-fg-subtle" aria-hidden="true" />}
         <span
           className={cx(
             "rounded-full px-2.5 py-1 text-caption font-semibold shadow-card",
@@ -56,7 +55,7 @@ export default function BmiScale({ data }: { data: Bmi }) {
 
   return (
     <figure>
-      <div className="relative px-1 pb-14 pt-12">
+      <div className={cx("relative px-1 pt-12", data.target_bmi != null ? "pb-24" : "pb-12")}>
         <div className="relative h-3">
           <div className="flex h-full overflow-hidden rounded-full">
             {BANDS.map((b) => (
@@ -64,18 +63,18 @@ export default function BmiScale({ data }: { data: Bmi }) {
             ))}
           </div>
           <Marker bmi={data.bmi} label={t.bmi.now} tone="now" />
+          <div className="absolute inset-x-0 top-full mt-2 text-caption text-fg-muted" aria-hidden="true">
+            {[18.5, 25, 30].map((b) => (
+              <span key={b} className="absolute -translate-x-1/2 text-center leading-tight tabular-nums" style={{ left: pos(b) }}>
+                {b}
+                <span className="block text-[11px] text-fg-subtle">
+                  {kgAt(b)} {t.common.kg}
+                </span>
+              </span>
+            ))}
+          </div>
           {data.target_bmi != null && <Marker bmi={data.target_bmi} label={t.bmi.goal} tone="goal" below />}
         </div>
-      </div>
-      <div className="relative -mt-8 h-10 text-caption text-fg-muted" aria-hidden="true">
-        {[18.5, 25, 30].map((b) => (
-          <span key={b} className="absolute -translate-x-1/2 text-center tabular-nums" style={{ left: pos(b) }}>
-            {b}
-            <span className="block text-[11px] text-fg-subtle">
-              {kgAt(b)} {t.common.kg}
-            </span>
-          </span>
-        ))}
       </div>
       <figcaption className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 text-caption sm:grid-cols-4">
         {BANDS.map((b) => (

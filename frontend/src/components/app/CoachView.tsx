@@ -70,7 +70,7 @@ export default function CoachView() {
       <PageHeader title={t.coach.title} />
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-1">
+        <div className="min-w-0 space-y-4 lg:col-span-1">
           <Card tone="brand" className="relative overflow-hidden">
             <Lightbulb className="absolute -right-3 -top-3 h-24 w-24 text-brand-100" aria-hidden="true" />
             <p className="relative flex items-center gap-2 text-caption font-semibold text-brand-800">
@@ -94,7 +94,7 @@ export default function CoachView() {
           </Card>
         </div>
 
-        <Card padded={false} className="flex h-[min(640px,calc(100vh-220px))] min-h-[420px] flex-col lg:col-span-2">
+        <Card padded={false} className="flex h-[min(640px,calc(100vh-220px))] min-h-[420px] min-w-0 flex-col lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
             <h2 className="text-heading">{t.coach.chat}</h2>
           </div>

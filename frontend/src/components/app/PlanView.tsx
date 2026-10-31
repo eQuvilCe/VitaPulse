@@ -382,7 +382,7 @@ function Workouts({ plan }: { plan: Plan }) {
 
   const now = todayIndex();
   return (
-    <ul className="grid gap-3 md:grid-cols-2">
+    <ul className="grid items-start gap-3 md:grid-cols-2">
       {plan.workouts.map((w) => {
         const isToday = w.day === now;
         const done = isToday && doneToday.has(w.title);

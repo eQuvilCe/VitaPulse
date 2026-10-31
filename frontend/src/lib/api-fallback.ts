@@ -498,9 +498,10 @@ export function buildPlan(input: PlanInput, locale: string, seed = 0, createdAt 
   const forecastWeeks = realPace > 0 ? change / realPace : 0;
   const forecast = addDays(now, Math.round(forecastWeeks * 7));
 
+  // Protein per kg, capped at 30% of calories so a big deficit still leaves room for carbs.
   const proteinPerKg = input.goal === "lose" ? 1.8 : input.goal === "gain" ? 1.7 : 1.4;
-  const protein = Math.round(proteinPerKg * input.weight_kg);
-  const fat = Math.round(Math.max(0.8 * input.weight_kg, (0.25 * calories) / 9));
+  const protein = Math.round(Math.min(proteinPerKg * input.weight_kg, (0.3 * calories) / 4));
+  const fat = Math.round(Math.max(0.6 * input.weight_kg, (0.25 * calories) / 9));
   const carbs = Math.max(0, Math.round((calories - protein * 4 - fat * 9) / 4));
 
   const banned = new Set(input.restrictions.flatMap((r) => EXCLUDES[r] ?? []));
@@ -517,7 +518,7 @@ export function buildPlan(input: PlanInput, locale: string, seed = 0, createdAt 
     meals: SLOTS.map((slot): PlanMeal => {
       const options = pool(slot);
       const r = options[(day + offset + SLOTS.indexOf(slot)) % options.length];
-      const k = Math.min(2.5, Math.max(0.5, Math.round(((calories * SLOT_SHARE[slot]) / r.kcal) * 4) / 4));
+      const k = Math.min(2.5, Math.max(0.5, Math.round(((calories * SLOT_SHARE[slot]) / r.kcal) * 10) / 10));
       for (const [key, qty] of r.ing) shopping.set(key, (shopping.get(key) ?? 0) + qty * k);
       return {
         slot,
@@ -571,7 +572,8 @@ export function buildPlan(input: PlanInput, locale: string, seed = 0, createdAt 
     tdee,
     weekly_change_kg: Math.round(sign * realPace * 100) / 100,
     forecast_date: isoDay(change ? forecast : now),
-    pace_capped: wanted > maxPace + 1e-6 || realPace + 1e-6 < Math.min(wanted, maxPace),
+    // Flag only when the forecast lands noticeably after the date the user asked for.
+    pace_capped: change > 0 && forecast.getTime() - target.getTime() > 3 * 864e5,
     menu,
     shopping: shoppingList,
     workouts,
