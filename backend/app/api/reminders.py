@@ -38,7 +38,10 @@ def list_reminders(user: CurrentUser, db: DbSession) -> list[Reminder]:
 
 @router.get("/due", response_model=list[ReminderRead])
 def due_reminders(user: CurrentUser, db: DbSession, now: datetime | None = None) -> list[Reminder]:
-    """Reminders that should fire right now. `now` is the user's local time (naive)."""
+    """Reminders that should fire right now.
+
+    `now` is the user's wall-clock time; any UTC offset in it is ignored, not converted.
+    """
     moment = now.replace(tzinfo=None) if now else datetime.now()
     stmt = select(Reminder).where(Reminder.user_id == user.id, Reminder.enabled.is_(True))
     return [r for r in db.scalars(stmt) if is_due(r, moment)]

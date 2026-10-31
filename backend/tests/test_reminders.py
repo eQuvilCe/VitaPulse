@@ -72,3 +72,13 @@ def test_due_returns_only_matching_reminders(client, auth_headers):
         "/api/v1/reminders/due", params={"now": "2026-11-02T09:02:00"}, headers=auth_headers
     )
     assert [x["message"] for x in r.json()] == ["now"]
+
+
+def test_due_uses_wall_clock_and_ignores_offset(client, auth_headers):
+    _make(client, auth_headers, at="09:00:00", message="now")
+    r = client.get(
+        "/api/v1/reminders/due",
+        params={"now": "2026-11-02T09:01:00+05:00"},
+        headers=auth_headers,
+    )
+    assert [x["message"] for x in r.json()] == ["now"]
