@@ -1,3 +1,5 @@
+import httpx
+
 from vitabot.api import ApiError, VitaApi
 from vitabot.sessions import SessionStore
 
@@ -19,6 +21,13 @@ METRIC_COMMANDS = {
 
 
 def handle_message(chat_id: int, text: str, api: VitaApi, sessions: SessionStore) -> str:
+    try:
+        return _dispatch(chat_id, text, api, sessions)
+    except httpx.HTTPError:
+        return "VitaPulse is not reachable right now, try again in a minute."
+
+
+def _dispatch(chat_id: int, text: str, api: VitaApi, sessions: SessionStore) -> str:
     parts = text.strip().split()
     if not parts or not parts[0].startswith("/"):
         return HELP

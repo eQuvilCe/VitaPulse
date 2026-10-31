@@ -69,3 +69,12 @@ def test_sessions_persist(tmp_path):
     path = str(tmp_path / "s.json")
     SessionStore(path).set(5, "abc")
     assert SessionStore(path).get(5) == "abc"
+
+
+def test_unreachable_api_gets_a_reply(sessions):
+    def boom(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("down")
+
+    client = httpx.Client(base_url="http://api", transport=httpx.MockTransport(boom))
+    reply = handle_message(1, "/login a@b.co good", VitaApi("http://api", client), sessions)
+    assert "not reachable" in reply
