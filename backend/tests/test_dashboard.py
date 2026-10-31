@@ -35,3 +35,17 @@ def test_dashboard_uses_saved_goals(client, auth_headers):
     r = client.get("/api/v1/dashboard?day=2026-10-02", headers=auth_headers).json()
     assert r["goals"]["water_ml"] == 4000
     assert "drink_water" in r["tips"]
+
+
+def test_dashboard_score_breakdown(client, auth_headers):
+    day = "2026-10-11"
+    empty = client.get(f"{H}/dashboard?day={day}", headers=auth_headers).json()["score"]
+    # no habits yet, so only the habit points are handed out
+    assert empty == {"total": 25, "sleep": 0, "water": 0, "steps": 0, "habits": 25}
+
+    client.put(f"{H}/sleep", json={"day": day, "minutes": 420}, headers=auth_headers)
+    client.put(f"{H}/metrics/steps", json={"day": day, "value": 4000}, headers=auth_headers)
+    score = client.get(f"{H}/dashboard?day={day}", headers=auth_headers).json()["score"]
+    assert score["sleep"] == 30
+    assert score["steps"] == 13
+    assert score["total"] == 30 + 13 + 25
