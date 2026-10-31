@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { Button, buttonClasses, Card, Input, Progress } from "@/components/ui";
-import { addDays, isoDay } from "@/lib/api-fallback";
+import { addDays, isoDay } from "@/lib/dates";
 import { addMeal, addWater, deleteMeal, fetchPlan, listMeals, today, waterToday, type Macros, type Meal, type MealInput } from "@/lib/api-vita";
 
 import { fmt, formatDate, formatNumber, useAppT } from "./i18n";

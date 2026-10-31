@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 
 import { Button, Card, Input } from "@/components/ui";
-import { addDays, isoDay } from "@/lib/api-fallback";
+import { addDays, isoDay } from "@/lib/dates";
 import {
   addMeasurement,
   authedObjectUrl,

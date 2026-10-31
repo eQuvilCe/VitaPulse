@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Button, Card, Input } from "@/components/ui";
 import { createPlan, fetchPlan, getToken, type Activity, type GoalKind, type PlanInput, type Restriction } from "@/lib/api-vita";
-import { bmiCategory, bmiValue, buildPlan } from "@/lib/api-fallback";
+import { bmiCategory, bmiValue, estimate } from "@/lib/estimate";
 import { cx } from "@/lib/cx";
 
 import { ChoiceGroup, MultiChoice } from "./Choice";
@@ -113,16 +113,9 @@ export default function Onboarding() {
     if (!form.height_cm || !form.weight_kg || !form.age) return null;
     if (form.height_cm < 120 || form.weight_kg < 35) return null;
     const bmi = bmiValue(form.weight_kg, form.height_cm);
-    let plan = null;
-    if (form.target_date) {
-      try {
-        plan = buildPlan(form, locale);
-      } catch {
-        plan = null;
-      }
-    }
+    const plan = estimate({ ...form, goal_kg: form.target_change_kg });
     return { bmi, category: bmiCategory(bmi), plan };
-  }, [form, locale]);
+  }, [form]);
 
   const steps = [o.stepBody, o.stepGoal, o.stepLife];
   const minDate = new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
@@ -280,7 +273,7 @@ export default function Onboarding() {
                 <p className="mt-1 text-title font-semibold tabular-nums">
                   {formatNumber(preview.plan.calories, locale)} <span className="text-body font-normal text-fg-muted">{t.common.kcal}</span>
                 </p>
-                {form.goal !== "maintain" && (
+                {form.goal !== "maintain" && preview.plan.forecast_date && (
                   <p className="mt-2 text-caption text-fg-muted">
                     {t.plan.forecast}: <span className="font-semibold text-fg">{formatDate(preview.plan.forecast_date, locale)}</span>
                   </p>
