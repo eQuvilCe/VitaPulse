@@ -4,9 +4,18 @@ from fastapi import APIRouter, Query
 from sqlalchemy import func, select
 
 from app.api.deps import CurrentUser, DbSession
+from app.api.goals import get_or_create_goal
 from app.models import DailyMetric, Meal, SleepLog
-from app.schemas.stats import BodyStats, DayStats, WeekRead, WeightPoint, WeightTrend
+from app.schemas.stats import (
+    BodyStats,
+    DayStats,
+    ReportRead,
+    WeekRead,
+    WeightPoint,
+    WeightTrend,
+)
 from app.services import body
+from app.services.report import DayRow, Goals, best_steps_day, goal_hits
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
@@ -117,3 +126,29 @@ def body_stats(user: CurrentUser, db: DbSession) -> BodyStats:
         result.bmr = body.bmr(weight, user.height_cm, age, user.sex)
         result.daily_calories = body.daily_calories(result.bmr, user.activity)
     return result
+
+
+@router.get("/report", response_model=ReportRead)
+def report(
+    user: CurrentUser,
+    db: DbSession,
+    end: date | None = None,
+    span: int = Query(default=7, ge=2, le=31),
+) -> ReportRead:
+    """Summary of the last `span` days: goal hits, averages and the best walking day."""
+    data = week(user, db, end, span)
+    goal = get_or_create_goal(db, user.id)
+    rows = [DayRow(d.day, d.sleep_minutes, d.water_ml, d.steps) for d in data.days]
+    logged = sum(
+        1 for d in data.days if d.sleep_minutes is not None or d.water_ml or d.steps or d.calories
+    )
+    return ReportRead(
+        start=data.days[0].day,
+        end=data.days[-1].day,
+        days_logged=logged,
+        goal_hits=goal_hits(rows, Goals(goal.sleep_minutes, goal.water_ml, goal.steps)),
+        best_steps_day=best_steps_day(rows),
+        avg_sleep_minutes=data.avg_sleep_minutes,
+        avg_steps=data.avg_steps,
+        avg_calories=sum(d.calories for d in data.days) / span,
+    )

@@ -36,3 +36,14 @@ class BodyStats(BaseModel):
     bmi_category: str | None
     bmr: int | None
     daily_calories: int | None
+
+
+class ReportRead(BaseModel):
+    start: date
+    end: date
+    days_logged: int
+    goal_hits: dict[str, int]
+    best_steps_day: date | None
+    avg_sleep_minutes: float | None
+    avg_steps: float
+    avg_calories: float
