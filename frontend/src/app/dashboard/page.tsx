@@ -1,12 +1,10 @@
 "use client";
 
-import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
+import AppHeader from "@/components/AppHeader";
 import Badges from "@/components/Badges";
 import HabitList from "@/components/HabitList";
-import Logo from "@/components/landing/Logo";
 import MealForm from "@/components/MealForm";
 import QuickAdd from "@/components/QuickAdd";
 import ScoreRing from "@/components/ScoreRing";
@@ -15,7 +13,6 @@ import StatCard from "@/components/StatCard";
 import WeekReport from "@/components/WeekReport";
 import WeekChart from "@/components/WeekChart";
 import { fetchAchievements, type Achievements } from "@/lib/achievements";
-import { fetchMe, logout, type User } from "@/lib/auth";
 import { fetchDashboard, type Dashboard } from "@/lib/dashboard";
 import { createHabit, fetchHabits, setDone, type Habit } from "@/lib/habits";
 import { addMeal } from "@/lib/meals";
@@ -23,22 +20,16 @@ import { addMetric } from "@/lib/metrics";
 import { logSleep } from "@/lib/sleep";
 import { fetchReport, fetchWeek, type Report, type Week } from "@/lib/stats";
 import { tipText } from "@/lib/tips";
+import { useRequireUser } from "@/hooks/useRequireUser";
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const user = useRequireUser();
   const [data, setData] = useState<Dashboard | null>(null);
   const [week, setWeek] = useState<Week | null>(null);
   const [habits, setHabits] = useState<Habit[] | null>(null);
   const [badges, setBadges] = useState<Achievements | null>(null);
   const [report, setReport] = useState<Report | null>(null);
   const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    fetchMe()
-      .then(setUser)
-      .catch(() => router.replace("/login"));
-  }, [router]);
 
   const reload = useCallback(() => {
     fetchDashboard()
@@ -70,18 +61,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-plum text-glow">
       <div className="mx-auto max-w-4xl p-6">
-        <header className="flex items-center justify-between">
-          <Logo />
-          <button
-            onClick={() => {
-              logout();
-              router.push("/login");
-            }}
-            className="flex items-center gap-2 rounded-full px-3 py-2 text-sm text-mist transition-colors duration-300 hover:bg-white/5 hover:text-glow"
-          >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
-        </header>
+        <AppHeader />
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Hi, {user.name || user.email}</h1>
         {failed && <p className="mt-8 text-sm text-coral">Could not load the stats for today.</p>}
         {data?.score && (
