@@ -7,6 +7,8 @@ export type WeightTrend = {
   change_kg: number | null;
 };
 
-export function fetchWeightTrend(span = 30): Promise<WeightTrend> {
+export const WEIGHT_SPAN_DAYS = 30;
+
+export function fetchWeightTrend(span = WEIGHT_SPAN_DAYS): Promise<WeightTrend> {
   return api<WeightTrend>(`/stats/weight?end=${today()}&span=${span}`);
 }

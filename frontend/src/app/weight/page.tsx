@@ -8,7 +8,7 @@ import WeightChart from "@/components/WeightChart";
 import WeightForm from "@/components/WeightForm";
 import { useRequireUser } from "@/hooks/useRequireUser";
 import { setMetric } from "@/lib/metrics";
-import { fetchWeightTrend, type WeightTrend } from "@/lib/weight";
+import { fetchWeightTrend, WEIGHT_SPAN_DAYS, type WeightTrend } from "@/lib/weight";
 
 export default function WeightPage() {
   const user = useRequireUser();
@@ -45,7 +45,7 @@ export default function WeightPage() {
               value={trend.latest_kg === null ? "-" : `${trend.latest_kg} kg`}
             />
             <StatCard
-              label="Change, 30 days"
+              label={`Change, ${WEIGHT_SPAN_DAYS} days`}
               value={change == null ? "-" : `${change > 0 ? "+" : ""}${change} kg`}
             />
           </section>
@@ -55,7 +55,7 @@ export default function WeightPage() {
         </section>
         {trend && (
           <section className="mt-6 rounded-2xl border border-white/10 bg-plum-2 p-5">
-            <h2 className="text-sm text-mist">Last 30 days</h2>
+            <h2 className="text-sm text-mist">Last {WEIGHT_SPAN_DAYS} days</h2>
             {trend.points.length > 0 ? (
               <div className="mt-4">
                 <WeightChart points={trend.points} />
