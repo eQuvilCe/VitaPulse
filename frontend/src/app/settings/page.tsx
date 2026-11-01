@@ -14,12 +14,13 @@ import { changePassword, updateProfile } from "@/lib/profile";
 export default function SettingsPage() {
   const user = useRequireUser();
   const [goals, setGoals] = useState<Goals | null>(null);
+  const [goalsFailed, setGoalsFailed] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchGoals()
         .then(setGoals)
-        .catch(() => undefined);
+        .catch(() => setGoalsFailed(true));
     }
   }, [user]);
 
@@ -39,6 +40,7 @@ export default function SettingsPage() {
         <div className="mt-8 space-y-4">
           <ProfileForm user={user} onSave={updateProfile} />
           {goals && <GoalsForm goals={goals} onSave={saveGoals} />}
+          {goalsFailed && <p className="text-sm text-coral">Could not load your daily goals.</p>}
           <PasswordForm onSave={changePassword} />
         </div>
       </div>
