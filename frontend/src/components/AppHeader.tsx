@@ -7,13 +7,13 @@ import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/landing/Logo";
 import { logout } from "@/lib/auth";
 
-export type NavItem = { href: string; label: string };
+const LINKS = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/weight", label: "Weight" },
+  { href: "/settings", label: "Settings" },
+];
 
-type Props = {
-  links?: NavItem[];
-};
-
-export default function AppHeader({ links = [{ href: "/dashboard", label: "Dashboard" }] }: Props) {
+export default function AppHeader() {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -21,7 +21,7 @@ export default function AppHeader({ links = [{ href: "/dashboard", label: "Dashb
     <header className="flex flex-wrap items-center justify-between gap-3">
       <Logo />
       <nav className="flex items-center gap-1 text-sm">
-        {links.map((l) => (
+        {LINKS.map((l) => (
           <Link
             key={l.href}
             href={l.href}

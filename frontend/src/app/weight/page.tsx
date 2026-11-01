@@ -35,13 +35,7 @@ export default function WeightPage() {
   return (
     <main className="min-h-screen bg-plum text-glow">
       <div className="mx-auto max-w-4xl p-6">
-        <AppHeader
-          links={[
-            { href: "/dashboard", label: "Dashboard" },
-            { href: "/weight", label: "Weight" },
-            { href: "/settings", label: "Settings" },
-          ]}
-        />
+        <AppHeader />
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Weight</h1>
         {failed && <p className="mt-6 text-sm text-coral">Could not load your weight history.</p>}
         {trend && (

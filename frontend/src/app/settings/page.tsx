@@ -28,12 +28,7 @@ export default function SettingsPage() {
   return (
     <main className="min-h-screen bg-plum text-glow">
       <div className="mx-auto max-w-4xl p-6">
-        <AppHeader
-          links={[
-            { href: "/dashboard", label: "Dashboard" },
-            { href: "/settings", label: "Settings" },
-          ]}
-        />
+        <AppHeader />
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Settings</h1>
         <p className="mt-2 text-sm text-mist">{user.email}</p>
         <div className="mt-8 space-y-4">

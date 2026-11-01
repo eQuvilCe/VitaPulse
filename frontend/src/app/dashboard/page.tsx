@@ -61,12 +61,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-plum text-glow">
       <div className="mx-auto max-w-4xl p-6">
-        <AppHeader
-          links={[
-            { href: "/dashboard", label: "Dashboard" },
-            { href: "/settings", label: "Settings" },
-          ]}
-        />
+        <AppHeader />
         <h1 className="mt-12 font-serif text-4xl tracking-tight">Hi, {user.name || user.email}</h1>
         {failed && <p className="mt-8 text-sm text-coral">Could not load the stats for today.</p>}
         {data?.score && (
