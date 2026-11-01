@@ -20,7 +20,7 @@ export default function AppHeader() {
   return (
     <header className="flex flex-wrap items-center justify-between gap-3">
       <Logo />
-      <nav className="flex items-center gap-1 text-sm">
+      <nav aria-label="Main" className="flex items-center gap-1 text-sm">
         {LINKS.map((l) => (
           <Link
             key={l.href}
