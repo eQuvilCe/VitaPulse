@@ -5,6 +5,15 @@ Healthy eating, workouts and a free AI coach to help you lose or gain weight: a 
 - `backend/` — Python 3.11+, FastAPI, SQLAlchemy 2, Alembic
 - `frontend/` — Next.js, TypeScript, Tailwind
 
+## Quick start
+
+```bash
+npm run dev                    # API on http://localhost:8000, site on http://localhost:3001
+```
+
+From the repo root this sets up `backend/.venv` and `frontend/node_modules` if they are missing,
+applies migrations, then runs both servers in one terminal. Ctrl+C stops both.
+
 ## Backend
 
 ```bash

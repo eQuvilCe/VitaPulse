@@ -2,147 +2,171 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Vita Health tokens — see DESIGN.md ("Themes and tokens").
-   Flat and confident: cream paper, black ink, muted dividers, one violet
-   accent used only as a card background. No shadows, no gradients: depth
-   comes from 1px outlines. Colours are RGB channels so Tailwind can add alpha.
+/* Vita Health tokens: see DESIGN.md. White paper, deep forest ink, one flat
+   green, a lime pulse dot. No gradients, no glass, no shadows on cards.
+   Colours are RGB channels so Tailwind can add alpha.
 
    Every colour in the app must come from these variables. The dark theme
    redefines them below; components never branch on the theme. */
 :root {
   color-scheme: light;
 
-  --vh-canvas: 247 244 232;
-  --vh-surface: 247 244 232;
-  --vh-subtle: 238 234 219;
-  --vh-line: 198 195 186;
-  /* Card and control outlines. */
-  --vh-line-strong: 0 0 0;
+  /* Paper white, a hint of green in the greys. */
+  --vh-canvas: 255 255 255;
+  --vh-surface: 255 255 255;
+  --vh-subtle: 244 247 243;
+  --vh-line: 228 234 227;
+  --vh-line-strong: 203 213 203;
 
-  --vh-fg: 0 0 0;
-  --vh-fg-muted: 74 72 66;
-  --vh-fg-subtle: 125 122 113;
+  /* Ink: deep forest, never pure black. */
+  --vh-fg: 14 26 19;
+  --vh-fg-muted: 75 90 80;
+  --vh-fg-subtle: 102 117 106;
 
-  /* "Brand" is ink: actions, active states and healthy data. */
-  --vh-brand-50: 238 234 219;
-  --vh-brand-100: 228 224 207;
-  --vh-brand-300: 198 195 186;
-  --vh-brand-500: 0 0 0;
-  --vh-brand-600: 0 0 0;
-  --vh-brand-700: 0 0 0;
-  --vh-brand-800: 0 0 0;
+  --vh-brand-50: 238 247 240;
+  --vh-brand-100: 214 236 220;
+  --vh-brand-300: 140 200 160;
+  --vh-brand-500: 31 140 78;
+  --vh-brand-600: 23 122 67;
+  --vh-brand-700: 18 100 55;
+  --vh-brand-800: 14 80 44;
 
-  /* The one bright accent. Role: background of a feature/result block only. */
-  --vh-accent: 100 58 237;
-  --vh-on-accent: 247 244 232;
+  /* One flat green. accent-2 is its lighter sibling for lines and dots. */
+  --vh-accent: 23 122 67;
+  --vh-accent-2: 31 140 78;
+  --vh-on-accent: 255 255 255;
+  /* Lime: the pulse dot and small highlights. Fills only, never text. */
+  --vh-lime: 196 240 60;
+  --vh-halo: 170 225 50;
+  --vh-shadow: 14 26 19;
 
-  /* Fixed colours for text and scrims laid over photos and video:
-     they do not flip with the theme. */
-  --vh-cream: 247 244 232;
-  --vh-ink: 0 0 0;
+  /* Fixed colours for text and scrims over photos and video. */
+  --vh-cream: 250 252 248;
+  --vh-ink: 6 20 12;
 
-  /* Calories: a quiet earth tone so data stays readable without a second accent. */
-  --vh-kcal-50: 242 236 221;
-  --vh-kcal-100: 230 220 196;
-  --vh-kcal-300: 201 180 143;
-  --vh-kcal-500: 156 122 76;
-  --vh-kcal-600: 125 95 54;
-  --vh-kcal-700: 94 70 38;
+  /* Calories: warm amber, the one complementary colour. */
+  --vh-kcal-50: 255 247 230;
+  --vh-kcal-100: 254 235 200;
+  --vh-kcal-300: 252 211 77;
+  --vh-kcal-500: 217 119 6;
+  --vh-kcal-600: 180 83 9;
+  --vh-kcal-700: 146 64 14;
 
-  --vh-warn: 176 120 24;
-  --vh-warn-soft: 240 228 196;
-  --vh-warn-strong: 112 74 10;
-  --vh-danger: 180 48 40;
-  --vh-danger-soft: 242 222 212;
-  --vh-info: 40 92 150;
-  --vh-info-soft: 222 228 226;
+  --vh-warn: 202 138 4;
+  --vh-warn-soft: 254 243 199;
+  --vh-warn-strong: 133 77 14;
+  --vh-danger: 185 28 28;
+  --vh-danger-soft: 254 226 226;
+  --vh-info: 14 116 144;
+  --vh-info-soft: 224 242 247;
 
-  --vh-radius-field: 20px;
+  --vh-radius-field: 14px;
   --vh-radius-card: 20px;
-  --vh-radius-panel: 20px;
+  --vh-radius-panel: 28px;
 
+  /* Flat: depth comes from hairlines. Shadows only lift menus and sheets. */
   --vh-shadow-card: 0 0 #0000;
-  --vh-shadow-raised: 0 0 #0000;
-  --vh-ring: 0 0 0 2px rgb(var(--vh-canvas)), 0 0 0 3px rgb(var(--vh-fg));
+  --vh-shadow-raised: 0 12px 32px -12px rgb(var(--vh-shadow) / 0.2);
+  --vh-shadow-glow: 0 0 0 5px rgb(var(--vh-halo) / 0.3);
+  --vh-ring: 0 0 0 2px rgb(var(--vh-canvas)), 0 0 0 4px rgb(var(--vh-accent));
 }
 
-/* Dark: warm near-black paper, cream ink, cream outlines at ~20%, same violet.
-   Applied when chosen explicitly, or by the system when nothing is chosen
-   (the media query below repeats the same values: keep the two in sync). */
+/* Dark: deep forest night, mint ink, the same single green lifted. Applied
+   when chosen explicitly, or by the system when nothing is chosen (the media
+   query repeats the same values from one source). */
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --vh-canvas: 18 17 14;
-  --vh-surface: 26 25 21;
-  --vh-subtle: 36 34 29;
-  /* Cream at ~16% and ~20% over the canvas. */
-  --vh-line: 55 54 49;
-  --vh-line-strong: 64 63 58;
+  --vh-canvas: 8 17 12;
+  --vh-surface: 14 26 19;
+  --vh-subtle: 20 35 26;
+  --vh-line: 30 48 37;
+  --vh-line-strong: 44 69 53;
 
-  --vh-fg: 247 244 232;
-  --vh-fg-muted: 190 186 175;
-  --vh-fg-subtle: 138 134 124;
+  --vh-fg: 238 244 239;
+  --vh-fg-muted: 170 186 175;
+  --vh-fg-subtle: 128 146 134;
 
-  --vh-brand-50: 36 34 29;
-  --vh-brand-100: 46 44 38;
-  --vh-brand-300: 64 63 58;
-  --vh-brand-500: 247 244 232;
-  --vh-brand-600: 247 244 232;
-  --vh-brand-700: 247 244 232;
-  --vh-brand-800: 247 244 232;
+  --vh-brand-50: 20 35 26;
+  --vh-brand-100: 26 48 34;
+  --vh-brand-300: 90 170 120;
+  --vh-brand-500: 74 200 120;
+  --vh-brand-600: 74 200 120;
+  --vh-brand-700: 110 220 150;
+  --vh-brand-800: 150 235 180;
 
-  --vh-kcal-50: 40 34 26;
-  --vh-kcal-100: 58 48 34;
-  --vh-kcal-300: 120 96 64;
-  --vh-kcal-500: 196 160 110;
-  --vh-kcal-600: 212 178 128;
-  --vh-kcal-700: 226 196 150;
+  --vh-accent: 74 200 120;
+  --vh-accent-2: 110 220 150;
+  --vh-on-accent: 6 20 12;
+  --vh-lime: 205 245 80;
+  --vh-halo: 205 245 80;
+  --vh-shadow: 0 0 0;
 
-  --vh-warn: 224 170 70;
-  --vh-warn-soft: 48 38 20;
-  --vh-warn-strong: 236 196 120;
-  --vh-danger: 232 110 98;
-  --vh-danger-soft: 52 26 22;
-  --vh-info: 120 168 220;
-  --vh-info-soft: 26 34 42;
+  --vh-kcal-50: 50 40 10;
+  --vh-kcal-100: 62 44 12;
+  --vh-kcal-300: 160 110 30;
+  --vh-kcal-500: 251 191 36;
+  --vh-kcal-600: 252 211 77;
+  --vh-kcal-700: 253 224 130;
+
+  --vh-warn: 251 191 36;
+  --vh-warn-soft: 45 34 8;
+  --vh-warn-strong: 253 224 130;
+  --vh-danger: 248 113 113;
+  --vh-danger-soft: 50 20 20;
+  --vh-info: 103 214 235;
+  --vh-info-soft: 10 40 50;
+
+  --vh-shadow-raised: 0 16px 40px -14px rgb(0 0 0 / 0.7);
+  --vh-shadow-glow: 0 0 0 5px rgb(var(--vh-halo) / 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --vh-canvas: 18 17 14;
-    --vh-surface: 26 25 21;
-    --vh-subtle: 36 34 29;
-    --vh-line: 55 54 49;
-    --vh-line-strong: 64 63 58;
+    --vh-canvas: 8 17 12;
+    --vh-surface: 14 26 19;
+    --vh-subtle: 20 35 26;
+    --vh-line: 30 48 37;
+    --vh-line-strong: 44 69 53;
 
-    --vh-fg: 247 244 232;
-    --vh-fg-muted: 190 186 175;
-    --vh-fg-subtle: 138 134 124;
+    --vh-fg: 238 244 239;
+    --vh-fg-muted: 170 186 175;
+    --vh-fg-subtle: 128 146 134;
 
-    --vh-brand-50: 36 34 29;
-    --vh-brand-100: 46 44 38;
-    --vh-brand-300: 64 63 58;
-    --vh-brand-500: 247 244 232;
-    --vh-brand-600: 247 244 232;
-    --vh-brand-700: 247 244 232;
-    --vh-brand-800: 247 244 232;
+    --vh-brand-50: 20 35 26;
+    --vh-brand-100: 26 48 34;
+    --vh-brand-300: 90 170 120;
+    --vh-brand-500: 74 200 120;
+    --vh-brand-600: 74 200 120;
+    --vh-brand-700: 110 220 150;
+    --vh-brand-800: 150 235 180;
 
-    --vh-kcal-50: 40 34 26;
-    --vh-kcal-100: 58 48 34;
-    --vh-kcal-300: 120 96 64;
-    --vh-kcal-500: 196 160 110;
-    --vh-kcal-600: 212 178 128;
-    --vh-kcal-700: 226 196 150;
+    --vh-accent: 74 200 120;
+    --vh-accent-2: 110 220 150;
+    --vh-on-accent: 6 20 12;
+    --vh-lime: 205 245 80;
+    --vh-halo: 205 245 80;
+    --vh-shadow: 0 0 0;
 
-    --vh-warn: 224 170 70;
-    --vh-warn-soft: 48 38 20;
-    --vh-warn-strong: 236 196 120;
-    --vh-danger: 232 110 98;
-    --vh-danger-soft: 52 26 22;
-    --vh-info: 120 168 220;
-    --vh-info-soft: 26 34 42;
+    --vh-kcal-50: 50 40 10;
+    --vh-kcal-100: 62 44 12;
+    --vh-kcal-300: 160 110 30;
+    --vh-kcal-500: 251 191 36;
+    --vh-kcal-600: 252 211 77;
+    --vh-kcal-700: 253 224 130;
+
+    --vh-warn: 251 191 36;
+    --vh-warn-soft: 45 34 8;
+    --vh-warn-strong: 253 224 130;
+    --vh-danger: 248 113 113;
+    --vh-danger-soft: 50 20 20;
+    --vh-info: 103 214 235;
+    --vh-info-soft: 10 40 50;
+
+    --vh-shadow-raised: 0 16px 40px -14px rgb(0 0 0 / 0.7);
+    --vh-shadow-glow: 0 0 0 5px rgb(var(--vh-halo) / 0.18);
   }
 }
 
@@ -154,7 +178,7 @@ html {
 body {
   @apply bg-canvas text-fg antialiased;
   font-size: 16px;
-  line-height: 1.4;
+  line-height: 1.45;
   letter-spacing: -0.01em;
   transition:
     background-color 0.4s ease,
@@ -162,12 +186,12 @@ body {
 }
 
 ::selection {
-  background: rgb(var(--vh-accent));
-  color: rgb(var(--vh-on-accent));
+  background: rgb(var(--vh-lime));
+  color: rgb(var(--vh-ink));
 }
 
 :focus-visible {
-  outline: 2px solid rgb(var(--vh-fg));
+  outline: 2px solid rgb(var(--vh-accent));
   outline-offset: 3px;
 }
 

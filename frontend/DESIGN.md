@@ -1,7 +1,9 @@
 # Vita Health — design
 
-Flat, confident, like the cover of a nature magazine. Cream paper, black ink, one violet accent.
-No 3D, no glow, no glass, no shadows. Light and dark themes share one violet accent.
+Quiet, white and alive. Paper-white pages, deep forest ink, ONE flat green, and a lime dot that
+runs along a heartbeat line. No gradients, no glass, no glow on cards, no shadows: depth comes
+from whitespace and hairlines. The heartbeat line is the single memorable thing; everything else
+stays out of its way.
 
 ## Themes and tokens
 
@@ -12,57 +14,56 @@ themes work for free.
 
 | Token (Tailwind) | Light | Dark | Use |
 |---|---|---|---|
-| `canvas` | `#F7F4E8` cream | `#12110E` warm near-black | page background |
-| `surface` | `#F7F4E8` | `#1A1915` | cards, inputs |
-| `subtle` | `#EEEADB` | `#24221D` | quiet fills: segmented controls, hover |
-| `fg` / `fg-muted` / `fg-subtle` | black / `#4A4842` / `#7D7A71` | cream / `#BEBAAF` / `#8A867C` | text; `fg` is also the primary button fill |
-| `line` | `#C6C3BA` | cream ~16% | dividers, resting input borders |
-| `line-strong` | black | cream ~20% | card and control outlines |
-| `accent` / `accent-on` | `#643AED` / cream | same | **background of one block per screen only** — never text or borders |
-| `cream` / `ink` | cream / black | same (fixed) | text and scrims over photos and video only |
-| `brand-*` | ink scale | cream scale | legacy name for ink: active states, healthy data |
-| `kcal-*`, `warn`, `danger`, `info` | earth / semantic | lifted for dark | calorie data and status |
+| `canvas` / `surface` | white | `#08110C` / `#0E1A13` | page background / cards, inputs |
+| `subtle` | `#F4F7F3` | `#142319` | quiet fills and section bands |
+| `fg` / `fg-muted` / `fg-subtle` | `#0E1A13` / `#4B5A50` / `#66756A` | `#EEF4EF` / `#AABAAF` / `#809286` | text |
+| `line` / `line-strong` | `#E4EAE3` / `#CBD5CB` | `#1E3025` / `#2C4535` | dividers / outlines and controls |
+| `accent` / `accent-on` | `#177A43` / white | `#4AC878` / `#06140C` | the one green: buttons, the result block, active states |
+| `accent-2` | `#1F8C4E` | `#6EDC96` | the heartbeat line, chart strokes |
+| `lime` / `halo` | `#C4F03C` / `#AAE132` | `#CDF550` | the pulse dot and its soft halo. Fills only, never text |
+| `brand-*` | green scale | green scale | tints (`brand-50` for chips), healthy data |
+| `kcal-*` | amber | lifted amber | calorie data, the one complementary colour |
+| `warn`, `danger`, `info` | semantic | lifted | status |
+| `cream` / `ink` | fixed | fixed | text and scrims over photos and video only |
 
-Rules of thumb: text on `bg-fg` is `text-canvas` (not `text-white`); text on `bg-accent` is
-`text-accent-on`; outlines are `border-line-strong`; dividers are `border-line`.
+Rules of thumb: text on `bg-accent` is `text-accent-on`; outlines are `border-line` (quiet) or
+`border-line-strong` (controls and tables); never stack a shadow on a card.
 
 **Switching.** `:root[data-theme="dark"]` (or `light`) is an explicit choice; with none, the
 system theme applies through `prefers-color-scheme`. An inline script in `app/layout.tsx`
-applies the saved choice before first paint, so there is no flash.
+applies the saved choice before first paint. Both theme blocks come from one source of values.
 
-**Toggles** (export from `@/components/ui`, use them in every navbar, including the cabinet):
-- `ThemeToggle` — sun/moon button; saves to `localStorage["vh-theme"]`. `useTheme()` returns
-  `{ theme, setTheme }` if a screen needs the current theme.
-- `LanguageToggle` — EN/RU; English by default for non-Russian browsers.
-Both inherit `currentColor`, so they work on the page and over the hero video.
+**Toggles** (`@/components/ui`): `ThemeToggle` and `LanguageToggle`, in every navbar.
 
 ## Type
 
-- **Display:** Anton (Oswald 700 fills Cyrillic). Uppercase, line-height 0.85, no tracking,
-  only at 40px or larger: `text-d-40`, `text-d-90`, `text-d-120`, `text-d-150`.
-- **Text:** Inter 14–22px, tracking −0.01em, body 16px / 1.4.
+One family: **Onest** (Latin + Cyrillic). Headlines are Onest at weight 500, tracking −0.04 to
+−0.055em, line-height ~1, sentence case, 38–112px. Body 16px / 1.45, lead text 18–20px in
+`fg-muted`. Big numbers are the same face, tabular. No uppercase, no second typeface.
 
 ## Shape
 
-- 20px radius on everything: buttons, cards, inputs, images, tags.
-- No shadows: separate things with a 1px outline (`border-line-strong`) or a `line` divider.
+20px on cards, 14px on fields, 28px on sheets; buttons and chips are `rounded-full`.
+The hero photo sits in an arch (`rounded-t-[999px]`).
 
 ## Components (`src/components/ui`)
 
-- `Button` — `primary`: black fill, cream text. `secondary`: transparent, 1px black outline.
-- `Card` — `surface`: cream + 1px black outline, 24px padding. `accent`: violet, cream text.
-- `Input` — transparent, `line` border that turns black on hover/focus.
-- `Badge` — outlined 20px tags. `Progress` — hairline track, ink fill.
+- `Button` — `primary`: flat green. `secondary`: hairline that darkens on hover.
+- `Card` — `surface`: white + hairline. `accent`: the flat green block, one per screen.
+- `Badge`, `Progress` — flat fills, no glow.
 
-## Layout
+## Landing
 
-- Hero: full-bleed daylight photo (people in motion, nature, food), huge cream headline bottom-left,
-  a soft curve into the cream page below.
-- Sections: one centred huge statement (90–150px) + a narrow paragraph; 60–128px vertical spacing;
-  no dense grids.
-- Signature move: a small rounded photo set inside a line of the huge headline, in place of a word.
-- Navbar: transparent; menu/logo left, compact "Vita Health" wordmark centre, ghost button right.
+Hero (headline, arch with the runner video, heartbeat line) → big statement with a pill photo in
+the line, then three plain rows with a live mini-visual each → **how it works** on a pale band
+(a line fills as you scroll, a lime dot at its head) → your numbers (hairline sliders, one solid
+green result block) → closing headline and the heartbeat line that comes to rest on its dot.
 
 ## Motion
 
-Short colour/opacity transitions (200–600ms). Content fades up once on scroll. Nothing loops.
+- On load: headline lines rise, the arch opens like a window, the heartbeat line draws itself.
+- Ambient (the only loop): a lime dot runs along the hero line; the closing dot breathes.
+- Scroll: the video drifts inside the arch, row hairlines draw across, rings and charts fill, the
+  process line fills and its steps turn solid. Reveals are a plain fade up.
+- 3D: the arch tips up to 3° toward the mouse. Nothing else.
+- All of it stops under `prefers-reduced-motion: reduce`; the finished state is always readable.
