@@ -24,7 +24,7 @@ function Choice<T extends string>({ label, value, options, onChange }: { label: 
       <p id={id} className="mb-2 text-caption text-fg-muted">
         {label}
       </p>
-      <div role="radiogroup" aria-labelledby={id} className="grid grid-cols-2 gap-1 rounded-card border border-line p-1">
+      <div role="radiogroup" aria-labelledby={id} className="grid grid-cols-2 gap-1 rounded-full border border-line bg-subtle p-1">
         {options.map((o) => {
           const on = o.value === value;
           return (
@@ -34,7 +34,7 @@ function Choice<T extends string>({ label, value, options, onChange }: { label: 
               role="radio"
               aria-checked={on}
               onClick={() => onChange(o.value)}
-              className={cx("h-10 rounded-[16px] text-[15px] font-medium transition-colors duration-300", on ? "bg-fg text-canvas" : "hover:bg-subtle")}
+              className={cx("h-10 rounded-full text-[15px] font-medium transition-colors duration-300", on ? "bg-accent text-accent-on" : "text-fg-muted hover:text-fg")}
             >
               {o.label}
             </button>
@@ -55,7 +55,7 @@ function Slider({ label, unit, value, onChange, range, prefix = "" }: { label: s
         <label htmlFor={id} className="pb-1 text-caption text-fg-muted">
           {label}
         </label>
-        <output htmlFor={id} className="font-display text-[44px] uppercase leading-[0.85] tabular-nums">
+        <output htmlFor={id} className="text-[38px] font-medium leading-none tracking-[-0.04em] tabular-nums">
           {prefix}
           {value}
           <span className="ml-1.5 font-sans text-caption normal-case text-fg-muted">{unit}</span>
@@ -123,7 +123,7 @@ function KcalRing({ kcal, maintenance, label, locale }: { kcal: number; maintena
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-display text-[52px] leading-[0.85] tabular-nums">{Math.round(shown).toLocaleString(locale)}</span>
+        <span className="text-[44px] font-medium leading-none tracking-[-0.04em] tabular-nums">{Math.round(shown).toLocaleString(locale)}</span>
         <span className="mt-1.5 text-caption opacity-80">{label}</span>
       </div>
     </div>
@@ -152,10 +152,10 @@ export default function Quiz() {
   const kg = (v: number) => v.toLocaleString(locale, { maximumFractionDigits: 1 });
 
   return (
-    <section id="plan" className="px-4 py-20 sm:px-8 sm:py-32">
+    <section id="plan" className="px-4 py-24 sm:px-8 sm:py-36">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
-          <Reveal as="h2" className="font-display text-[clamp(56px,9vw,120px)] uppercase leading-[0.85]">
+          <Reveal as="h2" className="text-[clamp(38px,5.4vw,76px)] font-medium leading-[1.02] tracking-[-0.045em]">
             {q.title}
           </Reveal>
           <Reveal as="p" delay={80} className="max-w-xs text-lg leading-snug text-fg-muted md:pb-2">
@@ -164,7 +164,7 @@ export default function Quiz() {
         </div>
 
         <div className="mt-12 grid gap-4 lg:grid-cols-[1fr_1fr]">
-          <Reveal delay={120} className="rounded-card border border-line-strong p-6 sm:p-8">
+          <Reveal delay={120} className="h-full rounded-card border border-line-strong p-6 sm:p-8">
             <div className="flex flex-col gap-4 sm:flex-row">
               <Choice label={q.sex} value={sex} onChange={setSex} options={[{ value: "female", label: q.female }, { value: "male", label: q.male }]} />
               <Choice label={q.goal} value={goal} onChange={setGoal} options={[{ value: "lose", label: q.lose }, { value: "gain", label: q.gain }]} />
@@ -177,11 +177,12 @@ export default function Quiz() {
             </div>
           </Reveal>
 
-          <Reveal delay={200} className="flex flex-col rounded-card bg-accent p-6 text-accent-on sm:p-8">
+          <Reveal delay={200} className="h-full">
+            <div className="flex h-full flex-col rounded-card bg-accent p-6 text-accent-on sm:p-8">
             <div aria-live="polite" className="grid gap-8 sm:grid-cols-[1fr_auto] sm:items-start">
               <div>
                 <p className="text-caption opacity-80">{q.bmi}</p>
-                <p className="mt-2 font-display text-[96px] leading-[0.85] tabular-nums sm:text-[120px]">
+                <p className="mt-2 text-[88px] font-medium leading-none tracking-[-0.055em] tabular-nums sm:text-[112px]">
                   {bmi.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                 </p>
                 <p className="mt-3 inline-flex rounded-card border border-accent-on/40 px-3 py-0.5 text-caption">{q.categories[category]}</p>
@@ -194,7 +195,7 @@ export default function Quiz() {
 
             <div className="mt-8 border-t border-accent-on/25 pt-6">
               <p className="text-caption opacity-80">{q.forecast}</p>
-              <p className="mt-2 font-display text-[clamp(40px,6vw,64px)] uppercase leading-[0.85]">
+              <p className="mt-2 text-[clamp(32px,4.4vw,52px)] font-medium leading-[1.02] tracking-[-0.04em]">
                 {fill(q.by_date, { change: `${change > 0 ? "+" : "−"}${kg(Math.abs(change))}`, date })}
               </p>
               <p className="mt-2 text-caption opacity-80">{est.lowTarget ? q.lowTarget : q.pace[goal]}</p>
@@ -202,12 +203,13 @@ export default function Quiz() {
 
             <a
               href={`/signup?${signupQuery(answers, est)}`}
-              className="group mt-8 inline-flex h-14 items-center justify-center gap-2 rounded-card bg-accent-on px-7 text-base font-medium text-ink transition-transform duration-300 hover:-translate-y-0.5"
+              className="group mt-8 inline-flex h-14 items-center justify-center gap-2 rounded-full bg-canvas px-8 text-base font-medium text-fg transition-colors duration-300 hover:bg-lime hover:text-ink"
             >
               {q.cta}
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
             </a>
             <p className="mt-3 text-center text-[12px] opacity-70">{q.note}</p>
+            </div>
           </Reveal>
         </div>
       </div>

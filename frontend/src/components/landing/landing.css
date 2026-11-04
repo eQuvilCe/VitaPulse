@@ -1,16 +1,18 @@
-/* Landing-only styles. Flat: no shadows or glows. One soft easing for all motion. */
+/* Landing-only styles. Quiet by default: one easing, hairlines instead of
+   boxes, and a single living element, the pulse line. */
 
 :root {
   --vl-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Content fades up once as it scrolls into view. */
+/* ---------- Reveal ---------- */
+
 .vl-reveal {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(14px);
   transition:
-    opacity 0.8s var(--vl-ease),
-    transform 0.8s var(--vl-ease);
+    opacity 0.9s var(--vl-ease),
+    transform 0.9s var(--vl-ease);
 }
 
 .vl-reveal.is-visible {
@@ -24,15 +26,14 @@
 .vl-line {
   display: block;
   overflow: hidden;
-  /* Room for Anton's tall caps inside the 0.85 line box. */
-  padding-block: 0.04em;
-  margin-block: -0.04em;
+  padding-block: 0.08em;
+  margin-block: -0.08em;
 }
 
 .vl-line > span {
   display: block;
-  transform: translateY(105%);
-  animation: vl-line-up 1s var(--vl-ease) forwards;
+  transform: translateY(110%);
+  animation: vl-line-up 1.1s var(--vl-ease) forwards;
   animation-delay: var(--d, 0ms);
 }
 
@@ -44,7 +45,7 @@
 
 .vl-fade-up {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(12px);
   animation: vl-fade-up 0.9s var(--vl-ease) forwards;
   animation-delay: var(--d, 0ms);
 }
@@ -63,6 +64,53 @@
 
 .vl-video.is-playing {
   opacity: 1;
+}
+
+/* The arch opens like a window as the page loads. */
+.vl-arch {
+  clip-path: inset(100% 0 0 0 round 999px 999px 28px 28px);
+  animation: vl-arch 1.4s var(--vl-ease) 0.2s forwards;
+}
+
+@keyframes vl-arch {
+  to {
+    clip-path: inset(0 0 0 0 round 999px 999px 28px 28px);
+  }
+}
+
+/* ---------- The pulse line ---------- */
+
+.vl-pulse-path {
+  stroke-dasharray: 1;
+  animation: vl-draw 2.8s var(--vl-ease) 0.4s both paused;
+}
+
+.vl-pulse-run .vl-pulse-path,
+.is-visible .vl-pulse-path {
+  animation-play-state: running;
+}
+
+@keyframes vl-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* The dot at the end of a line that has stopped travelling: it breathes. */
+.vl-beat {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vl-beat 2.4s ease-in-out infinite;
+}
+
+@keyframes vl-beat {
+  50% {
+    transform: scale(1.5);
+    opacity: 0.12;
+  }
 }
 
 /* ---------- Statement ---------- */
@@ -94,22 +142,31 @@
 }
 
 .is-visible .vl-inline-photo {
-  width: 1.5em;
+  width: 1.7em;
   opacity: 1;
 }
 
-/* Feature cards lift and lean a little on hover. */
-.vl-card {
-  transition: transform 0.6s var(--vl-ease);
+/* Feature rows: a hairline draws across the top of each one. */
+.vl-row {
+  position: relative;
 }
 
-@media (hover: hover) {
-  .vl-card:hover {
-    transform: translateY(-6px) rotate(-0.6deg);
-  }
+.vl-row::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: rgb(var(--vh-line-strong));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 1.2s var(--vl-ease) 0.1s;
 }
 
-/* Calorie ring fills once the card is in view. */
+.vl-row.is-visible::before {
+  transform: none;
+}
+
+/* Calorie ring fills once the row is in view. */
 .vl-ring {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -162,13 +219,55 @@
   }
 }
 
+/* ---------- Tilt (the hero arch only) ---------- */
+
+.vl-tilt {
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.6s var(--vl-ease);
+}
+
+.vl-tilt.is-active {
+  transition: transform 0.12s linear;
+}
+
+/* ---------- Process: a line that fills as you scroll ---------- */
+
+.vl-trail {
+  transform: scaleY(var(--p, 0));
+  transform-origin: 50% 0;
+}
+
+.vl-head {
+  top: calc(var(--p, 0) * 100%);
+}
+
+.vl-step-dot {
+  transition:
+    background-color 0.5s var(--vl-ease),
+    border-color 0.5s var(--vl-ease);
+}
+
+.vl-step.is-on .vl-step-dot {
+  background: rgb(var(--vh-accent));
+  border-color: rgb(var(--vh-accent));
+}
+
+.vl-step-body {
+  opacity: 0.32;
+  transition: opacity 0.7s var(--vl-ease);
+}
+
+.vl-step.is-on .vl-step-body {
+  opacity: 1;
+}
+
 /* ---------- Quiz ---------- */
 
 .vl-marker {
   transition: left 0.9s var(--vl-ease);
 }
 
-/* Range sliders: a hairline track filled in ink up to the thumb (--p). */
+/* Range sliders: a hairline track, filled green up to the thumb (--p). */
 .vl-range {
   -webkit-appearance: none;
   appearance: none;
@@ -180,39 +279,39 @@
 }
 
 .vl-range::-webkit-slider-runnable-track {
-  height: 4px;
+  height: 3px;
   border-radius: 20px;
-  background: linear-gradient(to right, rgb(var(--vh-fg)) var(--p, 50%), rgb(var(--vh-line)) var(--p, 50%));
+  background: linear-gradient(to right, rgb(var(--vh-accent)) var(--p, 50%), rgb(var(--vh-line-strong)) var(--p, 50%));
 }
 
 .vl-range::-moz-range-track {
-  height: 4px;
+  height: 3px;
   border-radius: 20px;
-  background: rgb(var(--vh-line));
+  background: rgb(var(--vh-line-strong));
 }
 
 .vl-range::-moz-range-progress {
-  height: 4px;
+  height: 3px;
   border-radius: 20px;
-  background: rgb(var(--vh-fg));
+  background: rgb(var(--vh-accent));
 }
 
 .vl-range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  margin-top: -10px;
-  width: 24px;
-  height: 24px;
+  margin-top: -9px;
+  width: 21px;
+  height: 21px;
   border-radius: 20px;
-  border: 2px solid rgb(var(--vh-fg));
+  border: 2px solid rgb(var(--vh-accent));
   background: rgb(var(--vh-canvas));
   transition: transform 0.3s var(--vl-ease);
 }
 
 .vl-range::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   border-radius: 20px;
-  border: 2px solid rgb(var(--vh-fg));
+  border: 2px solid rgb(var(--vh-accent));
   background: rgb(var(--vh-canvas));
 }
 
@@ -228,20 +327,6 @@
   box-shadow: var(--vh-ring);
 }
 
-/* ---------- Marquee ---------- */
-
-.vl-marquee {
-  display: flex;
-  width: max-content;
-  animation: vl-marquee 36s linear infinite;
-}
-
-@keyframes vl-marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -255,9 +340,29 @@
     animation: none;
   }
 
+  .vl-arch {
+    clip-path: none;
+    animation: none;
+  }
+
+  .vl-pulse-path {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  .vl-beat,
+  .vl-scan {
+    animation: none;
+  }
+
   .vl-inline-photo {
-    width: 1.5em;
+    width: 1.7em;
     opacity: 1;
+    transition: none;
+  }
+
+  .vl-row::before {
+    transform: none;
     transition: none;
   }
 
@@ -277,13 +382,14 @@
     transition: none;
   }
 
-  .vl-scan,
-  .vl-marquee {
-    animation: none;
+  .vl-tilt,
+  .vl-marker,
+  .vl-step-dot,
+  .vl-step-body {
+    transition: none;
   }
 
-  .vl-card,
-  .vl-marker {
-    transition: none;
+  .vl-step-body {
+    opacity: 1;
   }
 }

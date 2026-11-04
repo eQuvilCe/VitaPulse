@@ -3,14 +3,24 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { LanguageToggle, ThemeToggle } from "@/components/ui";
+import VitaMark from "@/components/app/VitaMark";
+import { buttonClasses, LanguageToggle, ThemeToggle } from "@/components/ui";
+import { cx } from "@/lib/cx";
 import { useCopy } from "./copy";
 
-// Transparent bar over the hero video (cream in both themes): menu on the
-// left, the wordmark centred, theme, language and a ghost button on the right.
+// Plain bar: wordmark, three anchors, theme and language, log in, one button.
+// A hairline appears under it once the page scrolls.
 export default function Header() {
   const { c } = useCopy();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -21,52 +31,61 @@ export default function Header() {
 
   const links = [
     { href: "#features", label: c.nav.features },
+    { href: "#how", label: c.nav.how },
     { href: "#plan", label: c.nav.plan },
-    { href: "/login", label: c.nav.login },
   ];
 
   return (
-    <header className="absolute inset-x-0 top-0 z-30 text-cream">
-      <div className="mx-auto grid h-20 max-w-[1400px] grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 sm:gap-3 sm:px-8">
-        <div className="relative">
+    <header
+      className={cx(
+        "fixed inset-x-0 top-0 z-50 border-b bg-canvas transition-colors duration-300",
+        scrolled || open ? "border-line" : "border-transparent",
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-4 sm:px-8">
+        <Link href="/" className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em]">
+          <VitaMark small />
+          Vita Health
+        </Link>
+
+        <nav className="hidden items-center gap-9 text-[15px] text-fg-muted md:flex" aria-label="Main">
+          {links.map((l) => (
+            <a key={l.href} href={l.href} className="transition-colors hover:text-fg">
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <LanguageToggle />
+          <ThemeToggle />
+          <Link href="/login" className="ml-2 hidden text-[15px] font-medium transition-colors hover:text-accent lg:inline">
+            {c.nav.login}
+          </Link>
+          <a href="#plan" className={buttonClasses({ size: "sm", className: "hidden sm:inline-flex" })}>
+            {c.nav.cta}
+          </a>
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
             aria-controls="site-menu"
-            className="rounded-card px-1 py-2 text-[15px] font-medium underline-offset-4 hover:underline"
+            className="ml-1 rounded-full px-3 py-2 text-[15px] font-medium md:hidden"
           >
             {open ? c.nav.close : c.nav.menu}
           </button>
-          {open && (
-            <nav id="site-menu" className="absolute left-0 top-12 w-56 rounded-card border border-line-strong bg-canvas p-2 text-fg">
-              {links.map((l) => (
-                <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block rounded-card px-4 py-3 text-[15px] hover:bg-subtle">
-                  {l.label}
-                </a>
-              ))}
-              <a href="#plan" onClick={() => setOpen(false)} className="block rounded-card px-4 py-3 text-[15px] font-medium hover:bg-subtle sm:hidden">
-                {c.nav.cta}
-              </a>
-            </nav>
-          )}
-        </div>
-
-        <Link href="/" className="whitespace-nowrap text-lg font-semibold tracking-[-0.02em] sm:text-xl">
-          Vita Health
-        </Link>
-
-        <div className="flex items-center justify-end gap-1.5 sm:gap-2">
-          <LanguageToggle />
-          <ThemeToggle />
-          <a
-            href="#plan"
-            className="hidden h-10 items-center whitespace-nowrap rounded-card border border-cream px-5 text-caption font-medium transition-colors hover:bg-cream hover:text-ink sm:inline-flex"
-          >
-            {c.nav.cta}
-          </a>
         </div>
       </div>
+
+      {open && (
+        <nav id="site-menu" className="border-t border-line px-4 pb-4 pt-2 md:hidden">
+          {[...links, { href: "/login", label: c.nav.login }].map((l) => (
+            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block border-b border-line py-4 text-lg last:border-0">
+              {l.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

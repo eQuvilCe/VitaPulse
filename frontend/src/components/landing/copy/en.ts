@@ -3,6 +3,7 @@ const en = {
   units: { cm: "cm", kg: "kg", kcal: "kcal", yrs: "yrs" },
   nav: {
     features: "Features",
+    how: "How it works",
     plan: "Your numbers",
     login: "Log in",
     cta: "Free plan",
@@ -27,7 +28,15 @@ const en = {
       { tag: "03", title: "Progress", text: "Weight trend, BMI scale, streaks and badges that keep you going." },
     ],
   },
-  marquee: ["Eat well", "Move more", "Sleep deep"],
+  process: {
+    title: "Three steps to your plan",
+    lead: "No spreadsheets. Answer a few questions and Vita Health does the maths.",
+    steps: [
+      { title: "Tell us about you", text: "Height, weight, your goal and how active you are. Just a few quick questions." },
+      { title: "Get your plan", text: "A daily calorie target, a weekly menu with recipes and workouts that fit your day." },
+      { title: "Log and adjust", text: "Scan your meals, track your weight and ask the AI coach when you need a hand." },
+    ],
+  },
   quiz: {
     title: "Your numbers",
     lead: "Move the sliders. Your BMI, daily calories and a realistic date update as you go.",
