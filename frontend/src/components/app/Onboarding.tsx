@@ -128,7 +128,7 @@ export default function Onboarding() {
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
             {o.title}
           </p>
-          <h1 className="text-title font-semibold">{steps[step]}</h1>
+          <h1 className="text-title font-medium">{steps[step]}</h1>
           <p className="mt-1.5 text-body text-fg-muted">{o.lead}</p>
         </div>
 
@@ -261,7 +261,7 @@ export default function Onboarding() {
             <div>
               <p className="text-caption font-semibold text-brand-800">{t.bmi.now}</p>
               <p className="mt-1 flex items-baseline gap-2">
-                <span className="text-title font-semibold tabular-nums">{formatNumber(preview.bmi, locale, 1)}</span>
+                <span className="text-title font-medium tabular-nums">{formatNumber(preview.bmi, locale, 1)}</span>
                 <span className="text-caption text-fg-muted">
                   {t.nav.bmi} · {t.bmi.categories[preview.category]}
                 </span>
@@ -270,7 +270,7 @@ export default function Onboarding() {
             {preview.plan && (
               <div className="border-t border-brand-100 pt-4">
                 <p className="text-caption font-semibold text-brand-800">{t.plan.daily}</p>
-                <p className="mt-1 text-title font-semibold tabular-nums">
+                <p className="mt-1 text-title font-medium tabular-nums">
                   {formatNumber(preview.plan.calories, locale)} <span className="text-body font-normal text-fg-muted">{t.common.kcal}</span>
                 </p>
                 {form.goal !== "maintain" && preview.plan.forecast_date && (

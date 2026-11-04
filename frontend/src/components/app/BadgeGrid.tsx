@@ -42,7 +42,7 @@ export function BadgeTile({ badge, compact = false }: { badge: Badge; compact?: 
         className={cx(
           "flex shrink-0 items-center justify-center rounded-full",
           compact ? "h-12 w-12" : "h-14 w-14",
-          earned ? "bg-gradient-to-br from-brand-300 to-brand-600 text-white shadow-card" : "bg-subtle text-fg-subtle",
+          earned ? "bg-accent text-accent-on" : "bg-subtle text-fg-subtle",
         )}
         aria-hidden="true"
       >

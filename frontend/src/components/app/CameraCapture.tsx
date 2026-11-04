@@ -47,7 +47,7 @@ export default function CameraCapture({ onCapture, onClose }: { onCapture: (b: B
   return (
     <div className="relative overflow-hidden rounded-panel bg-fg">
       {denied ? (
-        <p className="flex aspect-[4/3] items-center justify-center px-6 text-center text-body text-white/80">{t.scan.cameraDenied}</p>
+        <p className="flex aspect-[4/3] items-center justify-center px-6 text-center text-body text-cream/80">{t.scan.cameraDenied}</p>
       ) : (
         <video ref={video} autoPlay playsInline muted className="aspect-[4/3] w-full object-cover" />
       )}
@@ -55,12 +55,12 @@ export default function CameraCapture({ onCapture, onClose }: { onCapture: (b: B
         type="button"
         onClick={onClose}
         aria-label={t.scan.closeCamera}
-        className="absolute right-3 top-3 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
+        className="absolute right-3 top-3 rounded-full bg-ink/40 p-2 text-cream hover:bg-ink/60"
       >
         <X className="h-5 w-5" aria-hidden="true" />
       </button>
       {!denied && (
-        <div className="absolute inset-x-0 bottom-0 flex justify-center bg-gradient-to-t from-black/50 to-transparent p-5">
+        <div className="absolute inset-x-0 bottom-0 flex justify-center bg-gradient-to-t from-ink/50 to-transparent p-5">
           <Button variant="calorie" size="lg" onClick={snap}>
             <Camera className="h-5 w-5" aria-hidden="true" />
             {t.scan.snap}

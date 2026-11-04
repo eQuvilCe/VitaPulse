@@ -29,7 +29,7 @@ export default function ProfileView() {
       <PageHeader title={t.profile.title} />
 
       <Card className="mb-4 flex items-center gap-4">
-        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-300 to-brand-600 text-heading text-white" aria-hidden="true">
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-heading text-accent-on" aria-hidden="true">
           {initials}
         </span>
         <div className="min-w-0">

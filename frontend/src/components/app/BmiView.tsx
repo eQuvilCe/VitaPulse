@@ -76,7 +76,7 @@ function Stat({ label, value, sub, unit, tone }: { label: string; value: string;
   return (
     <Card tone={tone === "brand" ? "brand" : "surface"}>
       <p className={cx("text-caption font-semibold", tone === "brand" ? "text-brand-800" : "text-fg-muted")}>{label}</p>
-      <p className="mt-1 text-title font-semibold tabular-nums">
+      <p className="mt-1 text-title font-medium tabular-nums">
         {value}
         {unit && <span className="ml-1 text-body font-normal text-fg-muted">{unit}</span>}
       </p>

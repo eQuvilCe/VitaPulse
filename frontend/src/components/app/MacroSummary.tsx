@@ -33,7 +33,7 @@ export function CalorieRing({ eaten, target, size = 168 }: { eaten: number; targ
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-[28px] font-semibold leading-none tabular-nums text-fg">{formatNumber(Math.abs(left), locale)}</span>
+        <span className="text-[28px] font-medium leading-none tabular-nums text-fg">{formatNumber(Math.abs(left), locale)}</span>
         <span className="mt-1 text-caption text-fg-muted">
           {t.common.kcal} {over ? t.diary.over : t.diary.left}
         </span>

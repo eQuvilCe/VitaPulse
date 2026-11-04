@@ -70,7 +70,7 @@ export default function CoachView() {
               {t.coach.tip}
             </p>
             {tip.data ? (
-              <p className="relative mt-3 font-serif text-[22px] leading-snug text-fg">{tip.data.text}</p>
+              <p className="relative mt-3 text-[22px] font-medium tracking-[-0.02em] leading-snug text-fg">{tip.data.text}</p>
             ) : (
               <div className="relative mt-3 space-y-2">
                 <Skeleton className="h-5 w-full rounded-full" />
@@ -162,7 +162,7 @@ function Bubble({ role, children }: { role: ChatMessage["role"]; children: React
       <div
         className={cx(
           "max-w-[85%] whitespace-pre-wrap rounded-[18px] px-4 py-2.5 text-body",
-          role === "user" ? "rounded-br-md bg-brand-700 text-white" : "rounded-bl-md bg-subtle text-fg",
+          role === "user" ? "rounded-br-md bg-accent text-accent-on" : "rounded-bl-md bg-subtle text-fg",
         )}
       >
         {children}

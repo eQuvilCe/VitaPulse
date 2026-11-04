@@ -101,7 +101,7 @@ export default function ScanView() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={preview} alt="" className="aspect-[4/3] w-full object-cover" />
               {phase === "analyzing" && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-fg/40 text-white backdrop-blur-[2px]" aria-live="polite">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-ink/50 text-cream" aria-live="polite">
                   <Loader2 className="h-8 w-8 animate-spin" aria-hidden="true" />
                   <span className="text-body font-semibold">{t.scan.analyzing}</span>
                 </div>
@@ -121,7 +121,7 @@ export default function ScanView() {
               }}
               className={cx(
                 "flex aspect-[4/3] flex-col items-center justify-center gap-5 rounded-panel border-2 border-dashed p-6 text-center transition-colors",
-                dragging ? "border-kcal-500 bg-kcal-50" : "border-line-strong bg-[radial-gradient(70%_70%_at_50%_40%,rgb(var(--vh-kcal-50)),rgb(var(--vh-surface)))]",
+                dragging ? "border-kcal-500 bg-kcal-50" : "border-line-strong bg-surface",
               )}
             >
               <span className="flex h-16 w-16 items-center justify-center rounded-full bg-kcal-100 text-kcal-600" aria-hidden="true">

@@ -84,7 +84,7 @@ function WeightSection() {
           <h2 className="text-heading">{t.progress.weight}</h2>
           {trend.data?.latest_kg != null && (
             <p className="mt-1 flex flex-wrap items-baseline gap-x-3 text-caption text-fg-muted">
-              <span className="text-title font-semibold tabular-nums text-fg">
+              <span className="text-title font-medium tabular-nums text-fg">
                 {formatNumber(trend.data.latest_kg, locale, 1)}
                 <span className="ml-1 text-body font-normal text-fg-muted">{t.common.kg}</span>
               </span>
@@ -103,7 +103,7 @@ function WeightSection() {
               type="button"
               aria-pressed={range === r}
               onClick={() => setRange(r)}
-              className={cx("rounded-full px-3 py-1.5 text-caption font-semibold", range === r ? "bg-surface text-fg shadow-card" : "text-fg-muted hover:text-fg")}
+              className={cx("rounded-full px-3 py-1.5 text-caption font-semibold", range === r ? "bg-surface text-fg" : "text-fg-muted hover:text-fg")}
             >
               {t.progress.range[r]}
             </button>
@@ -354,7 +354,7 @@ function PhotoSlot({ kind, photo, onChange }: { kind: ProgressPhoto["kind"]; pho
                 onChange();
               }}
               aria-label={t.progress.removePhoto}
-              className="absolute right-2 top-2 rounded-full bg-black/40 p-2 text-white backdrop-blur hover:bg-black/60"
+              className="absolute right-2 top-2 rounded-full bg-ink/40 p-2 text-cream hover:bg-ink/60"
             >
               <Trash2 className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -371,7 +371,7 @@ function PhotoSlot({ kind, photo, onChange }: { kind: ProgressPhoto["kind"]; pho
             <span className="text-caption font-semibold">{busy ? t.common.loading : t.progress.addPhoto}</span>
           </button>
         )}
-        <span className="absolute left-2 top-2 rounded-full bg-surface/90 px-2.5 py-1 text-caption font-semibold text-fg shadow-card">{label}</span>
+        <span className="absolute left-2 top-2 rounded-full bg-surface/90 px-2.5 py-1 text-caption font-semibold text-fg">{label}</span>
       </div>
       <p className="mt-1.5 text-caption text-fg-muted">
         {photo ? formatDate(photo.day, locale) : " "}

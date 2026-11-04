@@ -1,13 +1,10 @@
 import { cx } from "@/lib/cx";
 
-// Light-theme logo mark: a pulse line in a mint disc.
+// Logo mark: a pulse line in a flat green disc.
 export default function VitaMark({ small = false }: { small?: boolean }) {
   return (
     <span
-      className={cx(
-        "flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-300 to-brand-600 text-white",
-        small ? "h-7 w-7" : "h-8 w-8",
-      )}
+      className={cx("flex shrink-0 items-center justify-center rounded-full bg-accent text-accent-on", small ? "h-7 w-7" : "h-8 w-8")}
       aria-hidden="true"
     >
       <svg viewBox="0 0 28 16" className={small ? "h-3 w-4" : "h-3.5 w-5"}>

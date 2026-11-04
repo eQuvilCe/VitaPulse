@@ -6,7 +6,7 @@ import type { WeightPoint } from "@/lib/api-vita";
 
 import { formatDate, formatNumber, useAppT } from "./i18n";
 
-const BRAND = "rgb(20 153 111)";
+const BRAND = "rgb(var(--vh-accent-2))";
 
 export default function WeightChart({ points, goal }: { points: WeightPoint[]; goal?: number | null }) {
   const { t, locale } = useAppT();
@@ -24,28 +24,28 @@ export default function WeightChart({ points, goal }: { points: WeightPoint[]; g
               <stop offset="100%" stopColor={BRAND} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="rgb(230 225 214)" strokeDasharray="0" vertical={false} />
+          <CartesianGrid stroke="rgb(var(--vh-line))" strokeDasharray="0" vertical={false} />
           <XAxis
             dataKey="day"
             tickFormatter={(d: string) => formatDate(d, locale, { day: "numeric", month: "short" })}
-            tick={{ fontSize: 12, fill: "rgb(138 148 142)" }}
+            tick={{ fontSize: 12, fill: "rgb(var(--vh-fg-subtle))" }}
             axisLine={false}
             tickLine={false}
             minTickGap={24}
           />
-          <YAxis domain={[min, max]} tick={{ fontSize: 12, fill: "rgb(138 148 142)" }} axisLine={false} tickLine={false} width={44} />
+          <YAxis domain={[min, max]} tick={{ fontSize: 12, fill: "rgb(var(--vh-fg-subtle))" }} axisLine={false} tickLine={false} width={44} />
           {goal != null && (
             <ReferenceLine
               y={goal}
-              stroke="rgb(242 112 79)"
+              stroke="rgb(var(--vh-kcal-500))"
               strokeDasharray="5 5"
-              label={{ value: `${t.bmi.goal} ${formatNumber(goal, locale, 1)}`, position: "insideTopRight", fontSize: 12, fill: "rgb(196 71 42)" }}
+              label={{ value: `${t.bmi.goal} ${formatNumber(goal, locale, 1)}`, position: "insideTopRight", fontSize: 12, fill: "rgb(var(--vh-kcal-700))" }}
             />
           )}
           <Tooltip
             formatter={(v: number) => [`${formatNumber(v, locale, 1)} ${t.common.kg}`, t.progress.weight]}
             labelFormatter={(d: string) => formatDate(d, locale)}
-            contentStyle={{ borderRadius: 14, border: "1px solid rgb(230 225 214)", boxShadow: "0 8px 24px -12px rgb(28 40 34 / 0.18)", fontSize: 13 }}
+            contentStyle={{ borderRadius: 14, border: "1px solid rgb(var(--vh-line))", background: "rgb(var(--vh-surface))", color: "rgb(var(--vh-fg))", fontSize: 13 }}
           />
           <Area type="monotone" dataKey="weight_kg" stroke={BRAND} strokeWidth={2.5} fill="url(#weightFill)" dot={{ r: 3, fill: BRAND, strokeWidth: 0 }} activeDot={{ r: 5 }} />
         </AreaChart>

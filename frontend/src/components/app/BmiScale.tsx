@@ -29,8 +29,8 @@ function Marker({ bmi, label, tone, below }: { bmi: number; label: string; tone:
       >
         <span
           className={cx(
-            "rounded-full px-2.5 py-1 text-caption font-semibold shadow-card",
-            tone === "now" ? "bg-fg text-white" : "bg-surface text-brand-800 ring-1 ring-brand-300",
+            "rounded-full px-2.5 py-1 text-caption font-semibold",
+            tone === "now" ? "bg-accent text-accent-on" : "bg-surface text-brand-800 ring-1 ring-brand-300",
           )}
         >
           {label} · {formatNumber(bmi, locale, 1)}
@@ -39,8 +39,8 @@ function Marker({ bmi, label, tone, below }: { bmi: number; label: string; tone:
       </div>
       <span
         className={cx(
-          "absolute left-1/2 top-1/2 block h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white shadow-card",
-          tone === "now" ? "bg-fg" : "bg-brand-300",
+          "absolute left-1/2 top-1/2 block h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-surface",
+          tone === "now" ? "bg-accent" : "bg-brand-300",
         )}
         aria-hidden="true"
       />

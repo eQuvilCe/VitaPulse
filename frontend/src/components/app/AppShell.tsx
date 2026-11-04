@@ -18,6 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ui";
 import { ApiError, fetchMe, getToken, logout, saveLanguage, type User } from "@/lib/api-vita";
 import { cx } from "@/lib/cx";
 
@@ -100,12 +101,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <UserContext.Provider value={user}>
       <div className="min-h-screen bg-canvas text-fg lg:flex">
         {/* Desktop sidebar */}
-        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line bg-surface/70 px-4 py-6 backdrop-blur lg:flex">
-          <Link href="/plan" className="mb-8 flex items-center gap-2.5 rounded-full px-2 text-[19px] font-semibold tracking-tight">
+        <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-line bg-surface px-4 py-6 lg:flex">
+          <Link href="/plan" className="mb-8 flex items-center gap-2.5 rounded-full px-2 text-[19px] font-medium tracking-[-0.02em]">
             <VitaMark />
-            <span>
-              Vita <span className="font-serif italic font-normal">Health</span>
-            </span>
+            <span>Vita Health</span>
           </Link>
           <nav aria-label={t.nav.main} className="flex-1 space-y-1">
             {NAV.map(({ key, href, icon: Icon }) => (
@@ -130,7 +129,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               </div>
             )}
             <div className="flex items-center justify-between gap-2 px-1">
-              <LanguageSwitcher />
+              <div className="flex items-center gap-1.5">
+                <LanguageSwitcher />
+                <ThemeToggle />
+              </div>
               <button
                 type="button"
                 onClick={signOut}
@@ -144,14 +146,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-canvas/85 px-4 backdrop-blur lg:hidden">
-          <Link href="/plan" className="flex items-center gap-2 text-[17px] font-semibold tracking-tight">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-canvas px-4 lg:hidden">
+          <Link href="/plan" className="flex items-center gap-2 text-[17px] font-medium tracking-[-0.02em]">
             <VitaMark small />
-            <span>
-              Vita <span className="font-serif italic font-normal">Health</span>
-            </span>
+            <span>Vita Health</span>
           </Link>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-1.5">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </header>
 
         <main className="min-w-0 flex-1 px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12 lg:pt-10">
@@ -182,7 +185,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     <span
                       className={cx(
                         "flex items-center justify-center rounded-full transition-colors",
-                        scan ? "h-9 w-9 bg-kcal-500 text-white shadow-card" : "h-7 w-12",
+                        scan ? "h-9 w-9 bg-accent text-accent-on" : "h-7 w-12",
                         !scan && active && "bg-brand-50",
                       )}
                     >

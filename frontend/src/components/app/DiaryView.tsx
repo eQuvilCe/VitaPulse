@@ -85,7 +85,7 @@ export default function DiaryView() {
       <PageHeader
         title={t.diary.title}
         actions={
-          <div className="flex items-center gap-1 rounded-full bg-surface p-1 shadow-card ring-1 ring-inset ring-line">
+          <div className="flex items-center gap-1 rounded-full bg-surface p-1 ring-1 ring-inset ring-line">
             <button type="button" onClick={() => shift(-1)} aria-label={t.diary.prev} className="rounded-full p-2 text-fg-muted hover:bg-subtle hover:text-fg">
               <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             </button>

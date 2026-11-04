@@ -76,7 +76,7 @@ export default function PlanView() {
             <div>
               <p className="text-caption font-semibold text-fg-muted">{t.plan.daily}</p>
               <p className="mt-1 flex items-baseline gap-2">
-                <span className="text-[44px] font-semibold leading-none tracking-tight tabular-nums">{formatNumber(plan.calories, locale)}</span>
+                <span className="text-[44px] font-medium leading-none tracking-tight tabular-nums">{formatNumber(plan.calories, locale)}</span>
                 <span className="text-body text-fg-muted">{t.common.kcal}</span>
               </p>
               <p className="mt-2 text-caption text-fg-muted">{fmt(t.plan.tdee, { tdee: formatNumber(plan.tdee, locale) })}</p>
@@ -104,7 +104,7 @@ export default function PlanView() {
                   target: formatNumber(goalWeight, locale, 1),
                 })}
               </p>
-              <p className="mt-1 font-serif text-[34px] leading-tight text-brand-800">{formatDate(plan.forecast_date, locale)}</p>
+              <p className="mt-1 text-[34px] font-medium leading-tight tracking-[-0.03em] text-brand-800">{formatDate(plan.forecast_date, locale)}</p>
               {plan.pace_capped && <p className="mt-3 text-caption text-warn-strong">{t.plan.paceCapped}</p>}
             </>
           )}
@@ -140,7 +140,7 @@ export default function PlanView() {
               onClick={() => setTab(key)}
               className={cx(
                 "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-caption font-semibold transition-colors sm:px-4",
-                tab === key ? "bg-surface text-fg shadow-card" : "text-fg-muted hover:text-fg",
+                tab === key ? "bg-surface text-fg" : "text-fg-muted hover:text-fg",
               )}
             >
               <Icon className="hidden h-4 w-4 sm:block" aria-hidden="true" />
@@ -233,7 +233,7 @@ function MealCard({ meal }: { meal: PlanMeal }) {
   const [open, setOpen] = useState(false);
   const id = `recipe-${meal.slot}-${meal.name.replace(/\W+/g, "-")}`;
   return (
-    <li className="overflow-hidden rounded-card border border-line bg-surface shadow-card">
+    <li className="overflow-hidden rounded-card border border-line bg-surface">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -245,7 +245,7 @@ function MealCard({ meal }: { meal: PlanMeal }) {
           <UtensilsCrossed className="h-5 w-5" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-caption font-semibold uppercase tracking-wide text-fg-subtle">{t.slots[meal.slot]}</span>
+          <span className="block text-caption font-semibold text-fg-subtle">{t.slots[meal.slot]}</span>
           <span className="mt-0.5 block text-body font-semibold text-fg">{meal.name}</span>
           <MacroLine m={meal} className="mt-0.5 block" />
         </span>
@@ -323,7 +323,7 @@ function Shopping({ plan }: { plan: Plan }) {
       <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
         {groups.map(([cat, items]) => (
           <div key={cat}>
-            <p className="mb-2 text-caption font-semibold uppercase tracking-wide text-fg-subtle">{cat}</p>
+            <p className="mb-2 text-caption font-semibold text-fg-subtle">{cat}</p>
             <ul className="divide-y divide-line">
               {items.map((item) => {
                 const on = checked.has(item.name);
@@ -387,7 +387,7 @@ function Workouts({ plan }: { plan: Plan }) {
         const isToday = w.day === now;
         const done = isToday && doneToday.has(w.title);
         return (
-          <li key={w.day} className={cx("rounded-card border bg-surface p-4 shadow-card sm:p-5", isToday ? "border-brand-300" : "border-line")}>
+          <li key={w.day} className={cx("rounded-card border bg-surface p-4 sm:p-5", isToday ? "border-brand-300" : "border-line")}>
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-caption font-semibold text-fg-subtle">

@@ -43,7 +43,7 @@ export default function AchievementsView() {
               {value > 0 && <Flame className="absolute -right-1 -top-1 h-4 w-4 fill-kcal-500 text-kcal-500" />}
             </span>
             <div>
-              <p className="text-title font-semibold tabular-nums">{days ? fmt(t.achievements.days, { n: value }) : value}</p>
+              <p className="text-title font-medium tabular-nums">{days ? fmt(t.achievements.days, { n: value }) : value}</p>
               <p className="text-caption text-fg-muted">{label}</p>
             </div>
           </Card>

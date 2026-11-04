@@ -74,7 +74,7 @@ export default function AuthForm({ mode }: { mode: "login" | "signup" }) {
   return (
     <div className="w-full max-w-[420px]">
       <div className="mb-6 text-center">
-        <h1 className="text-title font-semibold">{mode === "login" ? t.auth.loginTitle : t.auth.signupTitle}</h1>
+        <h1 className="text-title font-medium">{mode === "login" ? t.auth.loginTitle : t.auth.signupTitle}</h1>
         <p className="mt-2 text-body text-fg-muted">{mode === "login" ? t.auth.loginLead : t.auth.signupLead}</p>
       </div>
 
