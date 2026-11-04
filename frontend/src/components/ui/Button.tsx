@@ -6,21 +6,21 @@ type Variant = "primary" | "secondary" | "ghost" | "calorie";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-card font-medium tracking-[-0.01em] transition-colors duration-200 focus-visible:outline-none focus-visible:shadow-focus disabled:pointer-events-none disabled:opacity-40";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-[-0.01em] transition-colors duration-200 focus-visible:outline-none focus-visible:shadow-focus disabled:pointer-events-none disabled:opacity-40";
 
 const variants: Record<Variant, string> = {
-  // Black fill, cream text: the one primary action style.
-  primary: "border border-fg bg-fg text-canvas hover:bg-fg/85",
-  // Transparent with a 1px outline.
-  secondary: "border border-fg bg-transparent text-fg hover:bg-fg hover:text-canvas",
+  // Flat green, white text: the one primary action style.
+  primary: "border border-transparent bg-accent text-accent-on hover:bg-brand-700",
+  // A hairline that darkens on hover.
+  secondary: "border border-line-strong bg-transparent text-fg hover:border-fg",
   ghost: "text-fg-muted hover:bg-subtle hover:text-fg",
-  calorie: "border border-kcal-700 bg-kcal-700 text-canvas hover:bg-kcal-600",
+  calorie: "border border-kcal-700 bg-kcal-600 text-canvas hover:bg-kcal-700",
 };
 
 const sizes: Record<Size, string> = {
   sm: "h-9 px-4 text-caption",
   md: "h-12 px-6 text-[15px]",
-  lg: "h-14 px-7 text-base",
+  lg: "h-14 px-8 text-base",
 };
 
 // Shared with links that should look like buttons, e.g. <Link className={buttonClasses()}>.

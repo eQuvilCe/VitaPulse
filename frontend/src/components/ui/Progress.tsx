@@ -3,9 +3,9 @@ import { cx } from "@/lib/cx";
 type Tone = "brand" | "calorie";
 
 const tones: Record<Tone, { track: string; fill: string }> = {
-  // A hairline track in the divider colour with a solid ink (or calorie) fill.
-  brand: { track: "bg-line/60", fill: "bg-fg" },
-  calorie: { track: "bg-kcal-100", fill: "bg-kcal-600" },
+  // A pale track with a flat green (or amber) fill.
+  brand: { track: "bg-subtle", fill: "bg-accent" },
+  calorie: { track: "bg-kcal-100", fill: "bg-kcal-500" },
 };
 
 type Props = {

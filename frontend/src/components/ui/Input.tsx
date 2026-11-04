@@ -33,8 +33,8 @@ const Input = forwardRef<HTMLInputElement, Props>(function Input(
           aria-invalid={error ? true : undefined}
           aria-describedby={note ? noteId : undefined}
           className={cx(
-            "h-12 w-full rounded-field border bg-transparent px-4 text-body text-fg caret-fg outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-fg-subtle focus:shadow-focus disabled:bg-subtle disabled:text-fg-subtle",
-            error ? "border-danger focus:border-danger" : "border-line hover:border-fg focus:border-fg",
+            "h-12 w-full rounded-field border bg-surface px-4 text-body text-fg caret-accent-2 outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-fg-subtle focus:shadow-focus disabled:bg-subtle disabled:text-fg-subtle",
+            error ? "border-danger focus:border-danger" : "border-line-strong hover:border-accent-2 focus:border-accent-2",
             suffix ? "pr-12" : undefined,
           )}
           {...rest}

@@ -4,8 +4,8 @@ type Tone = "neutral" | "brand" | "calorie" | "warn" | "danger" | "info";
 
 const tones: Record<Tone, string> = {
   neutral: "border-line text-fg-muted",
-  brand: "border-fg text-fg",
-  calorie: "border-kcal-300 bg-kcal-50 text-kcal-700",
+  brand: "bg-brand-50 text-brand-700",
+  calorie: "border-kcal-300/60 bg-kcal-50 text-kcal-700",
   warn: "bg-warn-soft text-warn-strong",
   danger: "bg-danger-soft text-danger",
   info: "bg-info-soft text-info",
