@@ -112,3 +112,12 @@ def test_body_profile_rejects_bad_values(client, auth_headers):
 def test_birth_year_in_future_rejected(client, auth_headers):
     r = client.patch("/api/v1/auth/me", json={"birth_year": 2999}, headers=auth_headers)
     assert r.status_code == 422
+
+
+def test_name_is_trimmed_but_password_is_kept_as_typed(client):
+    body = {"email": "pad@b.co", "password": " spaced pass ", "name": "  Aziz  "}
+    r = client.post("/api/v1/auth/register", json=body)
+    assert r.json()["name"] == "Aziz"
+    login = {"username": "pad@b.co", "password": " spaced pass "}
+    r = client.post("/api/v1/auth/login", data=login)
+    assert r.status_code == 200

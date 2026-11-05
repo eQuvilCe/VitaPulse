@@ -14,6 +14,11 @@ class UserCreate(BaseModel):
     name: str = Field(default="", max_length=100)
     language: Language = "en"
 
+    @field_validator("name")
+    @classmethod
+    def trim_name(cls, value: str) -> str:
+        return value.strip()
+
 
 class UserUpdate(BaseModel):
     name: str | None = Field(default=None, max_length=100)
@@ -22,6 +27,11 @@ class UserUpdate(BaseModel):
     birth_year: int | None = Field(default=None, ge=1900, le=2100)
     sex: Sex | None = None
     activity: Activity | None = None
+
+    @field_validator("name")
+    @classmethod
+    def trim_name(cls, value: str | None) -> str | None:
+        return value.strip() if value is not None else None
 
     @field_validator("birth_year")
     @classmethod
