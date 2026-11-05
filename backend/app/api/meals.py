@@ -35,6 +35,8 @@ def list_meals(day: date, user: CurrentUser, db: DbSession) -> list[Meal]:
 
 @router.get("/totals", response_model=list[DayTotals])
 def meal_totals(start: date, end: date, user: CurrentUser, db: DbSession) -> list[DayTotals]:
+    if end < start:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "end must not be before start")
     stmt = (
         select(
             Meal.day,

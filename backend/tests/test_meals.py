@@ -34,3 +34,8 @@ def test_meal_rejects_negative_calories(client, auth_headers):
 
 def test_unknown_meal_is_404(client, auth_headers):
     assert client.delete("/api/v1/meals/999", headers=auth_headers).status_code == 404
+
+
+def test_totals_reject_reversed_range(client, auth_headers):
+    r = client.get("/api/v1/meals/totals?start=2026-10-31&end=2026-10-01", headers=auth_headers)
+    assert r.status_code == 422
