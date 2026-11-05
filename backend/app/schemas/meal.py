@@ -8,6 +8,8 @@ MealSource = Literal["manual", "scan", "plan", "cook"]
 
 
 class MealIn(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     day: date
     name: str = Field(min_length=1, max_length=120)
     calories: int = Field(ge=0, le=10000)

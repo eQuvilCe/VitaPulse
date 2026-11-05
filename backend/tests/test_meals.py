@@ -39,3 +39,10 @@ def test_unknown_meal_is_404(client, auth_headers):
 def test_totals_reject_reversed_range(client, auth_headers):
     r = client.get("/api/v1/meals/totals?start=2026-10-31&end=2026-10-01", headers=auth_headers)
     assert r.status_code == 422
+
+
+def test_meal_name_is_trimmed_and_blank_rejected(client, auth_headers):
+    r = client.post("/api/v1/meals", json=_meal(name="  Plov "), headers=auth_headers)
+    assert r.json()["name"] == "Plov"
+    r = client.post("/api/v1/meals", json=_meal(name="   "), headers=auth_headers)
+    assert r.status_code == 422
