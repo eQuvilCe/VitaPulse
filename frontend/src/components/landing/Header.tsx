@@ -1,139 +1,91 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import Logo from "./Logo";
+import { useEffect, useState } from "react";
 
-const NAV = [
-  { id: "features", label: "Features" },
-  { id: "how", label: "How it works" },
-  { id: "dashboard", label: "Dashboard" },
-  { id: "faq", label: "FAQ" },
-];
+import VitaMark from "@/components/app/VitaMark";
+import { buttonClasses, LanguageToggle, ThemeToggle } from "@/components/ui";
+import { cx } from "@/lib/cx";
+import { useCopy } from "./copy";
 
-// Floating glass navbar: tightens once you scroll, a pill glides under the
-// hovered link, the current section stays marked, and phones get a sheet menu.
+// Plain bar: wordmark, three anchors, theme and language, log in, one button.
+// A hairline appears under it once the page scrolls.
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState<string | null>(null);
-  const [hovered, setHovered] = useState<string | null>(null);
+  const { c } = useCopy();
   const [open, setOpen] = useState(false);
-  const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
-  const links = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // The section crossing the upper third of the viewport is the active one.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
-      },
-      { rootMargin: "-35% 0px -60% 0px" },
-    );
-    const hero = document.querySelector("#top");
-    if (hero) observer.observe(hero);
-    NAV.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  const target = hovered ?? (active && active !== "top" ? active : null);
-  useEffect(() => {
-    const el = target ? links.current[target] : null;
-    setPill(el ? { left: el.offsetLeft, width: el.offsetWidth } : null);
-  }, [target, scrolled]);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("menu-open", open);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  const links = [
+    { href: "#features", label: c.nav.features },
+    { href: "#how", label: c.nav.how },
+    { href: "#plan", label: c.nav.plan },
+  ];
+
   return (
-    <header className="hero-in fixed inset-x-0 top-0 z-40 flex justify-center px-3 pt-3 sm:px-5">
-      <div
-        className={`nav-shell relative w-full rounded-[22px] border border-white/10 text-glow shadow-[0_10px_40px_-12px_rgba(10,6,14,0.55)] backdrop-blur-2xl backdrop-saturate-150 transition-[max-width,padding,background-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          open ? "max-w-4xl bg-plum/[0.97] py-1.5" : scrolled ? "max-w-4xl bg-plum/85 py-1.5" : "max-w-6xl bg-plum/50 py-2.5"
-        }`}
-      >
-        <div className="flex items-center justify-between gap-4 pl-4 pr-2">
-          <Link href="/" aria-label="VitaPulse home" className="shrink-0 rounded-full">
-            <Logo />
+    <header
+      className={cx(
+        "fixed inset-x-0 top-0 z-50 border-b bg-canvas transition-colors duration-300",
+        scrolled || open ? "border-line" : "border-transparent",
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-4 sm:px-8">
+        <Link href="/" className="flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.02em]">
+          <VitaMark small />
+          Vita Health
+        </Link>
+
+        <nav className="hidden items-center gap-9 text-[15px] text-fg-muted md:flex" aria-label="Main">
+          {links.map((l) => (
+            <a key={l.href} href={l.href} className="transition-colors hover:text-fg">
+              {l.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <LanguageToggle />
+          <ThemeToggle />
+          <Link href="/login" className="ml-2 hidden text-[15px] font-medium transition-colors hover:text-accent lg:inline">
+            {c.nav.login}
           </Link>
-
-          <nav className="relative hidden items-center md:flex" onMouseLeave={() => setHovered(null)}>
-            <span
-              className="absolute inset-y-0 rounded-full bg-white/10 transition-[left,width,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              style={{ left: pill?.left ?? 0, width: pill?.width ?? 0, opacity: pill ? 1 : 0 }}
-              aria-hidden="true"
-            />
-            {NAV.map(({ id, label }) => (
-              <a
-                key={id}
-                ref={(el) => {
-                  links.current[id] = el;
-                }}
-                href={`#${id}`}
-                onMouseEnter={() => setHovered(id)}
-                aria-current={active === id ? "true" : undefined}
-                className={`relative rounded-full px-4 py-2 text-sm transition-colors duration-500 ${
-                  active === id || hovered === id ? "text-glow" : "text-mist"
-                }`}
-              >
-                {label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-1.5">
-            <Link href="/login" className="hidden rounded-full px-4 py-2 text-sm text-mist transition-colors duration-500 hover:text-glow sm:block">
-              Log in
-            </Link>
-            <Link href="/register" className="btn-warm rounded-full px-5 py-2.5 text-sm font-semibold">
-              Start free
-            </Link>
-            <button
-              type="button"
-              onClick={() => setOpen((o) => !o)}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label={open ? "Close menu" : "Open menu"}
-              className="relative ml-1 h-10 w-10 rounded-full transition-colors hover:bg-white/10 md:hidden"
-            >
-              <span className={`burger ${open ? "is-open" : ""}`} aria-hidden="true">
-                <span />
-                <span />
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <div id="mobile-menu" className={`menu-sheet md:hidden ${open ? "is-open" : ""}`}>
-          <div className="overflow-hidden">
-            <nav className="flex flex-col gap-1 px-2 pb-3 pt-3">
-              {[...NAV.map(({ id, label }) => ({ href: `#${id}`, label })), { href: "/login", label: "Log in" }].map(
-                ({ href, label }, i) => (
-                  <a
-                    key={href}
-                    href={href}
-                    onClick={() => setOpen(false)}
-                    className="menu-item rounded-2xl px-4 py-3 font-serif text-2xl text-glow transition-colors hover:bg-white/5"
-                    style={{ transitionDelay: open ? `${120 + i * 70}ms` : "0ms" }}
-                  >
-                    {label}
-                  </a>
-                ),
-              )}
-            </nav>
-          </div>
+          <a href="#plan" className={buttonClasses({ size: "sm", className: "hidden sm:inline-flex" })}>
+            {c.nav.cta}
+          </a>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            className="ml-1 rounded-full px-3 py-2 text-[15px] font-medium md:hidden"
+          >
+            {open ? c.nav.close : c.nav.menu}
+          </button>
         </div>
       </div>
+
+      {open && (
+        <nav id="site-menu" className="border-t border-line px-4 pb-4 pt-2 md:hidden">
+          {[...links, { href: "/login", label: c.nav.login }].map((l) => (
+            <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block border-b border-line py-4 text-lg last:border-0">
+              {l.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

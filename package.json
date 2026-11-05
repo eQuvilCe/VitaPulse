@@ -1,0 +1,7 @@
+{
+  "name": "vitapulse",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs"
+  }
+}

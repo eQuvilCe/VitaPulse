@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 Language = Literal["ru", "uz", "en"]
+Sex = Literal["male", "female"]
+Activity = Literal["sedentary", "light", "moderate", "active"]
 
 
 class UserCreate(BaseModel):
@@ -11,6 +13,37 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=8, max_length=128)
     name: str = Field(default="", max_length=100)
     language: Language = "en"
+
+    @field_validator("name")
+    @classmethod
+    def trim_name(cls, value: str) -> str:
+        return value.strip()
+
+
+class UserUpdate(BaseModel):
+    name: str | None = Field(default=None, max_length=100)
+    language: Language | None = None
+    height_cm: float | None = Field(default=None, gt=50, lt=260)
+    birth_year: int | None = Field(default=None, ge=1900, le=2100)
+    sex: Sex | None = None
+    activity: Activity | None = None
+
+    @field_validator("name")
+    @classmethod
+    def trim_name(cls, value: str | None) -> str | None:
+        return value.strip() if value is not None else None
+
+    @field_validator("birth_year")
+    @classmethod
+    def birth_year_not_in_future(cls, value: int | None) -> int | None:
+        if value is not None and value > date.today().year:
+            raise ValueError("birth_year cannot be in the future")
+        return value
+
+
+class PasswordChange(BaseModel):
+    current_password: str = ""
+    new_password: str = Field(min_length=8, max_length=128)
 
 
 class UserRead(BaseModel):
@@ -20,6 +53,12 @@ class UserRead(BaseModel):
     email: EmailStr
     name: str
     language: Language
+    height_cm: float | None = None
+    birth_year: int | None = None
+    sex: Sex | None = None
+    activity: Activity = "light"
+    has_password: bool = True
+    google_linked: bool = False
     created_at: datetime
 
 
