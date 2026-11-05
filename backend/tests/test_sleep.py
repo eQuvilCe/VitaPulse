@@ -32,3 +32,8 @@ def test_sleep_delete_is_scoped_to_owner(client, auth_headers):
 
 def test_sleep_requires_auth(client):
     assert client.get("/api/v1/sleep").status_code == 401
+
+
+def test_sleep_for_future_day_is_rejected(client, auth_headers):
+    body = {"day": "2099-01-01", "minutes": 420}
+    assert client.put("/api/v1/sleep", json=body, headers=auth_headers).status_code == 422
