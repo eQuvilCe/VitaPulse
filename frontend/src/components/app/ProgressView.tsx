@@ -136,6 +136,7 @@ function MeasurementsSection() {
   const rows = useLoad(listMeasurements);
   const [form, setForm] = useState<Record<"waist_cm" | "hips_cm" | "chest_cm", string>>({ waist_cm: "", hips_cm: "", chest_cm: "" });
   const [saved, setSaved] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const list = rows.data ?? [];
   const latest = list[list.length - 1];
@@ -154,7 +155,13 @@ function MeasurementsSection() {
       if (v > 20 && v < 300) m[k] = v;
     }
     if (!m.waist_cm && !m.hips_cm && !m.chest_cm) return;
-    await addMeasurement(m);
+    setFailed(false);
+    try {
+      await addMeasurement(m);
+    } catch {
+      setFailed(true);
+      return;
+    }
     setForm({ waist_cm: "", hips_cm: "", chest_cm: "" });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -200,6 +207,11 @@ function MeasurementsSection() {
           {saved ? <Check className="h-4 w-4" aria-hidden="true" /> : <Plus className="h-4 w-4" aria-hidden="true" />}
           {saved ? t.common.saved : t.progress.addMeasure}
         </Button>
+        {failed && (
+          <p role="alert" className="text-caption text-danger">
+            {t.common.error}
+          </p>
+        )}
       </form>
     </Card>
   );
