@@ -56,6 +56,7 @@ function WeightSection() {
   const plan = useLoad(() => fetchPlan(locale), [locale]);
   const [value, setValue] = useState("");
   const [saving, setSaving] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const input = plan.data?.input;
   const goal = input && input.goal !== "maintain" ? input.weight_kg + (input.goal === "lose" ? -1 : 1) * input.target_change_kg : null;
@@ -66,10 +67,13 @@ function WeightSection() {
     const kg = Number(value.replace(",", "."));
     if (!kg || kg < 30 || kg > 400) return;
     setSaving(true);
+    setFailed(false);
     try {
       await logWeight(kg);
       setValue("");
       trend.reload();
+    } catch {
+      setFailed(true);
     } finally {
       setSaving(false);
     }
@@ -127,6 +131,11 @@ function WeightSection() {
           {t.common.save}
         </Button>
       </form>
+      {failed && (
+        <p role="alert" className="mt-2 text-caption text-danger">
+          {t.common.error}
+        </p>
+      )}
     </Card>
   );
 }
