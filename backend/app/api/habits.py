@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
@@ -53,6 +53,11 @@ def list_habits(user: CurrentUser, db: DbSession, today: date | None = None) -> 
 @router.post("/{habit_id}/checkins", status_code=status.HTTP_204_NO_CONTENT)
 def check_in(habit_id: int, data: CheckinIn, user: CurrentUser, db: DbSession) -> None:
     habit = _owned_habit(db, habit_id, user.id)
+    # One day of slack, since the client's calendar day can be ahead of the server's.
+    if data.day > date.today() + timedelta(days=1):
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY, "Cannot check in for a future day"
+        )
     if data.day not in _checkin_days(db, habit.id):
         db.add(HabitCheckin(habit_id=habit.id, day=data.day))
         db.commit()

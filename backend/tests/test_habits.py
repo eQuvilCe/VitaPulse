@@ -45,3 +45,11 @@ def test_habit_name_is_trimmed(client, auth_headers):
 def test_blank_habit_name_is_rejected(client, auth_headers):
     r = client.post("/api/v1/habits", json={"name": "   "}, headers=auth_headers)
     assert r.status_code == 422
+
+
+def test_check_in_for_future_day_is_rejected(client, auth_headers):
+    hid = _create(client, auth_headers)
+    r = client.post(
+        f"/api/v1/habits/{hid}/checkins", json={"day": "2099-01-01"}, headers=auth_headers
+    )
+    assert r.status_code == 422
