@@ -34,3 +34,14 @@ def test_archived_habit_is_hidden(client, auth_headers):
     hid = _create(client, auth_headers)
     assert client.delete(f"/api/v1/habits/{hid}", headers=auth_headers).status_code == 204
     assert client.get("/api/v1/habits", headers=auth_headers).json() == []
+
+
+def test_habit_name_is_trimmed(client, auth_headers):
+    r = client.post("/api/v1/habits", json={"name": "  Stretch  "}, headers=auth_headers)
+    assert r.status_code == 201
+    assert r.json()["name"] == "Stretch"
+
+
+def test_blank_habit_name_is_rejected(client, auth_headers):
+    r = client.post("/api/v1/habits", json={"name": "   "}, headers=auth_headers)
+    assert r.status_code == 422
