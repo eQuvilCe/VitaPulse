@@ -162,7 +162,7 @@ To save an edited result call `POST /meals` with `source: "scan"`.
 
 ### Meals (existing, extended)
 `MealIn`: `{day, name, calories, protein_g?, carbs_g?, fat_g?, meal_type?, source?}`,
-`source`: `manual | scan | plan` (default `manual`). `MealRead` adds `id`.
+`source`: `manual | scan | plan | cook` (default `manual`). `MealRead` adds `id`.
 
 | Method | Path | Notes |
 | --- | --- | --- |
