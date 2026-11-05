@@ -374,8 +374,13 @@ function PhotoSlot({ kind, photo, onChange }: { kind: ProgressPhoto["kind"]; pho
             <button
               type="button"
               onClick={async () => {
-                if (photo) await deletePhoto(photo.id);
-                onChange();
+                setFailed(false);
+                try {
+                  if (photo) await deletePhoto(photo.id);
+                  onChange();
+                } catch {
+                  setFailed(true);
+                }
               }}
               aria-label={t.progress.removePhoto}
               className="absolute right-2 top-2 rounded-full bg-ink/40 p-2 text-cream hover:bg-ink/60"
