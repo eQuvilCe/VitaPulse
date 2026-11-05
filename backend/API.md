@@ -7,6 +7,9 @@ Interactive docs: `/docs` (Swagger) on the same host.
 - Auth: `Authorization: Bearer <access_token>`. Endpoints marked **public** work without it.
 - Dates are ISO `YYYY-MM-DD`, timestamps ISO 8601 with timezone.
 - Errors: `{"detail": "message"}` (or FastAPI's validation list for 422).
+- Text fields (`name` on users, meals and habits) are trimmed; blank meal and habit names are 422.
+- Days in metrics, sleep entries and habit check-ins may be at most one day ahead of the server's
+  date (timezone slack); anything later is 422.
 - `language` is `"en"` or `"ru"`; AI and template texts come back in that language
   (default: the user's `language`, else `en`).
 - `source` on AI-backed responses is `"ai"` (Claude) or `"template"` (deterministic fallback when
@@ -165,7 +168,7 @@ To save an edited result call `POST /meals` with `source: "scan"`.
 | --- | --- | --- |
 | POST | `/meals` | → `MealRead`, 201 |
 | GET | `/meals?day=` | list for a day |
-| GET | `/meals/totals?start=&end=` | `[{day, calories, protein_g, carbs_g, fat_g}]` |
+| GET | `/meals/totals?start=&end=` | `[{day, calories, protein_g, carbs_g, fat_g}]`. 422 if `end` is before `start` |
 | PUT | `/meals/{id}` | full update |
 | DELETE | `/meals/{id}` | 204 |
 
