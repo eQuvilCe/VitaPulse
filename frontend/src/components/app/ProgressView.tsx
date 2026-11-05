@@ -221,6 +221,7 @@ function WorkoutsSection() {
   const { t, locale } = useAppT();
   const logs = useLoad(listWorkouts);
   const [title, setTitle] = useState("");
+  const [failed, setFailed] = useState(false);
   const list = logs.data ?? [];
   const weekAgo = isoDay(addDays(new Date(), -6));
   const thisWeek = list.filter((l) => l.day >= weekAgo).length;
@@ -232,7 +233,13 @@ function WorkoutsSection() {
   async function add(e: React.FormEvent) {
     e.preventDefault();
     if (!title.trim()) return;
-    await logWorkout(title.trim());
+    setFailed(false);
+    try {
+      await logWorkout(title.trim());
+    } catch {
+      setFailed(true);
+      return;
+    }
     setTitle("");
     logs.reload();
   }
@@ -265,6 +272,11 @@ function WorkoutsSection() {
           <span className="hidden sm:inline">{t.progress.logWorkout}</span>
         </Button>
       </form>
+      {failed && (
+        <p role="alert" className="mb-3 text-caption text-danger">
+          {t.common.error}
+        </p>
+      )}
       {list.length ? (
         <ul className="max-h-48 divide-y divide-line overflow-y-auto">
           {list.slice(0, 20).map((w) => (
